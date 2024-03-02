@@ -6,18 +6,18 @@ export default defineStyleConfig({
   },
   sizes: {},
   variants: {
-    'base': () => ({
+    'base': ({ colorMode }) => ({
       field: {
         border: '1px solid',
-        borderColor: 'darcula.400',
+        borderColor: colorMode === 'dark' ? 'darcula.400' : 'gray.100',
         transition: 'box-shadow .3s',
         boxShadow: '0px 0px 2px 1px transparent',
         borderRadius: 'md',
-        bgColor: 'darcula.500',
-        color: 'white',
+        bgColor: colorMode === 'dark' ? 'darcula.500' : 'white',
+        color: colorMode === 'dark' ? 'white' : 'black',
         fontSize: '1.2rem',
         _placeholder: {
-          color: 'gray.200',
+          color: colorMode === 'dark' ? 'gray.200' : 'gray.300',
         },
         _invalid: {
           borderColor: 'red.400'

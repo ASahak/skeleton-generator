@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
+import theme from '@/styles/theme';
+import { ColorModeScript } from '@chakra-ui/react';
 import { AppProviders } from '@/providers/app';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -33,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <AppProviders>
           {children}
         </AppProviders>

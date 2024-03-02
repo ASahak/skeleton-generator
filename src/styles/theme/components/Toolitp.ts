@@ -8,15 +8,15 @@ export default defineStyleConfig({
   },
   sizes: {},
   variants: {
-    'base': () => ({
-      background: 'darcula.600',
+    'base': ({ colorMode }) => ({
+      background: colorMode === 'dark' ? 'darcula.600' : 'gray.700',
       border: '1px solid',
       color: 'white',
       px: 4,
       py: 2,
-      borderColor: 'darcula.400',
-      [$arrowBg.variable]: 'var(--chakra-colors-darcula-600)',
-      [$arrowShadowColor.variable]: 'var(--chakra-colors-darcula-400)',
+      borderColor: colorMode === 'dark' ? 'darcula.400' : 'gray.700',
+      [$arrowBg.variable]: colorMode === 'dark' ? 'var(--chakra-colors-darcula-600)' : 'var(--chakra-colors-gray-700)',
+      [$arrowShadowColor.variable]: colorMode === 'dark' ? 'var(--chakra-colors-darcula-400)' : 'var(--chakra-colors-gray-700)',
     })
   },
   defaultProps: {},

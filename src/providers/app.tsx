@@ -9,6 +9,7 @@ export const AppProviders = ({children}: Readonly<{
 }>) => {
   const [appMounted, setAppMounted] = useState(false);
 
+
   useEffect(() => {
     setAppMounted(true);
   }, []);

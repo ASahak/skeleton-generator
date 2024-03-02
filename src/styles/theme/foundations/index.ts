@@ -1,4 +1,5 @@
 import colors from './colors';
+import LocalStorage from '@/services/local-storage';
 
 export default {
   shadows: {
@@ -6,7 +7,7 @@ export default {
   },
   colors,
   config: {
-    initialColorMode: 'system',
-    useSystemColorMode: false
+    initialColorMode: LocalStorage.get('chakra-ui-color-mode') || 'system',
+    useSystemColorMode: false,
   }
 };

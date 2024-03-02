@@ -1,4 +1,5 @@
 import type { GlobalStyleProps } from '@chakra-ui/theme-tools';
+import { mode } from '@chakra-ui/theme-tools';
 
 export default {
   global: (props: GlobalStyleProps) => ({
@@ -9,7 +10,7 @@ export default {
       }
     },
     'body': {
-      background: 'darcula.800',
+      background: mode('gray.80', 'darcula.800')(props),
     },
     'body, *': {
       fontFamily: 'Poppins,sans-serif;',

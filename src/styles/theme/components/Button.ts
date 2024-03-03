@@ -24,6 +24,19 @@ export default defineStyleConfig({
       _hover: {
         backgroundColor: 'brand.600',
       }
+    },
+    'options-panel-btn': {
+      w: '4.5rem',
+      h: '4.5rem',
+      display: 'flex',
+      alignItems: 'center',
+      color: 'white',
+      bgColor: 'brand.500',
+      boxShadow: 'md',
+      borderRadius: 0,
+      position: 'absolute',
+      borderTopLeftRadius: 20,
+      borderBottomLeftRadius: 20,
     }
   },
   defaultProps: {},

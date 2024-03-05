@@ -1,8 +1,14 @@
 import { atom, RecoilState } from 'recoil';
+import { TREE_ELEMENTS_SPACING } from '@/constants/general-settings';
 
 export const gridState: RecoilState<Record<string, unknown>> = atom({
   key: 'grid',
   default: {},
+});
+
+export const highlightedNodeState: RecoilState<string> = atom({
+  key: 'highlighted-node',
+  default: '',
 });
 
 export const rootStylesState: RecoilState<string> = atom({
@@ -12,6 +18,11 @@ export const rootStylesState: RecoilState<string> = atom({
   width: 100%;
   height: 100%;
 }`,
+});
+
+export const treeElementsSpacingState: RecoilState<string> = atom({
+  key: 'tree-elements-spacing',
+  default: TREE_ELEMENTS_SPACING.DEFAULT.toString(),
 });
 
 export const optionsPanelIsOpenState: RecoilState<boolean> = atom({

@@ -1,10 +1,11 @@
 import { FC } from 'react';
 import { Box, Button, Icon } from '@chakra-ui/react';
-import { RiCloseFill, RiListSettingsLine } from 'react-icons/ri';
+import { RiCloseFill } from 'react-icons/ri';
 import { useRecoilState } from 'recoil';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useThemeColors } from '@/hooks';
 import { RootStyle } from '@/containers/generator/root-style';
+import { TreeSpacing } from '@/containers/generator/tree-spacing';
 import { optionsPanelIsOpenState } from '@/store/atoms/global';
 
 export const OptionsPanel: FC = () => {
@@ -21,9 +22,9 @@ export const OptionsPanel: FC = () => {
         ? <motion.div
           key="options-panel"
           transition={{ duration: .3 }}
-          initial={{ left: '100%' }}
-          animate={{ left: '0' }}
-          exit={{ left: '100%' }}
+          initial={{ left: '100%', opacity: 0 }}
+          animate={{ left: '0', opacity: 1 }}
+          exit={{ left: '100%', opacity: 0 }}
           style={{ position: 'absolute', height: '100%', width: '100%' }}
         >
           <Box
@@ -31,6 +32,7 @@ export const OptionsPanel: FC = () => {
             rounded="md"
             bgColor={white_dark700}
             boxShadow="md"
+            whiteSpace="nowrap"
           >
             <Box p={4} borderBottom="1px solid" borderColor={gray100_dark400}>
               <Button variant="unstyled" alignItems="center" h="fit-content" display="flex" p={0} onClick={togglePanel}>
@@ -40,18 +42,10 @@ export const OptionsPanel: FC = () => {
             <Box>
               <RootStyle />
             </Box>
+            <TreeSpacing />
           </Box>
         </motion.div>
-        : <Button
-          right={-4}
-          top={0}
-          bottom={0}
-          m="auto"
-          variant="options-panel-btn"
-          onClick={() => setOptionsPanelIsOpen(true)}
-        >
-          <Icon as={RiListSettingsLine} fontSize="4xl"/>
-        </Button>
+        : null
       }
     </AnimatePresence>
   )

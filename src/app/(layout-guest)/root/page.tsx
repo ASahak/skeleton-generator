@@ -15,10 +15,10 @@ import RoutePaths from '@/constants/route-paths';
 import { useThemeColors } from '@/hooks';
 
 export default function View() {
-  const { gray800_gray50, gray400_white } = useThemeColors();
+  const { gray80_dark800, gray800_gray50, gray400_white } = useThemeColors();
 
   return (
-    <Flex flexDirection="column" justifyContent="center" minH="100vh">
+    <Flex bgColor={gray80_dark800} flexDirection="column" justifyContent="center" minH="100vh">
       <Box p={20} textAlign="center" mx="auto" w="full" maxW="100rem">
         <Heading color={gray800_gray50} fontSize="8xl" lineHeight="8rem">
           Create accessible and reusable Skeletons <Text as="span" color="brand.500">with speed</Text>

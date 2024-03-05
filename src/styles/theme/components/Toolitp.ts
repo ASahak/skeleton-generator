@@ -12,6 +12,7 @@ export default defineStyleConfig({
       background: colorMode === 'dark' ? 'darcula.600' : 'gray.700',
       border: '1px solid',
       color: 'white',
+      fontSize: 'lg',
       px: 4,
       py: 2,
       borderColor: colorMode === 'dark' ? 'darcula.400' : 'gray.700',

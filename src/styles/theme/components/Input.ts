@@ -13,7 +13,7 @@ export default defineStyleConfig({
         transition: 'box-shadow .3s',
         boxShadow: '0px 0px 2px 1px transparent',
         borderRadius: 'md',
-        bgColor: colorMode === 'dark' ? 'darcula.500' : 'white',
+        bgColor: colorMode === 'dark' ? 'darcula.550' : 'white',
         color: colorMode === 'dark' ? 'white' : 'black',
         fontSize: '1.2rem',
         _placeholder: {

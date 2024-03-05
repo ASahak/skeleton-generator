@@ -9,7 +9,7 @@ export const GridLayout = () => {
   const convertedStyles = useConvertStringToStyleObject(rootStyles);
 
   return (
-    <Box style={convertedStyles as CSSProperties}>
+    <Box style={convertedStyles as CSSProperties} border="1px dashed" borderColor="brand.500">
 
     </Box>
   )

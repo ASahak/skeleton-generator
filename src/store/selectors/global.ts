@@ -1,5 +1,11 @@
 import { selector } from 'recoil';
-import { gridState, optionsPanelIsOpenState, rootStylesState } from '@/store/atoms/global';
+import {
+  gridState,
+  highlightedNodeState,
+  optionsPanelIsOpenState,
+  rootStylesState,
+  treeElementsSpacingState,
+} from '@/store/atoms/global';
 
 export const selectGridState = selector({
   key: 'select-grid',
@@ -7,6 +13,14 @@ export const selectGridState = selector({
     return get(gridState)
   }
 });
+
+export const selectHighlightedNodeState = selector({
+  key: 'select-highlighted-node',
+  get: ({ get }) => {
+    return get(highlightedNodeState)
+  }
+});
+
 
 export const selectOptionsPanelIsOpenState = selector({
   key: 'select-options-panel-is-open',
@@ -19,5 +33,12 @@ export const selectRootStylesState = selector({
   key: 'select-root-styles',
   get: ({ get }) => {
     return get(rootStylesState)
+  }
+});
+
+export const selectTreeElementsSpacingState = selector({
+  key: 'select-tree-elements-spacing',
+  get: ({ get }) => {
+    return get(treeElementsSpacingState)
   }
 });

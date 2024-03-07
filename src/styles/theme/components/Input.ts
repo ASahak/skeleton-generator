@@ -1,10 +1,32 @@
-import {defineStyleConfig} from '@chakra-ui/react'
+import { defineStyleConfig } from '@chakra-ui/react'
 
 export default defineStyleConfig({
   baseStyle: {
     fontFamily: 'inherit',
   },
-  sizes: {},
+  sizes: {
+    sm: {
+      field: {
+        height: '3rem',
+        px: 4,
+        fontSize: '1.3rem'
+      }
+    },
+    md: {
+      field: {
+        height: '4rem',
+        px: 10,
+        fontSize: '1.4rem'
+      }
+    },
+    lg: {
+      field: {
+        height: '5rem',
+        px: 10,
+        fontSize: '1.6rem'
+      }
+    }
+  },
   variants: {
     'base': ({ colorMode }) => ({
       field: {

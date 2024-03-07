@@ -1,0 +1,1 @@
+export type GridKeyType = 'gridGap' | 'repeatCount' | 'direction';

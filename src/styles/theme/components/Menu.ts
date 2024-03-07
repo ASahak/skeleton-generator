@@ -13,7 +13,7 @@ export default defineStyleConfig({
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        backgroundColor: colorMode === 'dark' ? 'darcula.300' : 'white',
+        backgroundColor: colorMode === 'dark' ? 'darcula.550' : 'white',
       }
     })
   },

@@ -1,11 +1,13 @@
-import { selector } from 'recoil';
+import { selector, selectorFamily } from 'recoil';
+import dlv from 'dlv';
 import {
   gridState,
   highlightedNodeState,
   optionsPanelIsOpenState,
   rootStylesState,
-  treeElementsSpacingState,
 } from '@/store/atoms/global';
+import { putDefaultValue } from '@/utils/helpers';
+import { GridKeyType } from '@/common/types';
 
 export const selectGridState = selector({
   key: 'select-grid',
@@ -21,6 +23,16 @@ export const selectHighlightedNodeState = selector({
   }
 });
 
+export const selectHighlightedNodeGridPropState = selectorFamily({
+  key: 'select-highlighted-node-grid-prop',
+  get: (propName: GridKeyType) => ({ get }) => {
+    const dataKey = get(highlightedNodeState);
+    const grid: Record<string, any> = dlv(get(gridState), dataKey);
+
+    return grid[propName as string] ?? putDefaultValue(propName);
+  }
+});
+
 
 export const selectOptionsPanelIsOpenState = selector({
   key: 'select-options-panel-is-open',
@@ -33,12 +45,5 @@ export const selectRootStylesState = selector({
   key: 'select-root-styles',
   get: ({ get }) => {
     return get(rootStylesState)
-  }
-});
-
-export const selectTreeElementsSpacingState = selector({
-  key: 'select-tree-elements-spacing',
-  get: ({ get }) => {
-    return get(treeElementsSpacingState)
   }
 });

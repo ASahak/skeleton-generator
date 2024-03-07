@@ -5,6 +5,7 @@ import { useRecoilState } from 'recoil';
 import { useThemeColors } from '@/hooks';
 import { gridState, highlightedNodeState, optionsPanelIsOpenState } from '@/store/atoms/global';
 import { HighlightedNode } from '@/components/header/highlighted-node';
+import { DEFAULT_GAP } from '@/constants/general-settings';
 
 export const Header: FC = memo(() => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -15,7 +16,9 @@ export const Header: FC = memo(() => {
   const ableToPreview = getGridState.root;
 
   const onCreateRootTemplate = () => {
-    setGridState({ root: {} });
+    setGridState({
+      root: {}
+    });
     setHighlightedNode('root');
   }
 

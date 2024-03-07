@@ -1,40 +1,51 @@
 import { ChangeEvent, FC } from 'react';
 import { Box, Heading, Input } from '@chakra-ui/react';
-import { useRecoilState } from 'recoil';
-import { treeElementsSpacingState } from '@/store/atoms/global';
-import { TREE_ELEMENTS_SPACING } from '@/constants/general-settings';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { DEFAULT_GAP, TREE_ELEMENTS_SPACING } from '@/constants/general-settings';
+import { selectHighlightedNodeGridPropState, selectHighlightedNodeState } from '@/store/selectors/global';
+import { gridState } from '@/store/atoms/global';
+import { GridKeyType } from '@/common/types';
 
 export const TreeSpacing: FC = () => {
-  const [treeSpacing, setTreeSpacing] = useRecoilState(treeElementsSpacingState);
+  const value = useRecoilValue(selectHighlightedNodeGridPropState('gridGap'));
+  const highlightedNode = useRecoilValue(selectHighlightedNodeState);
+  const [grid, setGridState] = useRecoilState(gridState);
 
   const onBlur = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.value) {
-      setTreeSpacing(TREE_ELEMENTS_SPACING.DEFAULT.toString());
+      const _grid = structuredClone(grid);
+      const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<GridKeyType, any>;
+      obj.gridGap = DEFAULT_GAP;
+      setGridState(_grid);
     }
   }
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const _grid = structuredClone(grid);
+    const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<GridKeyType, any>;
+
     if (!e.target.value) {
-      setTreeSpacing('');
+      obj.gridGap = '';
+      setGridState(_grid);
       return;
     }
 
     const v = Number(e.target.value);
     if(v > TREE_ELEMENTS_SPACING.MAX || v < TREE_ELEMENTS_SPACING.MIN) {
-      setTreeSpacing(treeSpacing);
       return;
     }
-
-    setTreeSpacing(v.toString());
+    obj.gridGap = v.toString();
+    setGridState(_grid);
   }
 
   return (
     <Box p={4}>
-      <Heading variant="medium-title" mb={4}>Tree element&apos;s spacing (PX)</Heading>
+      <Heading variant="medium-title" mb={4}>Tree element&apos;s spacing (REM)</Heading>
       <Input
         variant="base"
-        value={treeSpacing}
+        value={value}
         onChange={onChange}
+        size="sm"
         onBlur={onBlur}
         type="number"
         max={TREE_ELEMENTS_SPACING.MAX}

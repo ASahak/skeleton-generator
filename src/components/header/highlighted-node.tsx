@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import { Tooltip, Menu, MenuButton, Button, MenuList, MenuItem, Icon } from '@chakra-ui/react';
-import { RiLayout2Fill, RiRectangleLine, RiArrowDownSLine } from 'react-icons/ri';
+import { RiLayout2Fill, RiRectangleLine, RiAddFill } from 'react-icons/ri';
 import { useRecoilValue } from 'recoil';
 import { selectHighlightedNodeState } from '@/store/selectors/global';
 
 const OPTIONS = [
-  { label: 'Create Children', value: 'create-children', icon: RiRectangleLine },
+  { label: 'Create Container', value: 'create-children', icon: RiRectangleLine },
   { label: 'Create Skeleton', value: 'create-skeleton', icon: RiLayout2Fill },
 ]
 export const HighlightedNode: FC = () => {
@@ -25,7 +25,7 @@ export const HighlightedNode: FC = () => {
       >
         <MenuButton
           as={Button}
-          rightIcon={<Icon fontSize="1.6rem" as={RiArrowDownSLine} />}
+          rightIcon={<Icon fontSize="1.6rem" as={RiAddFill} />}
           variant="menu-outline"
           gap={2}
         >

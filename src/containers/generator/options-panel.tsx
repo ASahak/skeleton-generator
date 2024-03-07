@@ -1,16 +1,19 @@
 import { FC } from 'react';
-import { Box, Button, Icon } from '@chakra-ui/react';
+import { Box, Button, Icon, Heading, Badge } from '@chakra-ui/react';
 import { RiCloseFill } from 'react-icons/ri';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useThemeColors } from '@/hooks';
 import { RootStyle } from '@/containers/generator/root-style';
 import { TreeSpacing } from '@/containers/generator/tree-spacing';
+import { Direction } from '@/containers/generator/direction';
 import { optionsPanelIsOpenState } from '@/store/atoms/global';
+import { selectHighlightedNodeState } from '@/store/selectors/global';
 
 export const OptionsPanel: FC = () => {
   const { white_dark700, gray100_dark400 } = useThemeColors();
   const [optionsPanelIsOpen, setOptionsPanelIsOpen] = useRecoilState(optionsPanelIsOpenState);
+  const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 
   const togglePanel = () => {
     setOptionsPanelIsOpen(!optionsPanelIsOpen);
@@ -39,10 +42,12 @@ export const OptionsPanel: FC = () => {
                 <Icon as={RiCloseFill} fontSize="4xl" />
               </Button>
             </Box>
-            <Box>
+            <Box borderBottomWidth={1} borderColor={gray100_dark400}>
               <RootStyle />
             </Box>
+            <Heading fontSize="1.8rem" fontWeight={600} p={4}>Configs of - <Badge variant="pill-docs">{highlightedNode}</Badge></Heading>
             <TreeSpacing />
+            <Direction />
           </Box>
         </motion.div>
         : null

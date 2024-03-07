@@ -6,6 +6,11 @@ export default defineStyleConfig({
     _hover: {}
   },
   sizes: {
+    sm: {
+      h: '3rem',
+      px: 4,
+      fontSize: '1.3rem'
+    },
     md: {
       h: '4rem',
       px: 10,
@@ -38,7 +43,7 @@ export default defineStyleConfig({
       paddingLeft: '1.3rem',
       paddingRight: '1.3rem',
       borderRadius: '0.6rem',
-      backgroundColor: colorMode === 'dark' ? 'darcula.300' : 'white',
+      backgroundColor: colorMode === 'dark' ? 'darcula.550' : 'white',
       border: '1px solid',
       borderColor: colorMode === 'dark' ? 'darcula.400' : 'gray.100',
       color: colorMode === 'dark' ? 'white' : 'gray.800',
@@ -56,8 +61,8 @@ export default defineStyleConfig({
       fontWeight: '500',
       fontSize: '1.2rem',
       textAlign: 'left',
-      _hover: { bgColor: colorMode === 'dark' ? 'darcula.400' : 'gray.50' },
-      _focus: { bgColor: colorMode === 'dark' ? 'darcula.400' : 'gray.50' },
+      _hover: { bgColor: colorMode === 'dark' ? 'darcula.580' : 'gray.50' },
+      _focus: { bgColor: colorMode === 'dark' ? 'darcula.580' : 'gray.50' },
     }),
   },
   defaultProps: {},

@@ -20,11 +20,6 @@ export const rootStylesState: RecoilState<string> = atom({
 }`,
 });
 
-export const treeElementsSpacingState: RecoilState<string> = atom({
-  key: 'tree-elements-spacing',
-  default: TREE_ELEMENTS_SPACING.DEFAULT.toString(),
-});
-
 export const optionsPanelIsOpenState: RecoilState<boolean> = atom({
   key: 'options-panel-is-open',
   default: false

@@ -141,7 +141,7 @@ export const Size: FC = () => {
                         onClick={() => onSelectUnit(unit.value, 'w')}
                         bgColor="transparent"
                         gap={2}
-                        {...width.unit === unit.value && {
+                        {...(width.unit || width.value) === unit.value && {
                           bgColor: 'brand.500 !important',
                           color: 'white !important'
                         }}
@@ -228,7 +228,7 @@ export const Size: FC = () => {
                         onClick={() => onSelectUnit(unit.value, 'h')}
                         bgColor="transparent"
                         gap={2}
-                        {...height.unit === unit.value && {
+                        {...(height.unit || height.value) === unit.value && {
                           bgColor: 'brand.500 !important',
                           color: 'white !important'
                         }}

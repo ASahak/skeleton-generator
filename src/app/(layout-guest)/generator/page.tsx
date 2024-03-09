@@ -19,7 +19,7 @@ export default function View() {
   const getGridState = useRecoilValue(selectGridState);
   const [optionsPanelIsOpen, setOptionsPanelIsOpen] = useRecoilState(optionsPanelIsOpenState);
   const { white_dark700 } = useThemeColors();
-  const ableToPreview = getGridState.root;
+  const ableToPreview = Object.keys(getGridState).length > 0;
 
   return (
     <VStack bgColor={gray80_dark800} h="full" spacing={0}>

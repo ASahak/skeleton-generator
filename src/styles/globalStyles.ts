@@ -23,5 +23,24 @@ export default {
       width: '100%',
       height: '100%;',
     },
+    '.custom-scrollbar-content': {
+      '&.lg': {
+        '&::-webkit-scrollbar': {
+          width: '4px',
+          height: '4px',
+        }
+      },
+      '&::-webkit-scrollbar': {
+        width: '2px',
+        height: '2px',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        backgroundColor: 'brand.500',
+        borderRadius: '4px',
+      },
+      '&::-webkit-scrollbar-track': {
+        backgroundColor: mode('gray.100', 'darcula.400')(props),
+      },
+    }
   })
 };

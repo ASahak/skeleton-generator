@@ -8,6 +8,7 @@ export const GridLayout = () => {
   const gridState = useRecoilValue(selectGridState);
   const rootStyles = useRecoilValue(selectRootStylesState);
   const convertedStyles = useConvertStringToStyleObject(rootStyles);
+
   const renderGridLayout = () => {
     console.log(gridState);
 

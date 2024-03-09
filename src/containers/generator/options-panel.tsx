@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Box, Button, Icon, Heading, Badge } from '@chakra-ui/react';
+import { Box, Button, Icon, Heading, Badge, Flex } from '@chakra-ui/react';
 import { RiCloseFill } from 'react-icons/ri';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -7,6 +7,9 @@ import { useThemeColors } from '@/hooks';
 import { RootStyle } from '@/containers/generator/root-style';
 import { TreeSpacing } from '@/containers/generator/tree-spacing';
 import { Direction } from '@/containers/generator/direction';
+import { ClassName } from '@/containers/generator/class-name';
+import { Margin } from '@/containers/generator/margin';
+import { Size } from '@/containers/generator/size';
 import { optionsPanelIsOpenState } from '@/store/atoms/global';
 import { selectHighlightedNodeState } from '@/store/selectors/global';
 
@@ -30,7 +33,8 @@ export const OptionsPanel: FC = () => {
           exit={{ left: '100%', opacity: 0 }}
           style={{ position: 'absolute', height: '100%', width: '100%' }}
         >
-          <Box
+          <Flex
+            flexDir="column"
             h="full"
             rounded="md"
             bgColor={white_dark700}
@@ -42,13 +46,28 @@ export const OptionsPanel: FC = () => {
                 <Icon as={RiCloseFill} fontSize="4xl" />
               </Button>
             </Box>
-            <Box borderBottomWidth={1} borderColor={gray100_dark400}>
-              <RootStyle />
+            <Box
+              flex={1}
+              minH={0}
+              overflowX="hidden"
+              className="custom-scrollbar-content"
+              sx={{
+                '&::-webkit-scrollbar-track': {
+                  backgroundColor: gray100_dark400,
+                },
+              }}
+            >
+              <Box borderBottomWidth={1} borderColor={gray100_dark400}>
+                <RootStyle />
+              </Box>
+              <Heading fontSize="1.8rem" fontWeight={600} p={4}>Configs of - <Badge variant="pill-docs">{highlightedNode}</Badge></Heading>
+              <Size />
+              <Direction />
+              <TreeSpacing />
+              <Margin />
+              <ClassName />
             </Box>
-            <Heading fontSize="1.8rem" fontWeight={600} p={4}>Configs of - <Badge variant="pill-docs">{highlightedNode}</Badge></Heading>
-            <TreeSpacing />
-            <Direction />
-          </Box>
+          </Flex>
         </motion.div>
         : null
       }

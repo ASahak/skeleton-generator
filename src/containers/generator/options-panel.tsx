@@ -5,11 +5,12 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useThemeColors } from '@/hooks';
 import { RootStyle } from '@/containers/generator/root-style';
-import { TreeSpacing } from '@/containers/generator/tree-spacing';
+import { GridGap } from '@/containers/generator/grid-gap';
 import { Direction } from '@/containers/generator/direction';
 import { ClassName } from '@/containers/generator/class-name';
 import { Margin } from '@/containers/generator/margin';
 import { Size } from '@/containers/generator/size';
+import { Alignment } from '@/containers/generator/alignment';
 import { optionsPanelIsOpenState } from '@/store/atoms/global';
 import { selectHighlightedNodeState } from '@/store/selectors/global';
 
@@ -63,7 +64,8 @@ export const OptionsPanel: FC = () => {
               <Heading fontSize="1.8rem" fontWeight={600} p={4}>Configs of - <Badge variant="pill-docs">{highlightedNode}</Badge></Heading>
               <Size />
               <Direction />
-              <TreeSpacing />
+              <Alignment />
+              <GridGap />
               <Margin />
               <ClassName />
             </Box>

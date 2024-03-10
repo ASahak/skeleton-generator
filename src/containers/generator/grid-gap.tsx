@@ -6,7 +6,7 @@ import { selectHighlightedNodeGridPropState, selectHighlightedNodeState } from '
 import { gridState } from '@/store/atoms/global';
 import { GridKeyType } from '@/common/types';
 
-export const TreeSpacing: FC = () => {
+export const GridGap: FC = () => {
   const value = useRecoilValue(selectHighlightedNodeGridPropState('gridGap'));
   const highlightedNode = useRecoilValue(selectHighlightedNodeState);
   const [grid, setGridState] = useRecoilState(gridState);
@@ -40,7 +40,7 @@ export const TreeSpacing: FC = () => {
 
   return (
     <Box p={4}>
-      <Heading variant="medium-title" mb={4}>Tree element&apos;s spacing (REM)</Heading>
+      <Heading variant="medium-title" mb={4}>Grid Gap (REM)</Heading>
       <Input
         variant="base"
         value={value}

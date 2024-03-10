@@ -1,4 +1,10 @@
-import { DEFAULT_GAP, DEFAULT_HEIGHT, DEFAULT_REPEAT_COUNT, DEFAULT_WIDTH } from '@/constants/general-settings';
+import {
+  DEFAULT_ALIGN_ITEMS_ALIGNMENT,
+  DEFAULT_GAP,
+  DEFAULT_HEIGHT, DEFAULT_JUSTIFY_ALIGNMENT,
+  DEFAULT_REPEAT_COUNT,
+  DEFAULT_WIDTH
+} from '@/constants/general-settings';
 
 export enum DIRECTION {
   ROW = 'row',
@@ -20,6 +26,47 @@ export enum CONTAINER_INITIAL_VALUES {
   margin = '0',
   w = DEFAULT_WIDTH,
   h = DEFAULT_HEIGHT,
+  alignItems = DEFAULT_ALIGN_ITEMS_ALIGNMENT,
+  justifyContent = DEFAULT_JUSTIFY_ALIGNMENT,
+}
+
+export enum ALIGN_ITEMS {
+  NORMAL = 'normal',
+  FLEX_START = 'flex-start',
+  FLEX_END = 'flex-end',
+  CENTER = 'center',
+  BASELINE = 'baseline',
+  STRETCH = 'stretch',
+  START = 'start',
+  END = 'end',
+  SELF_START = 'self-start',
+  SELF_END = 'self-end',
+  FIRST_BASELINE = 'first baseline',
+  LAST_BASELINE = 'last baseline',
+  SAFE_CENTER = 'safe center',
+  UNSAFE_CENTER = 'unsafe center',
+  SAFE_RIGHT = 'safe right',
+  UNSAFE_RIGHT = 'unsafe right',
+  SAFE_END = 'safe end',
+  UNSAFE_END ='unsafe end',
+  SAFE_SELF_END = 'safe self-end',
+  UNSAFE_SELF_END = 'unsafe self-end',
+  SAFE_FLEX_END = 'safe flex-end',
+  UNSAFE_FLEX_END = 'unsafe flex-end'
+}
+
+export enum JUSTIFY_CONTENT {
+  START = 'start',
+  END = 'end',
+  FLEX_START = 'flex-start',
+  FLEX_END = 'flex-end',
+  CENTER = 'center',
+  LEFT = 'left',
+  RIGHT = 'right',
+  SPACE_BETWEEN = 'space-between',
+  SPACE_AROUND = 'space-around',
+  SPACE_EVENLY = 'space-evenly',
+  STRETCH = 'stretch'
 }
 
 export enum SIZE_UNITS {

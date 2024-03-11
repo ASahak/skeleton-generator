@@ -11,6 +11,8 @@ import { ClassName } from '@/containers/generator/class-name';
 import { Margin } from '@/containers/generator/margin';
 import { Size } from '@/containers/generator/size';
 import { Alignment } from '@/containers/generator/alignment';
+import { WithOpacity } from '@/containers/generator/with-opacity';
+import { RepeatCount } from '@/containers/generator/repeat-count';
 import { optionsPanelIsOpenState } from '@/store/atoms/global';
 import { selectHighlightedNodeState } from '@/store/selectors/global';
 
@@ -68,6 +70,8 @@ export const OptionsPanel: FC = () => {
               <GridGap />
               <Margin />
               <ClassName />
+              <RepeatCount />
+              <WithOpacity />
             </Box>
           </Flex>
         </motion.div>

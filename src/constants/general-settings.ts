@@ -1,9 +1,3 @@
-export const TREE_ELEMENTS_SPACING = {
-  MAX: 20,
-  MIN: 0,
-  DEFAULT: 10,
-}
-
 /*TODO need to import from npm package*/
 export const DEFAULT_GAP = '1'; // expressed by rem
 export const DEFAULT_SKELETON_WIDTH = '100%';
@@ -18,3 +12,15 @@ export const DEFAULT_GRID_STYLE = '1fr / 1fr';
 export const DEFAULT_REPEAT_COUNT = 0;
 export const DEFAULT_VARIANT = 'gray';
 export const DEFAULT_SKELETON_GRADIENT_WIDTH = 100;
+
+export const TREE_ELEMENTS_SPACING = {
+  MAX: 20,
+  MIN: 0,
+  DEFAULT: 10,
+}
+
+export const REPEAT_COUNT_RANGE = {
+  MAX: 1000,
+  MIN: 0,
+  DEFAULT: DEFAULT_REPEAT_COUNT,
+}

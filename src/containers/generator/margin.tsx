@@ -93,7 +93,7 @@ export const Margin: FC = () => {
             borderColor={gray100_dark400}
           >
             <Checkbox
-              size="lg"
+              size="md"
               isChecked={sideBySideChecked}
               onChange={toggleVariant}
             />

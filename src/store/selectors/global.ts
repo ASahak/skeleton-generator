@@ -7,7 +7,7 @@ import {
   rootStylesState,
 } from '@/store/atoms/global';
 import { GridKeyType } from '@/common/types';
-import { CONTAINER_INITIAL_VALUES } from '@/common/enums';
+import { CONTAINER_INITIAL_VALUES } from '@/constants/general-settings';
 
 export const selectGridState = selector({
   key: 'select-grid',
@@ -29,7 +29,7 @@ export const selectHighlightedNodeGridPropState = selectorFamily({
     const dataKey = get(highlightedNodeState);
     const grid: Record<string, any> = dlv(get(gridState), dataKey);
 
-    return grid[propName as string] ?? CONTAINER_INITIAL_VALUES[propName];
+    return grid[propName as string] ?? CONTAINER_INITIAL_VALUES[propName as keyof typeof CONTAINER_INITIAL_VALUES];
   }
 });
 

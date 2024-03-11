@@ -1,12 +1,13 @@
-import { CONTAINER_INITIAL_VALUES, MARGIN_SIDES, SIZE_UNITS } from '@/common/enums';
+import { MARGIN_SIDES, SIZE_UNITS } from '@/common/enums';
+import { CONTAINER_INITIAL_VALUES } from '@/constants/general-settings';
 
 export const generateDefaultValues = () => {
   return Object.keys(CONTAINER_INITIAL_VALUES)
     .filter(e => isNaN(Number(e)))
     .reduce((acc, item) => {
-      acc[item as CONTAINER_INITIAL_VALUES] = CONTAINER_INITIAL_VALUES[item as keyof typeof CONTAINER_INITIAL_VALUES];
+      acc[item as keyof typeof CONTAINER_INITIAL_VALUES] = CONTAINER_INITIAL_VALUES[item as keyof typeof CONTAINER_INITIAL_VALUES];
       return acc;
-    }, {} as Record<CONTAINER_INITIAL_VALUES, any>);
+    }, {} as Record<keyof typeof CONTAINER_INITIAL_VALUES, any>);
 }
 
 export const convertToArray = (str: string) => str

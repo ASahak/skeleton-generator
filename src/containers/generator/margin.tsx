@@ -5,7 +5,8 @@ import { selectHighlightedNodeGridPropState, selectHighlightedNodeState } from '
 import { gridState } from '@/store/atoms/global';
 import { GridKeyType } from '@/common/types';
 import { useThemeColors } from '@/hooks';
-import { CONTAINER_INITIAL_VALUES, MARGIN_SIDES } from '@/common/enums';
+import { MARGIN_SIDES } from '@/common/enums';
+import { CONTAINER_INITIAL_VALUES } from '@/constants/general-settings';
 import { convertToArray, overrideSides } from '@/utils/helpers';
 
 const MARGIN_SIDES_LIST: Array<{ label: string, value: MARGIN_SIDES }> = [

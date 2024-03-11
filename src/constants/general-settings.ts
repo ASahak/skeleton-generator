@@ -1,4 +1,6 @@
 /*TODO need to import from npm package*/
+import { DIRECTION } from '@/common/enums';
+
 export const DEFAULT_GAP = '1'; // expressed by rem
 export const DEFAULT_SKELETON_WIDTH = '100%';
 export const DEFAULT_GRID_CONTAINER_WIDTH = '1fr';
@@ -23,4 +25,17 @@ export const REPEAT_COUNT_RANGE = {
   MAX: 1000,
   MIN: 0,
   DEFAULT: DEFAULT_REPEAT_COUNT,
+}
+
+export const CONTAINER_INITIAL_VALUES = {
+  direction: DIRECTION.ROW,
+  gridGap: DEFAULT_GAP,
+  repeatCount: DEFAULT_REPEAT_COUNT,
+  className: '',
+  margin: '0',
+  w: DEFAULT_WIDTH,
+  h: DEFAULT_HEIGHT,
+  alignItems: DEFAULT_ALIGN_ITEMS_ALIGNMENT,
+  justifyContent: DEFAULT_JUSTIFY_ALIGNMENT,
+  withOpacity: false
 }

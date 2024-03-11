@@ -18,18 +18,6 @@ export enum MARGIN_SIDES {
   LEFT = 'left',
 }
 
-export enum CONTAINER_INITIAL_VALUES {
-  direction = DIRECTION.ROW,
-  gridGap = DEFAULT_GAP,
-  repeatCount = DEFAULT_REPEAT_COUNT,
-  className = '',
-  margin = '0',
-  w = DEFAULT_WIDTH,
-  h = DEFAULT_HEIGHT,
-  alignItems = DEFAULT_ALIGN_ITEMS_ALIGNMENT,
-  justifyContent = DEFAULT_JUSTIFY_ALIGNMENT,
-}
-
 export enum ALIGN_ITEMS {
   NORMAL = 'normal',
   FLEX_START = 'flex-start',

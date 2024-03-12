@@ -13,6 +13,7 @@ import { Size } from '@/containers/generator/size';
 import { Alignment } from '@/containers/generator/alignment';
 import { WithOpacity } from '@/containers/generator/with-opacity';
 import { RepeatCount } from '@/containers/generator/repeat-count';
+import { Styles } from '@/containers/generator/styles';
 import { optionsPanelIsOpenState } from '@/store/atoms/global';
 import { selectHighlightedNodeState } from '@/store/selectors/global';
 
@@ -72,6 +73,7 @@ export const OptionsPanel: FC = () => {
               <ClassName />
               <RepeatCount />
               <WithOpacity />
+              <Styles />
             </Box>
           </Flex>
         </motion.div>

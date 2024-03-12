@@ -37,5 +37,6 @@ export const CONTAINER_INITIAL_VALUES = {
   h: DEFAULT_HEIGHT,
   alignItems: DEFAULT_ALIGN_ITEMS_ALIGNMENT,
   justifyContent: DEFAULT_JUSTIFY_ALIGNMENT,
-  withOpacity: false
+  withOpacity: false,
+  styles: `{}`,
 }

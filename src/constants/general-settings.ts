@@ -15,6 +15,8 @@ export const DEFAULT_REPEAT_COUNT = 0;
 export const DEFAULT_VARIANT = 'gray';
 export const DEFAULT_SKELETON_GRADIENT_WIDTH = 100;
 
+export const ROOT_KEY = 'grid_1';
+
 export const TREE_ELEMENTS_SPACING = {
   MAX: 20,
   MIN: 0,

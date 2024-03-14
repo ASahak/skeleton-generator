@@ -1,11 +1,3 @@
-import {
-  DEFAULT_ALIGN_ITEMS_ALIGNMENT,
-  DEFAULT_GAP,
-  DEFAULT_HEIGHT, DEFAULT_JUSTIFY_ALIGNMENT,
-  DEFAULT_REPEAT_COUNT,
-  DEFAULT_WIDTH
-} from '@/constants/general-settings';
-
 export enum DIRECTION {
   ROW = 'row',
   COLUMN = 'column',

@@ -6,6 +6,7 @@ import { useThemeColors } from '@/hooks';
 import { gridState, highlightedNodeState, optionsPanelIsOpenState } from '@/store/atoms/global';
 import { HighlightedNode } from '@/components/header/highlighted-node';
 import { generateDefaultValues } from '@/utils/helpers';
+import { ROOT_KEY } from '@/constants/general-settings';
 
 export const Header: FC = memo(() => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -17,9 +18,9 @@ export const Header: FC = memo(() => {
 
   const onCreateRootTemplate = () => {
     setGridState({
-      grid_1: { ...generateDefaultValues() }
+      [ROOT_KEY]: { ...generateDefaultValues() }
     });
-    setHighlightedNode('grid_1');
+    setHighlightedNode(ROOT_KEY);
   }
 
   const onPreview = () => {}

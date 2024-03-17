@@ -18,6 +18,7 @@ const MARGIN_SIDES_LIST: Array<{ label: string, value: MARGIN_SIDES }> = [
 export const Margin: FC = () => {
   const [sideBySideChecked, setSideBySideChecked] = useState(false);
   const value = useRecoilValue(selectHighlightedNodeGridPropState('margin'));
+  const [localValue, setLocalValue] = useState(value);
   const highlightedNode = useRecoilValue(selectHighlightedNodeState);
   const [grid, setGridState] = useRecoilState(gridState);
   const { gray100_dark400 } = useThemeColors();
@@ -31,12 +32,13 @@ export const Margin: FC = () => {
     } else {
       obj.margin = CONTAINER_INITIAL_VALUES.margin;
     }
+    setLocalValue(obj.margin);
     setGridState(_grid);
     setSideBySideChecked(e.target.checked);
   }
 
   const getValueBySide = (side: MARGIN_SIDES) => {
-    let [top, right, bottom, left] = convertToArray(value);
+    let [top, right, bottom, left] = convertToArray(localValue);
     switch (side) {
       case MARGIN_SIDES.TOP:
         return top;
@@ -50,32 +52,31 @@ export const Margin: FC = () => {
   }
 
   const onBlur = (e: ChangeEvent<HTMLInputElement>, side?: MARGIN_SIDES) => {
+    const _grid = structuredClone(grid);
+    const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<GridKeyType, any>;
     if (!e.target.value) {
-      const _grid = structuredClone(grid);
-      const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<GridKeyType, any>;
       if (side) {
-        let [top, right, bottom, left] = overrideSides(side, obj.margin, CONTAINER_INITIAL_VALUES.margin);
+        let [top, right, bottom, left] = overrideSides(side, localValue, CONTAINER_INITIAL_VALUES.margin);
         obj.margin = `[${top},${right},${bottom},${left}]`;
       } else {
         obj.margin = CONTAINER_INITIAL_VALUES.margin;
+        setLocalValue(obj.margin);
       }
-      setGridState(_grid);
+    } else {
+      obj.margin = localValue;
     }
+    setGridState(_grid);
   }
 
   const onChange = (e: ChangeEvent<HTMLInputElement>, side?: MARGIN_SIDES) => {
-    const _grid = structuredClone(grid);
-    const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<GridKeyType, any>;
-    const newValue = e.target.value ? Number(e.target.value).toString() : '';
+    const newValue = e.target.value;
 
     if (side) {
-      let [top, right, bottom, left] = overrideSides(side, obj.margin, newValue);
-      obj.margin = `[${top},${right},${bottom},${left}]`;
+      let [top, right, bottom, left] = overrideSides(side, localValue, newValue);
+      setLocalValue(`[${top},${right},${bottom},${left}]`);
     } else {
-      obj.margin = newValue;
+      setLocalValue(newValue);
     }
-
-    setGridState(_grid);
   }
 
   return (
@@ -115,16 +116,13 @@ export const Margin: FC = () => {
                 onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e, side.value)}
                 onBlur={(e: ChangeEvent<HTMLInputElement>) => onBlur(e, side.value)}
                 size="sm"
-                type="number"
-                max={Infinity}
-                min={-Infinity}
                 {...(side.value === MARGIN_SIDES.LEFT ? { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 } : { borderRadius: 0 })}
               />
             ))}
           </Flex>
           : <Input
             variant="base"
-            value={value}
+            value={localValue}
             onBlur={onBlur}
             onChange={onChange}
             size="sm"

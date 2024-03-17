@@ -1,6 +1,8 @@
 /*TODO need to import from npm package*/
 import { DIRECTION } from '@/common/enums';
 
+export const STYLE_PARSING_REGEXP = /(^\{|\}$)/g;
+
 export const DEFAULT_GAP = '1'; // expressed by rem
 export const DEFAULT_SKELETON_WIDTH = '100%';
 export const DEFAULT_GRID_CONTAINER_WIDTH = '1fr';

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useLiveStates } from '@/hooks/useLiveStates';
 import parse from 'style-to-object';
+import { useLiveStates } from '@/hooks/useLiveStates';
+import { STYLE_PARSING_REGEXP } from '@/constants/general-settings';
 
 export const useConvertStringToStyleObject = (styleStr: string): Record<string, any> => {
   const [convertedObject, setConvertedObject] = useState({});
@@ -10,7 +11,7 @@ export const useConvertStringToStyleObject = (styleStr: string): Record<string, 
 
   useEffect(() => {
     try {
-      const converted = parse(styleStr.replace(/(^\{|\}$)/g, ''));
+      const converted = parse(styleStr.replace(STYLE_PARSING_REGEXP, ''));
       if (converted) {
         setConvertedObject(converted);
       }

@@ -12,7 +12,7 @@ export interface IGrid {
   gridGap?: number | string,
   repeatCount?: number,
   className?: string,
-  margin?: Array<number | string> | number,
+  margin?: string,
   w?: (() => number | string) | number | string,
   h?: (() => number | string) | number | string,
   alignItems?: ALIGN_ITEMS,

@@ -1,12 +1,19 @@
 import { CSSProperties } from 'react';
 import { Box } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
+import parse from 'style-to-object';
 import { selectGridState, selectRootStylesState } from '@/store/selectors/global';
 import { useConvertStringToStyleObject } from '@/hooks';
-import { ROOT_KEY } from '@/constants/general-settings';
+import { DEFAULT_GRID_CONTAINER_WIDTH, ROOT_KEY, STYLE_PARSING_REGEXP } from '@/constants/general-settings';
 import { IGrid, ISkeleton } from '@/common/types';
-import { DIRECTION } from '@/common/enums';
-import parse from 'style-to-object';
+import { ALIGN_ITEMS, DIRECTION } from '@/common/enums';
+import {
+  generateGridArea,
+  generateGridAreaAsColDirection,
+  generateMargin,
+  itemsWithRepeat,
+  setOpacity
+} from '@/utils/helpers';
 
 interface IGridLayout {
   grid: IGrid,
@@ -27,15 +34,18 @@ export const GridLayout = () => {
     const key_level = dataKey;
     const gridGap = grid.gridGap,
       hasChildren = Object.hasOwn(grid, 'children') && Array.isArray(grid.children),
-      hasSkeletons = Object.hasOwn(grid, 'skeletons'),
-      repeatCount = grid.repeatCount,
-      children = hasChildren ? itemsWithRepeat(grid.children, repeatCount) : [],
-      // gridStyle =
-      //   grid.direction === DIRECTION.ROW
-      //     ? generateGridArea((hasChildren ? children : itemsWithRepeat(grid.skeletons, repeatCount)).map(({ w = CONSTANTS.DEFAULT_GRID_CONTAINER_WIDTH }) => ({ w })))
-      //     : generateGridAreaAsColDirection(grid.children || grid.skeletons, grid.alignItems),
+      hasSkeletons = Object.hasOwn(grid, 'skeletons') && Array.isArray(grid.skeletons),
+      repeatCount: number = grid.repeatCount as number,
+      children = hasChildren ? itemsWithRepeat(grid.children as IGrid[], repeatCount) : [],
+      gridStyle =
+        grid.direction === DIRECTION.ROW
+          ? generateGridArea((hasChildren
+            ? children
+            : itemsWithRepeat((grid.skeletons || []) as ISkeleton[], repeatCount))
+                .map(({ w = DEFAULT_GRID_CONTAINER_WIDTH }) => ({ w })))
+          : generateGridAreaAsColDirection((grid.children || grid.skeletons)  as Array<IGrid | ISkeleton>, grid.alignItems as ALIGN_ITEMS),
       withOpacity = grid.withOpacity,
-      style = grid.styles ? parse(grid.styles.replace(/(^\{|\}$)/g, '')) : {};
+      style = grid.styles ? parse(grid.styles.replace(STYLE_PARSING_REGEXP, '')) : {};
 
     return <Box
       display="grid"
@@ -43,13 +53,13 @@ export const GridLayout = () => {
       key={key_level}
       style={{
         gap: gridGap,
-        margin: generateMargin(grid.margin || []).margin,
+        margin: generateMargin(grid.margin || ''),
         grid: gridStyle,
         height: typeof grid.h === 'function' ? grid.h() : grid.h,
         width: typeof grid.w === 'function' ? grid.w() : grid.w,
         alignItems: grid.alignItems,
         justifyContent: grid.justifyContent,
-        opacity: setOpacity(index, repeatCount, withOpacity, length),
+        opacity: setOpacity(index, repeatCount, length, withOpacity),
         ...style,
       }}
       className={grid.className || ''}
@@ -67,7 +77,7 @@ export const GridLayout = () => {
       }
     </Box>
   }
-
+  console.log(gridState);
   return (
     <Box style={convertedStyles as CSSProperties} border="1px dashed" borderColor="brand.500">
       {renderGridLayout({

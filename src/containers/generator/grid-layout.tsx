@@ -28,6 +28,7 @@ interface IGridLayout {
 	index: number;
 	length: number;
 }
+
 export const GridLayout = () => {
 	const gridState = useRecoilValue(selectGridState);
 	const rootStyles = useRecoilValue(selectRootStylesState);

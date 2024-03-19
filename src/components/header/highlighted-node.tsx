@@ -26,7 +26,7 @@ export const HighlightedNode: FC = () => {
 	const onSelect = (value: string) => {
 		console.log(value);
 	};
-
+	console.log(111);
 	return (
 		<Menu variant="base">
 			<Tooltip

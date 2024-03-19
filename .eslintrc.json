@@ -20,12 +20,18 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended",
     "plugin:prettier/recommended",
-    "plugin:react-hooks/recommended"
+    "plugin:react-hooks/recommended",
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
+    "plugin:react-hooks/recommended",
+    "plugin:prettier/recommended"
   ],
   "plugins": [
     "prettier",
     "@typescript-eslint",
     "react",
+    "eslint-plugin-prettier",
     "react-hooks"
   ],
   "rules": {

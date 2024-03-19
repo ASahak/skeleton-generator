@@ -8,9 +8,13 @@
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky",
-    "lint:fix": "next lint --fix",
-    "lint:strict": "next lint '*/**/*.{js,jsx,ts,tsx}'",
-    "prettier": "prettier --write */**/*.{js,jsx,json,ts,tsx,scss,css,md}"
+    "lint:fix": "eslint ./src --fix --quiet",
+    "prettier:fix": "prettier --write ./**/*.{js,jsx,ts,tsx,css,json} --config ./.prettierrc"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "npm run prettier:fix"
+    ]
   },
   "dependencies": {
     "@chakra-ui/next-js": "^2.2.0",

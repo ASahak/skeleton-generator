@@ -30,6 +30,7 @@
     "react-hooks"
   ],
   "rules": {
+    "react/display-name": "off",
     // JavaScript rules
     "prefer-const": "warn",
     "no-var": "warn",

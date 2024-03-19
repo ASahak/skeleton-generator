@@ -23,12 +23,14 @@ const OPTIONS = [
 export const HighlightedNode: FC = () => {
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 
-	const onSelect = (value: string) => {};
+	const onSelect = (value: string) => {
+		console.log(value);
+	};
 
 	return (
 		<Menu variant="base">
 			<Tooltip
-				motionProps={{ borderRadius: 4 } as any}
+				motionProps={{ borderRadius: 4 } as never}
 				hasArrow
 				label="Highlighted Node"
 				placement="right"

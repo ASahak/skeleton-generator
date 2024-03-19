@@ -1,5 +1,4 @@
 import { atom, RecoilState } from 'recoil';
-import { TREE_ELEMENTS_SPACING } from '@/constants/general-settings';
 
 export const gridState: RecoilState<Record<string, unknown>> = atom({
 	key: 'grid',

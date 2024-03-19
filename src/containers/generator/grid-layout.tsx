@@ -35,6 +35,7 @@ export const GridLayout = () => {
 	const convertedStyles = useConvertStringToStyleObject(rootStyles);
 
 	const renderSkeletons = (skeleton: ISkeleton) => {
+		console.log(skeleton);
 		return <Box></Box>;
 	};
 

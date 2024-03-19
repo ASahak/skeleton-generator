@@ -1,10 +1,10 @@
 import { FC, useState } from 'react';
 import { Box, Heading, useColorMode, Text } from '@chakra-ui/react';
 // import { LiveProvider, LiveEditor } from 'react-live';
-import { themes } from 'prism-react-renderer';
+// import { themes } from 'prism-react-renderer';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import parse from 'style-to-object';
-import Editor from '@monaco-editor/react';
+import Editor, { OnChange } from '@monaco-editor/react';
 import {
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
@@ -20,7 +20,7 @@ export const Styles: FC = () => {
 	const [grid, setGridState] = useRecoilState(gridState);
 	const { colorMode } = useColorMode();
 	const isDark = colorMode === 'dark';
-
+	console.log(invalidState, isDark);
 	const onChange = async (code: string) => {
 		const _grid = structuredClone(grid);
 		const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
@@ -64,6 +64,7 @@ export const Styles: FC = () => {
 					defaultValue={`[data-key="${highlightedNode}"] ${styles}`}
 					height="100%"
 					defaultLanguage="css"
+					onChange={onChange as OnChange}
 					// style={{
 					// maxHeight: '200px',
 					// overflowX: 'hidden',

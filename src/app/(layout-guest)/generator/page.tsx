@@ -12,9 +12,7 @@ import { optionsPanelIsOpenState } from '@/store/atoms/global';
 export default function View() {
 	const { gray80_dark800 } = useThemeColors();
 	const getGridState = useRecoilValue(selectGridState);
-	const [optionsPanelIsOpen, setOptionsPanelIsOpen] = useRecoilState(
-		optionsPanelIsOpenState
-	);
+	const [optionsPanelIsOpen] = useRecoilState(optionsPanelIsOpenState);
 	const { white_dark700 } = useThemeColors();
 	const ableToPreview = Object.keys(getGridState).length > 0;
 

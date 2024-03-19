@@ -20,27 +20,27 @@ export const DEFAULT_SKELETON_GRADIENT_WIDTH = 100;
 export const ROOT_KEY = 'grid_1';
 
 export const TREE_ELEMENTS_SPACING = {
-  MAX: 20,
-  MIN: 0,
-  DEFAULT: 10,
-}
+	MAX: 20,
+	MIN: 0,
+	DEFAULT: 10,
+};
 
 export const REPEAT_COUNT_RANGE = {
-  MAX: 1000,
-  MIN: 0,
-  DEFAULT: DEFAULT_REPEAT_COUNT,
-}
+	MAX: 1000,
+	MIN: 0,
+	DEFAULT: DEFAULT_REPEAT_COUNT,
+};
 
 export const CONTAINER_INITIAL_VALUES = {
-  direction: DIRECTION.ROW,
-  gridGap: DEFAULT_GAP,
-  repeatCount: DEFAULT_REPEAT_COUNT,
-  className: '',
-  margin: '0',
-  w: DEFAULT_WIDTH,
-  h: DEFAULT_HEIGHT,
-  alignItems: DEFAULT_ALIGN_ITEMS_ALIGNMENT,
-  justifyContent: DEFAULT_JUSTIFY_ALIGNMENT,
-  withOpacity: false,
-  styles: `{}`,
-}
+	direction: DIRECTION.ROW,
+	gridGap: DEFAULT_GAP,
+	repeatCount: DEFAULT_REPEAT_COUNT,
+	className: '',
+	margin: '0',
+	w: DEFAULT_WIDTH,
+	h: DEFAULT_HEIGHT,
+	alignItems: DEFAULT_ALIGN_ITEMS_ALIGNMENT,
+	justifyContent: DEFAULT_JUSTIFY_ALIGNMENT,
+	withOpacity: false,
+	styles: `{}`,
+};

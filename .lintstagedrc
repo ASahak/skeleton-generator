@@ -1,9 +1,6 @@
 {
-    "*/**/*.{js,jsx,ts,tsx}": [
-        "npm run lint:fix",
+    "**/*.{js,jsx,ts,tsx}": [
         "npm run prettier",
-        "eslint --fix",
-        "eslint"
     ],
     "*/**/*.{json,css,md}": [
         "prettier --write"

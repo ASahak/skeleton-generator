@@ -4,21 +4,20 @@ import { useEffect, useState } from 'react';
 import { RecoilRoot } from 'recoil';
 import { Chakra } from './chakra';
 
-export const AppProviders = ({children}: Readonly<{
-  children: React.ReactNode;
+export const AppProviders = ({
+	children,
+}: Readonly<{
+	children: React.ReactNode;
 }>) => {
-  const [appMounted, setAppMounted] = useState(false);
+	const [appMounted, setAppMounted] = useState(false);
 
+	useEffect(() => {
+		setAppMounted(true);
+	}, []);
 
-  useEffect(() => {
-    setAppMounted(true);
-  }, []);
-
-  return (
-    <Chakra>
-      <RecoilRoot>
-        {appMounted ? children : null}
-      </RecoilRoot>
-    </Chakra>
-  )
-}
+	return (
+		<Chakra>
+			<RecoilRoot>{appMounted ? children : null}</RecoilRoot>
+		</Chakra>
+	);
+};

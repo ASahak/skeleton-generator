@@ -1,4 +1,4 @@
 export default {
-  ROOT: '/',
-  CREATE_NEW: '/generator',
-}
+	ROOT: '/',
+	CREATE_NEW: '/generator',
+};

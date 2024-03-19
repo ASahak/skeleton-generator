@@ -18,67 +18,78 @@ import { optionsPanelIsOpenState } from '@/store/atoms/global';
 import { selectHighlightedNodeState } from '@/store/selectors/global';
 
 export const OptionsPanel: FC = () => {
-  const { white_dark700, gray100_dark400 } = useThemeColors();
-  const [optionsPanelIsOpen, setOptionsPanelIsOpen] = useRecoilState(optionsPanelIsOpenState);
-  const highlightedNode = useRecoilValue(selectHighlightedNodeState);
+	const { white_dark700, gray100_dark400 } = useThemeColors();
+	const [optionsPanelIsOpen, setOptionsPanelIsOpen] = useRecoilState(
+		optionsPanelIsOpenState
+	);
+	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 
-  const togglePanel = () => {
-    setOptionsPanelIsOpen(!optionsPanelIsOpen);
-  }
+	const togglePanel = () => {
+		setOptionsPanelIsOpen(!optionsPanelIsOpen);
+	};
 
-  return (
-    <AnimatePresence mode="wait">
-      {optionsPanelIsOpen
-        ? <motion.div
-          key="options-panel"
-          transition={{ duration: .3 }}
-          initial={{ left: '100%', opacity: 0 }}
-          animate={{ left: '0', opacity: 1 }}
-          exit={{ left: '100%', opacity: 0 }}
-          style={{ position: 'absolute', height: '100%', width: '100%' }}
-        >
-          <Flex
-            flexDir="column"
-            h="full"
-            rounded="md"
-            bgColor={white_dark700}
-            boxShadow="md"
-            whiteSpace="nowrap"
-          >
-            <Box p={4} borderBottom="1px solid" borderColor={gray100_dark400}>
-              <Button variant="unstyled" alignItems="center" h="fit-content" display="flex" p={0} onClick={togglePanel}>
-                <Icon as={RiCloseFill} fontSize="4xl" />
-              </Button>
-            </Box>
-            <Box
-              flex={1}
-              minH={0}
-              overflowX="hidden"
-              className="custom-scrollbar-content"
-              sx={{
-                '&::-webkit-scrollbar-track': {
-                  backgroundColor: gray100_dark400,
-                },
-              }}
-            >
-              <Box borderBottomWidth={1} borderColor={gray100_dark400}>
-                <RootStyle />
-              </Box>
-              <Heading fontSize="1.8rem" fontWeight={600} p={4}>Configs of - <Badge variant="pill-docs">{highlightedNode}</Badge></Heading>
-              <Size />
-              <Direction />
-              <Alignment />
-              <GridGap />
-              <Margin />
-              <ClassName />
-              <RepeatCount />
-              <WithOpacity />
-              <Styles />
-            </Box>
-          </Flex>
-        </motion.div>
-        : null
-      }
-    </AnimatePresence>
-  )
-}
+	return (
+		<AnimatePresence mode="wait">
+			{optionsPanelIsOpen ? (
+				<motion.div
+					key="options-panel"
+					transition={{ duration: 0.3 }}
+					initial={{ left: '100%', opacity: 0 }}
+					animate={{ left: '0', opacity: 1 }}
+					exit={{ left: '100%', opacity: 0 }}
+					style={{ position: 'absolute', height: '100%', width: '100%' }}
+				>
+					<Flex
+						flexDir="column"
+						h="full"
+						rounded="md"
+						bgColor={white_dark700}
+						boxShadow="md"
+						whiteSpace="nowrap"
+					>
+						<Box p={4} borderBottom="1px solid" borderColor={gray100_dark400}>
+							<Button
+								variant="unstyled"
+								alignItems="center"
+								h="fit-content"
+								display="flex"
+								p={0}
+								onClick={togglePanel}
+							>
+								<Icon as={RiCloseFill} fontSize="4xl" />
+							</Button>
+						</Box>
+						<Box
+							flex={1}
+							minH={0}
+							overflowX="hidden"
+							className="custom-scrollbar-content"
+							sx={{
+								'&::-webkit-scrollbar-track': {
+									backgroundColor: gray100_dark400,
+								},
+							}}
+						>
+							<Box borderBottomWidth={1} borderColor={gray100_dark400}>
+								<RootStyle />
+							</Box>
+							<Heading fontSize="1.8rem" fontWeight={600} p={4}>
+								Configs of -{' '}
+								<Badge variant="pill-docs">{highlightedNode}</Badge>
+							</Heading>
+							<Size />
+							<Direction />
+							<Alignment />
+							<GridGap />
+							<Margin />
+							<ClassName />
+							<RepeatCount />
+							<WithOpacity />
+							<Styles />
+						</Box>
+					</Flex>
+				</motion.div>
+			) : null}
+		</AnimatePresence>
+	);
+};

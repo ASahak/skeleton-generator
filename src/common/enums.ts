@@ -53,6 +53,7 @@ export enum SIZE_UNITS {
 	AUTO = 'auto',
 	PERCENT = '%',
 	PX = 'px',
+	FR = 'fr',
 	REM = 'rem',
 	VH = 'vh',
 	VW = 'vw',

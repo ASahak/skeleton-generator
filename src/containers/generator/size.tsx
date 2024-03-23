@@ -1,4 +1,4 @@
-import { ChangeEvent, FC } from 'react';
+import { ChangeEvent, FC, memo } from 'react';
 import {
 	Box,
 	Button,
@@ -34,7 +34,7 @@ const UNITS_OPTIONS: Array<{
 	label: SIZE_UNITS;
 	value: SIZE_UNITS;
 }> = Object.values(SIZE_UNITS).map((unit) => ({ label: unit, value: unit }));
-export const Size: FC = () => {
+export const Size: FC = memo(() => {
 	const width = valueWithPrefix(
 		useRecoilValue(selectHighlightedNodeGridPropState('w'))
 	);
@@ -251,4 +251,4 @@ export const Size: FC = () => {
 			</Flex>
 		</Box>
 	);
-};
+});

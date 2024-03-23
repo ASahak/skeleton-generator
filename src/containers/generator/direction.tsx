@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import {
 	Box,
 	Button,
@@ -22,7 +22,7 @@ import { DIRECTION } from '@/common/enums';
 const OPTIONS = Object.values(DIRECTION)
 	.filter((v) => isNaN(Number(v)))
 	.map((e) => ({ label: e, value: e }));
-export const Direction: FC = () => {
+export const Direction: FC = memo(() => {
 	const value = useRecoilValue(selectHighlightedNodeGridPropState('direction'));
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const [grid, setGridState] = useRecoilState(gridState);
@@ -77,4 +77,4 @@ export const Direction: FC = () => {
 			</Menu>
 		</Box>
 	);
-};
+});

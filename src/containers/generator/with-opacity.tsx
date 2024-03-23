@@ -1,4 +1,4 @@
-import { ChangeEvent, FC } from 'react';
+import { ChangeEvent, FC, memo } from 'react';
 import { Box, Checkbox } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
@@ -8,7 +8,7 @@ import {
 import { gridState } from '@/store/atoms/global';
 import { GridKeyType } from '@/common/types';
 
-export const WithOpacity: FC = () => {
+export const WithOpacity: FC = memo(() => {
 	const withOpacity = useRecoilValue(
 		selectHighlightedNodeGridPropState('withOpacity')
 	);
@@ -33,4 +33,4 @@ export const WithOpacity: FC = () => {
 			</Checkbox>
 		</Box>
 	);
-};
+});

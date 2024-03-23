@@ -1,4 +1,4 @@
-import { ChangeEvent, FC } from 'react';
+import { ChangeEvent, FC, memo } from 'react';
 import { Box, Heading, Input } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
@@ -12,7 +12,7 @@ import {
 import { gridState } from '@/store/atoms/global';
 import { GridKeyType } from '@/common/types';
 
-export const GridGap: FC = () => {
+export const GridGap: FC = memo(() => {
 	const value = useRecoilValue(selectHighlightedNodeGridPropState('gridGap'));
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const [grid, setGridState] = useRecoilState(gridState);
@@ -67,4 +67,4 @@ export const GridGap: FC = () => {
 			/>
 		</Box>
 	);
-};
+});

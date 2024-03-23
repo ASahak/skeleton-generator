@@ -1,10 +1,15 @@
-import { ALIGN_ITEMS, MARGIN_SIDES, SIZE_UNITS } from '@/common/enums';
+import {
+	ALIGN_ITEMS,
+	DIRECTION,
+	MARGIN_SIDES,
+	SIZE_UNITS,
+} from '@/common/enums';
 import {
 	CONTAINER_INITIAL_VALUES,
 	DEFAULT_GRID_CONTAINER_HEIGHT,
 	DEFAULT_GRID_CONTAINER_WIDTH,
 } from '@/constants/general-settings';
-import { IGrid, ISkeleton } from '@/common/types';
+import { IGenerateCSSGridAreaArgs, IGrid, ISkeleton } from '@/common/types';
 
 export const generateDefaultValues = () => {
 	return Object.keys(CONTAINER_INITIAL_VALUES)
@@ -85,9 +90,9 @@ const isNumber = (n: string | number): boolean =>
 
 export const generateMargin = (marginProp: IGrid['margin']) => {
 	const marginDetect = () => {
-		let [top, right, bottom, left] = convertToArray(marginProp as string);
+		const [top, right, bottom, left] = convertToArray(marginProp as string);
 		return [top, right, bottom, left].reduce((acc, item: string) => {
-			acc += isNumber(item) ? item + 'px ' : item + ' ';
+			acc += isNumber(item) ? item + 'px ' : (item || '0') + ' ';
 			return acc;
 		}, '');
 	};
@@ -95,28 +100,41 @@ export const generateMargin = (marginProp: IGrid['margin']) => {
 	return marginDetect();
 };
 
-export const generateGridArea = (row: Array<ISkeleton | IGrid>) =>
-	row.reduce((acc: string, item) => {
-		acc += Array.isArray(item)
-			? DEFAULT_GRID_CONTAINER_WIDTH
-			: typeof item.w === 'function'
-				? item.w()
-				: item.w + ' ';
+export const generateGridArea = (
+	row: Array<ISkeleton | IGrid>,
+	cb: (index: number, prop: 'w', value: string | number) => void
+) => {
+	return row.reduce((acc: string, item, index) => {
+		const isFunction = typeof item.w === 'function';
+		if (isFunction) {
+			const w = (item.w as any)();
+			acc += Array.isArray(item) ? DEFAULT_GRID_CONTAINER_WIDTH : w;
+			cb(index, 'w', w);
+		} else {
+			acc += Array.isArray(item) ? DEFAULT_GRID_CONTAINER_WIDTH : item.w + ' ';
+		}
 		return acc;
 	}, '1fr / ');
+};
 
 export const generateGridAreaAsColDirection = (
 	items: Array<ISkeleton | IGrid>,
-	alignItems: ALIGN_ITEMS
+	alignItems: ALIGN_ITEMS,
+	cb: (index: number, prop: 'h', value: string | number) => void
 ) => {
 	return (
-		items.reduce((acc, item) => {
-			acc +=
-				(alignItems === 'center'
-					? DEFAULT_GRID_CONTAINER_HEIGHT
-					: typeof item.h === 'function'
-						? item.h()
+		items.reduce((acc, item, index) => {
+			const isFunction = typeof item.h === 'function';
+			if (isFunction) {
+				const h = (item.h as any)();
+				acc += alignItems === 'center' ? DEFAULT_GRID_CONTAINER_HEIGHT : h;
+				cb(index, 'h', h);
+			} else {
+				acc +=
+					(alignItems === 'center'
+						? DEFAULT_GRID_CONTAINER_HEIGHT
 						: item.h || DEFAULT_GRID_CONTAINER_HEIGHT) + ' ';
+			}
 			return acc;
 		}, '') + ' / 1fr'
 	);
@@ -140,4 +158,51 @@ export const setOpacity = (
 	return (repeatCount || rowsLength) > 0 && withOpacity
 		? 1 - (1 / (repeatCount || rowsLength)) * viewIndex
 		: 1;
+};
+
+export const convertCssToReactStyles = (cssStyles: Record<string, any>) => {
+	const reactStyles: Record<string, any> = {};
+
+	for (const key in cssStyles) {
+		// Convert CSS property names to camelCase
+		const camelCaseKey: string = key.replace(/-([a-z])/g, (g) =>
+			g[1].toUpperCase()
+		);
+		reactStyles[camelCaseKey] = cssStyles[key];
+	}
+
+	return reactStyles;
+};
+
+export const generateCSSGridArea = ({
+	grid,
+	hasChildren,
+	children,
+	repeatCount,
+	reservedProps,
+	keyLevel,
+}: IGenerateCSSGridAreaArgs) => {
+	return grid.direction === DIRECTION.ROW
+		? generateGridArea(
+				(hasChildren
+					? children
+					: itemsWithRepeat((grid.skeletons || []) as ISkeleton[], repeatCount)
+				).map(({ w = DEFAULT_GRID_CONTAINER_WIDTH }) => ({ w })),
+				(index, prop, val) => {
+					if (!reservedProps[`${keyLevel}_${index}` as any]) {
+						reservedProps[`${keyLevel}_${index}`] = {};
+					}
+					reservedProps[`${keyLevel}_${index}`][prop] = val;
+				}
+			)
+		: generateGridAreaAsColDirection(
+				(grid.children || grid.skeletons) as (IGrid | ISkeleton)[],
+				grid.alignItems as ALIGN_ITEMS,
+				(index, prop, val) => {
+					if (!reservedProps[`${keyLevel}_${index}`]) {
+						reservedProps[`${keyLevel}_${index}`] = {};
+					}
+					reservedProps[`${keyLevel}_${index}`][prop] = val;
+				}
+			);
 };

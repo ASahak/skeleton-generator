@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useState } from 'react';
+import { ChangeEvent, FC, useState, memo } from 'react';
 import {
 	Box,
 	Checkbox,
@@ -27,7 +27,7 @@ const MARGIN_SIDES_LIST: Array<{ label: string; value: MARGIN_SIDES }> = [
 	{ label: 'Bottom', value: MARGIN_SIDES.BOTTOM },
 	{ label: 'Left', value: MARGIN_SIDES.LEFT },
 ];
-export const Margin: FC = () => {
+export const Margin: FC = memo(() => {
 	const [sideBySideChecked, setSideBySideChecked] = useState(false);
 	const value = useRecoilValue(selectHighlightedNodeGridPropState('margin'));
 	const [localValue, setLocalValue] = useState(value);
@@ -168,4 +168,4 @@ export const Margin: FC = () => {
 			</InputGroup>
 		</Box>
 	);
-};
+});

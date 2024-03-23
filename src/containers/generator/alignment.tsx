@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import {
 	Box,
 	Button,
@@ -33,7 +33,7 @@ const JUSTIFY_CONTENT_OPTIONS: Array<{
 	label: unit,
 	value: unit,
 }));
-export const Alignment: FC = () => {
+export const Alignment: FC = memo(() => {
 	const alignItems = useRecoilValue(
 		selectHighlightedNodeGridPropState('alignItems')
 	);
@@ -164,4 +164,4 @@ export const Alignment: FC = () => {
 			</Flex>
 		</Box>
 	);
-};
+});

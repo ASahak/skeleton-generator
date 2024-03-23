@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { Box, Button, Icon, Heading, Badge, Flex } from '@chakra-ui/react';
 import { RiCloseFill } from 'react-icons/ri';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -17,7 +17,7 @@ import { Styles } from '@/containers/generator/styles';
 import { optionsPanelIsOpenState } from '@/store/atoms/global';
 import { selectHighlightedNodeState } from '@/store/selectors/global';
 
-export const OptionsPanel: FC = () => {
+export const OptionsPanel: FC = memo(() => {
 	const { white_dark700, gray100_dark400 } = useThemeColors();
 	const [optionsPanelIsOpen, setOptionsPanelIsOpen] = useRecoilState(
 		optionsPanelIsOpenState
@@ -92,4 +92,4 @@ export const OptionsPanel: FC = () => {
 			) : null}
 		</AnimatePresence>
 	);
-};
+});

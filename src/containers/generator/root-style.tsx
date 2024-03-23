@@ -1,11 +1,11 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { Box, Heading, useColorMode, Text } from '@chakra-ui/react';
 import { LiveProvider, LiveEditor } from 'react-live';
 import { themes } from 'prism-react-renderer';
 import { useRecoilState } from 'recoil';
 import { rootStylesState } from '@/store/atoms/global';
 
-export const RootStyle: FC = () => {
+export const RootStyle: FC = memo(() => {
 	const { colorMode } = useColorMode();
 	const [rootStyles, setRootStyles] = useRecoilState(rootStylesState);
 	const isDark = colorMode === 'dark';
@@ -38,4 +38,4 @@ export const RootStyle: FC = () => {
 			</Text>
 		</Box>
 	);
-};
+});

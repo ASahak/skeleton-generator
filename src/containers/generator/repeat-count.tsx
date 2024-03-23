@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useState } from 'react';
+import { ChangeEvent, FC, useState, memo } from 'react';
 import { Box, Heading, Input } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
@@ -12,7 +12,7 @@ import {
 import { gridState } from '@/store/atoms/global';
 import { GridKeyType } from '@/common/types';
 
-export const RepeatCount: FC = () => {
+export const RepeatCount: FC = memo(() => {
 	const value = useRecoilValue(
 		selectHighlightedNodeGridPropState('repeatCount')
 	);
@@ -64,4 +64,4 @@ export const RepeatCount: FC = () => {
 			/>
 		</Box>
 	);
-};
+});

@@ -30,6 +30,15 @@ export interface IGrid {
 	justifyContent?: JUSTIFY_CONTENT;
 	withOpacity?: boolean;
 	styles?: string;
-	children?: Array<IGrid>;
+	children?: IGrid[];
 	skeletons?: ISkeleton;
+}
+
+export interface IGenerateCSSGridAreaArgs {
+	grid: IGrid;
+	hasChildren: boolean;
+	children: IGrid[];
+	repeatCount: number;
+	reservedProps: Record<string, any>;
+	keyLevel: string;
 }

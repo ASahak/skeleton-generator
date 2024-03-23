@@ -1,5 +1,6 @@
-import { ChangeEvent, FC, memo } from 'react';
+import { ChangeEvent, FC, memo, useState } from 'react';
 import { Box, Heading, Input } from '@chakra-ui/react';
+import { useDebounce } from 'react-use';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
 	DEFAULT_GAP,
@@ -16,29 +17,31 @@ export const GridGap: FC = memo(() => {
 	const value = useRecoilValue(selectHighlightedNodeGridPropState('gridGap'));
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const [grid, setGridState] = useRecoilState(gridState);
+	const [localValue, setLocalValue] = useState(value);
 
-	const onBlur = (e: ChangeEvent<HTMLInputElement>) => {
-		if (!e.target.value) {
+	useDebounce(
+		() => {
 			const _grid = structuredClone(grid);
 			const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
 				GridKeyType,
 				any
 			>;
-			obj.gridGap = DEFAULT_GAP;
+			obj.gridGap = localValue;
 			setGridState(_grid);
+		},
+		300,
+		[localValue]
+	);
+
+	const onBlur = (e: ChangeEvent<HTMLInputElement>) => {
+		if (!e.target.value) {
+			setLocalValue(DEFAULT_GAP);
 		}
 	};
 
 	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-		const _grid = structuredClone(grid);
-		const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
-			GridKeyType,
-			any
-		>;
-
 		if (!e.target.value) {
-			obj.gridGap = '';
-			setGridState(_grid);
+			setLocalValue('');
 			return;
 		}
 
@@ -46,8 +49,7 @@ export const GridGap: FC = memo(() => {
 		if (v > TREE_ELEMENTS_SPACING.MAX || v < TREE_ELEMENTS_SPACING.MIN) {
 			return;
 		}
-		obj.gridGap = v.toString();
-		setGridState(_grid);
+		setLocalValue(v.toString());
 	};
 
 	return (
@@ -57,7 +59,7 @@ export const GridGap: FC = memo(() => {
 			</Heading>
 			<Input
 				variant="base"
-				value={value}
+				value={localValue}
 				onChange={onChange}
 				size="sm"
 				onBlur={onBlur}

@@ -1,6 +1,7 @@
-import { ChangeEvent, FC, memo } from 'react';
+import { ChangeEvent, FC, memo, useState } from 'react';
 import { Box, Heading, Input } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import { useDebounce } from 'react-use';
 import {
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
@@ -10,18 +11,26 @@ import { GridKeyType } from '@/common/types';
 
 export const ClassName: FC = memo(() => {
 	const value = useRecoilValue(selectHighlightedNodeGridPropState('className'));
+	const [localValue, setLocalValue] = useState(value);
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const [grid, setGridState] = useRecoilState(gridState);
 
-	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-		const _grid = structuredClone(grid);
-		const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
-			GridKeyType,
-			any
-		>;
+	useDebounce(
+		() => {
+			const _grid = structuredClone(grid);
+			const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
+				GridKeyType,
+				any
+			>;
+			obj.className = localValue;
+			setGridState(_grid);
+		},
+		300,
+		[localValue]
+	);
 
-		obj.className = e.target.value;
-		setGridState(_grid);
+	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+		setLocalValue(e.target.value);
 	};
 
 	return (
@@ -31,7 +40,7 @@ export const ClassName: FC = memo(() => {
 			</Heading>
 			<Input
 				variant="base"
-				value={value}
+				value={localValue}
 				onChange={onChange}
 				size="sm"
 				type="text"

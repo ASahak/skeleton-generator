@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useState, memo } from 'react';
+import { ChangeEvent, FC, useState, memo, useRef } from 'react';
 import {
 	Box,
 	Checkbox,
@@ -10,6 +10,7 @@ import {
 	Tooltip,
 } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import { useDebounce } from 'react-use';
 import {
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
@@ -21,7 +22,7 @@ import { MARGIN_SIDES } from '@/common/enums';
 import { CONTAINER_INITIAL_VALUES } from '@/constants/general-settings';
 import { convertToArray, overrideSides } from '@/utils/helpers';
 
-const MARGIN_SIDES_LIST: Array<{ label: string; value: MARGIN_SIDES }> = [
+const MARGIN_SIDES_LIST: { label: string; value: MARGIN_SIDES }[] = [
 	{ label: 'Top', value: MARGIN_SIDES.TOP },
 	{ label: 'Right', value: MARGIN_SIDES.RIGHT },
 	{ label: 'Bottom', value: MARGIN_SIDES.BOTTOM },
@@ -34,6 +35,15 @@ export const Margin: FC = memo(() => {
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const [grid, setGridState] = useRecoilState(gridState);
 	const { gray100_dark400 } = useThemeColors();
+	const marginSide = useRef<MARGIN_SIDES | null>(null);
+
+	useDebounce(
+		() => {
+			finalChange(localValue);
+		},
+		300,
+		[localValue]
+	);
 
 	const toggleVariant = (e: ChangeEvent<HTMLInputElement>) => {
 		const _grid = structuredClone(grid);
@@ -53,7 +63,7 @@ export const Margin: FC = memo(() => {
 	};
 
 	const getValueBySide = (side: MARGIN_SIDES) => {
-		let [top, right, bottom, left] = convertToArray(localValue);
+		const [top, right, bottom, left] = convertToArray(localValue);
 		switch (side) {
 			case MARGIN_SIDES.TOP:
 				return top;
@@ -66,16 +76,16 @@ export const Margin: FC = memo(() => {
 		}
 	};
 
-	const onBlur = (e: ChangeEvent<HTMLInputElement>, side?: MARGIN_SIDES) => {
+	const finalChange = (targetValue: string) => {
 		const _grid = structuredClone(grid);
 		const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
 			GridKeyType,
 			any
 		>;
-		if (!e.target.value) {
-			if (side) {
-				let [top, right, bottom, left] = overrideSides(
-					side,
+		if (!targetValue) {
+			if (marginSide.current) {
+				const [top, right, bottom, left] = overrideSides(
+					marginSide.current,
 					localValue,
 					CONTAINER_INITIAL_VALUES.margin
 				);
@@ -90,17 +100,18 @@ export const Margin: FC = memo(() => {
 		setGridState(_grid);
 	};
 
+	const onBlur = () => {
+		marginSide.current = null;
+	};
+
 	const onChange = (e: ChangeEvent<HTMLInputElement>, side?: MARGIN_SIDES) => {
 		const newValue = e.target.value;
-
 		if (side) {
-			let [top, right, bottom, left] = overrideSides(
-				side,
-				localValue,
-				newValue
-			);
-			setLocalValue(`[${top},${right},${bottom},${left}]`);
+			marginSide.current = side;
+			const [t, r, b, l] = overrideSides(side, localValue, newValue);
+			setLocalValue(`[${t},${r},${b},${l}]`);
 		} else {
+			marginSide.current = null;
 			setLocalValue(newValue);
 		}
 	};
@@ -141,9 +152,7 @@ export const Margin: FC = memo(() => {
 								onChange={(e: ChangeEvent<HTMLInputElement>) =>
 									onChange(e, side.value)
 								}
-								onBlur={(e: ChangeEvent<HTMLInputElement>) =>
-									onBlur(e, side.value)
-								}
+								onBlur={onBlur}
 								size="sm"
 								{...(side.value === MARGIN_SIDES.LEFT
 									? { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }

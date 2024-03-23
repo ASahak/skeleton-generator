@@ -33,7 +33,7 @@ export const overrideSides = (
 	side: MARGIN_SIDES,
 	value: string,
 	newValue: string
-): Array<string> => {
+): string[] => {
 	let [top, right, bottom, left] = convertToArray(value);
 	switch (side) {
 		case MARGIN_SIDES.TOP:
@@ -90,9 +90,27 @@ const isNumber = (n: string | number): boolean =>
 
 export const generateMargin = (marginProp: IGrid['margin']) => {
 	const marginDetect = () => {
-		const [top, right, bottom, left] = convertToArray(marginProp as string);
-		return [top, right, bottom, left].reduce((acc, item: string) => {
-			acc += isNumber(item) ? item + 'px ' : (item || '0') + ' ';
+		let [t, r, b, l] = convertToArray(marginProp as string);
+		if (t && !r && !b && !l) {
+			r = t;
+			b = t;
+			l = t;
+		} else {
+			if (!t) {
+				t = b || '0';
+			}
+			if (!r) {
+				r = l || '0';
+			}
+			if (!b) {
+				b = t || '0';
+			}
+			if (!l) {
+				l = r || '0';
+			}
+		}
+		return [t, r, b, l].reduce((acc, item: string) => {
+			acc += isNumber(item) ? item + 'px ' : item + ' ';
 			return acc;
 		}, '');
 	};

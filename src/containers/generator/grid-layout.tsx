@@ -32,7 +32,7 @@ export const GridLayout = () => {
 	const convertedStyles = useConvertStringToStyleObject(rootStyles);
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const validStyles = useRef<Record<string, any>>({});
-	console.log(gridState);
+
 	const renderSkeletons = (skeleton: ISkeleton) => {
 		console.log(skeleton);
 		return <Box></Box>;
@@ -64,7 +64,7 @@ export const GridLayout = () => {
 		({ grid, dataKey, index, length, reservedProps }: IGridLayout) => {
 			const keyLevel = dataKey;
 			const _reservedProps: any = {};
-			const gridGap = grid.gridGap,
+			const gridGap = (grid.gridGap || 0) + 'rem',
 				hasChildren =
 					Object.hasOwn(grid, 'children') && Array.isArray(grid.children),
 				hasSkeletons =
@@ -134,6 +134,7 @@ export const GridLayout = () => {
 			style={convertedStyles as CSSProperties}
 			border="1px dashed"
 			borderColor="brand.500"
+			overflow="hidden"
 		>
 			{renderGridLayout({
 				grid: gridState[ROOT_KEY] as IGrid,

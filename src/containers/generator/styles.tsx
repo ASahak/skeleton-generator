@@ -53,6 +53,7 @@ export const Styles: FC = memo(() => {
 				Styles
 			</Heading>
 			<Box
+				border="1px solid"
 				as={ContentEditable}
 				html={localValue}
 				onChange={onChange}

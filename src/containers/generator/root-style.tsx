@@ -42,6 +42,7 @@ export const RootStyle: FC = memo(() => {
 				fontSize="1.2rem"
 				p={4}
 				borderRadius="md"
+				border="1px solid"
 				borderColor={gray100_dark400}
 				bgColor={white_dark550}
 				boxShadow="none"

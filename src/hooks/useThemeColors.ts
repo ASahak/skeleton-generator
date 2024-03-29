@@ -20,6 +20,7 @@ export const useThemeColors = () => {
 	const white_dark300 = useColorModeValue('white', 'darcula.300');
 	const black_white = useColorModeValue('black', 'white');
 	const white_dark400 = useColorModeValue('white', 'darcula.400');
+	const white_dark550 = useColorModeValue('white', 'darcula.550');
 	const gray350_gray50 = useColorModeValue('gray.350', 'gray.50');
 	const gray50_dark300 = useColorModeValue('gray.50', 'darcula.300');
 	const gray300_dark100 = useColorModeValue('gray.300', 'darcula.100');
@@ -64,5 +65,6 @@ export const useThemeColors = () => {
 		gray600_gray100,
 		dark300_gray100,
 		blackAlpha50_dark300,
+		white_dark550,
 	};
 };

@@ -31,12 +31,12 @@ export default defineStyleConfig({
 		base: ({ colorMode }) => ({
 			field: {
 				border: '1px solid',
-				borderColor: colorMode === 'dark' ? 'darcula.400' : 'gray.100',
 				transition: 'box-shadow .3s',
-				boxShadow: '0px 0px 2px 1px transparent',
-				borderRadius: 'md',
+				borderColor: colorMode === 'dark' ? 'darcula.400' : 'gray.100',
 				bgColor: colorMode === 'dark' ? 'darcula.550' : 'white',
 				color: colorMode === 'dark' ? 'white' : 'black',
+				boxShadow: '0px 0px 2px 1px transparent',
+				borderRadius: 'md',
 				fontSize: '1.2rem',
 				_placeholder: {
 					color: colorMode === 'dark' ? 'gray.200' : 'gray.300',

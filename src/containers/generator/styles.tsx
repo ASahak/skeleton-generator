@@ -1,7 +1,8 @@
-import { FC, memo } from 'react';
+import { FC, memo, useRef, useState } from 'react';
 import { Box, Heading, Text } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import ContentEditable from 'react-contenteditable';
+import { useDebounce } from 'react-use';
+import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import {
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
@@ -12,25 +13,38 @@ import { useThemeColors } from '@/hooks';
 
 export const Styles: FC = memo(() => {
 	const styles = useRecoilValue(selectHighlightedNodeGridPropState('styles'));
+	const [localValue, setLocalValue] = useState(styles);
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const [grid, setGridState] = useRecoilState(gridState);
 	const { gray100_dark400, white_dark550 } = useThemeColors();
+	const filteredValue = useRef(localValue);
 
-	const onChange = async (e: any) => {
-		const code = e.target.value;
-		const _grid = structuredClone(grid);
-		const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
-			GridKeyType,
-			any
-		>;
-		if (code !== obj.styles) {
-			try {
-				obj.styles = code;
-				setGridState(_grid);
-			} catch {
-				console.warn('Invalid CSS');
+	useDebounce(
+		() => {
+			const code = filteredValue.current;
+			const _grid = structuredClone(grid);
+			const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
+				GridKeyType,
+				any
+			>;
+			if (code !== obj.styles) {
+				try {
+					obj.styles = code;
+					setGridState(_grid);
+				} catch {
+					console.warn('Invalid CSS');
+				}
 			}
-		}
+		},
+		300,
+		[localValue]
+	);
+
+	const onChange = async (e: ContentEditableEvent) => {
+		setLocalValue(e.target.value);
+		filteredValue.current = (
+			e.currentTarget as unknown as HTMLElement
+		).innerText;
 	};
 
 	return (
@@ -40,7 +54,7 @@ export const Styles: FC = memo(() => {
 			</Heading>
 			<Box
 				as={ContentEditable}
-				html={styles}
+				html={localValue}
 				onChange={onChange}
 				tagName="pre"
 				maxH="200px"

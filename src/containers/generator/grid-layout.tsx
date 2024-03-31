@@ -161,13 +161,7 @@ export const GridLayout = () => {
 	}, [highlightedNode]);
 
 	return (
-		<Box
-			style={convertedStyles as CSSProperties}
-			// border="1px dashed"
-			// borderColor="brand.500"
-			p="1px"
-			overflow="hidden"
-		>
+		<Box style={convertedStyles as CSSProperties} p="1px" overflow="hidden">
 			{renderGridLayout({
 				grid: gridState[ROOT_KEY] as IGrid,
 				dataKey: ROOT_KEY,

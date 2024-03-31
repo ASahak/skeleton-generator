@@ -8,6 +8,8 @@ import {
 	CONTAINER_INITIAL_VALUES,
 	DEFAULT_GRID_CONTAINER_HEIGHT,
 	DEFAULT_GRID_CONTAINER_WIDTH,
+	DEFAULT_HEIGHT,
+	DEFAULT_WIDTH,
 } from '@/constants/general-settings';
 import { IGenerateCSSGridAreaArgs, IGrid, ISkeleton } from '@/common/types';
 
@@ -119,7 +121,7 @@ export const generateMargin = (marginProp: IGrid['margin']) => {
 };
 
 export const generateGridArea = (
-	row: Array<ISkeleton | IGrid>,
+	row: (ISkeleton | IGrid)[],
 	cb: (index: number, prop: 'w', value: string | number) => void
 ) => {
 	return row.reduce((acc: string, item, index) => {
@@ -129,14 +131,16 @@ export const generateGridArea = (
 			acc += Array.isArray(item) ? DEFAULT_GRID_CONTAINER_WIDTH : w;
 			cb(index, 'w', w);
 		} else {
-			acc += Array.isArray(item) ? DEFAULT_GRID_CONTAINER_WIDTH : item.w + ' ';
+			acc += Array.isArray(item)
+				? DEFAULT_GRID_CONTAINER_WIDTH
+				: (item.w === DEFAULT_WIDTH ? '1fr' : item.w) + ' ';
 		}
 		return acc;
 	}, '1fr / ');
 };
 
 export const generateGridAreaAsColDirection = (
-	items: Array<ISkeleton | IGrid>,
+	items: (ISkeleton | IGrid)[],
 	alignItems: ALIGN_ITEMS,
 	cb: (index: number, prop: 'h', value: string | number) => void
 ) => {
@@ -151,7 +155,9 @@ export const generateGridAreaAsColDirection = (
 				acc +=
 					(alignItems === 'center'
 						? DEFAULT_GRID_CONTAINER_HEIGHT
-						: item.h || DEFAULT_GRID_CONTAINER_HEIGHT) + ' ';
+						: !item.h || item.h === DEFAULT_HEIGHT
+							? DEFAULT_GRID_CONTAINER_HEIGHT
+							: item.h) + ' ';
 			}
 			return acc;
 		}, '') + ' / 1fr'
@@ -159,7 +165,7 @@ export const generateGridAreaAsColDirection = (
 };
 
 export const itemsWithRepeat = (
-	skeletons: Array<ISkeleton | IGrid>,
+	skeletons: (ISkeleton | IGrid)[],
 	repeatCount: number
 ) => {
 	return repeatCount > 0
@@ -195,6 +201,7 @@ export const convertCssToReactStyles = (cssStyles: Record<string, any>) => {
 export const generateCSSGridArea = ({
 	grid,
 	hasChildren,
+	skeletons,
 	children,
 	repeatCount,
 	reservedProps,
@@ -204,23 +211,61 @@ export const generateCSSGridArea = ({
 		? generateGridArea(
 				(hasChildren
 					? children
-					: itemsWithRepeat((grid.skeletons || []) as ISkeleton[], repeatCount)
+					: itemsWithRepeat((skeletons || []) as ISkeleton[], repeatCount)
 				).map(({ w = DEFAULT_GRID_CONTAINER_WIDTH }) => ({ w })),
 				(index, prop, val) => {
-					if (!reservedProps[`${keyLevel}_${index}` as any]) {
-						reservedProps[`${keyLevel}_${index}`] = {};
+					if (!reservedProps[`${keyLevel}_${index + 1}` as any]) {
+						reservedProps[`${keyLevel}_${index + 1}`] = {};
 					}
-					reservedProps[`${keyLevel}_${index}`][prop] = val;
+					reservedProps[`${keyLevel}_${index + 1}`][prop] = val;
 				}
 			)
 		: generateGridAreaAsColDirection(
-				(grid.children || grid.skeletons) as (IGrid | ISkeleton)[],
+				(children || skeletons) as (IGrid | ISkeleton)[],
 				grid.alignItems as ALIGN_ITEMS,
 				(index, prop, val) => {
-					if (!reservedProps[`${keyLevel}_${index}`]) {
-						reservedProps[`${keyLevel}_${index}`] = {};
+					if (!reservedProps[`${keyLevel}_${index + 1}`]) {
+						reservedProps[`${keyLevel}_${index + 1}`] = {};
 					}
-					reservedProps[`${keyLevel}_${index}`][prop] = val;
+					reservedProps[`${keyLevel}_${index + 1}`][prop] = val;
 				}
 			);
 };
+
+export const findAbsentIndex = (base: string, arr: string[]): number => {
+	if (!arr.length) return 1;
+
+	const splitted = arr
+		.join('')
+		.split(base)
+		.filter((e) => e !== '')
+		.map((e) => +e);
+	const max = Math.max(...splitted);
+	for (let i = 1; i <= max; i++) {
+		if (!splitted.includes(i)) {
+			return i;
+		}
+	}
+	return max + 1;
+};
+
+export const generateBorders = ({
+	keyLevel,
+	highlightedNode,
+	parent,
+	isDark,
+}: {
+	keyLevel: string;
+	highlightedNode: string;
+	parent: string | undefined;
+	isDark: boolean;
+}) =>
+	keyLevel === highlightedNode
+		? {
+				boxShadow: '0px 0px 1px 1px var(--chakra-colors-brand-500)',
+			}
+		: parent === highlightedNode || highlightedNode.includes(keyLevel)
+			? {
+					boxShadow: `0px 0px 1px 1px inset ${isDark ? '#323441' : '#e6e6e6'}`,
+				}
+			: {};

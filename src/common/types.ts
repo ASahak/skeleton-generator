@@ -11,6 +11,8 @@ export type GridKeyType =
 	| 'alignItems'
 	| 'justifyContent'
 	| 'withOpacity'
+	| 'children'
+	| 'skeletons'
 	| 'styles';
 
 export interface ISkeleton extends Pick<IGrid, 'w' | 'h' | 'margin'> {
@@ -30,14 +32,15 @@ export interface IGrid {
 	justifyContent?: JUSTIFY_CONTENT;
 	withOpacity?: boolean;
 	styles?: string;
-	children?: IGrid[];
-	skeletons?: ISkeleton;
+	children?: string[];
+	skeletons?: string[];
 }
 
 export interface IGenerateCSSGridAreaArgs {
 	grid: IGrid;
 	hasChildren: boolean;
 	children: IGrid[];
+	skeletons: ISkeleton[];
 	repeatCount: number;
 	reservedProps: Record<string, any>;
 	keyLevel: string;

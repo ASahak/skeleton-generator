@@ -1,5 +1,5 @@
 import { CSSProperties, useCallback, useEffect, useRef } from 'react';
-import { Box } from '@chakra-ui/react';
+import { Box, useColorMode } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 import parse from 'style-to-object';
 import {
@@ -12,6 +12,7 @@ import { ROOT_KEY, STYLE_PARSING_REGEXP } from '@/constants/general-settings';
 import { IGrid, ISkeleton } from '@/common/types';
 import {
 	convertCssToReactStyles,
+	generateBorders,
 	generateCSSGridArea,
 	generateMargin,
 	itemsWithRepeat,
@@ -23,16 +24,18 @@ interface IGridLayout {
 	dataKey: string;
 	index: number;
 	length: number;
-	reservedProps?: Record<string, any>;
+	reservedPropsFromParent?: Record<string, any>;
 }
 
 export const GridLayout = () => {
+	const { colorMode } = useColorMode();
 	const gridState = useRecoilValue(selectGridState);
 	const rootStyles = useRecoilValue(selectRootStylesState);
 	const convertedStyles = useConvertStringToStyleObject(rootStyles);
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const validStyles = useRef<Record<string, any>>({});
-
+	const isDark = colorMode === 'dark';
+	console.log(gridState);
 	const renderSkeletons = (skeleton: ISkeleton) => {
 		console.log(skeleton);
 		return <Box></Box>;
@@ -61,24 +64,44 @@ export const GridLayout = () => {
 	};
 
 	const renderGridLayout = useCallback(
-		({ grid, dataKey, index, length, reservedProps }: IGridLayout) => {
+		({
+			grid,
+			dataKey,
+			index,
+			length,
+			reservedPropsFromParent,
+		}: IGridLayout) => {
 			const keyLevel = dataKey;
-			const _reservedProps: any = {};
+			const _reservedPropsFromParent: any = { parent: keyLevel };
+			let collectedChildren: IGrid[] = [];
+			let collectedSkeletons: ISkeleton[] = [];
 			const gridGap = (grid.gridGap || 0) + 'rem',
 				hasChildren =
 					Object.hasOwn(grid, 'children') && Array.isArray(grid.children),
 				hasSkeletons =
 					Object.hasOwn(grid, 'skeletons') && Array.isArray(grid.skeletons),
-				repeatCount: number = grid.repeatCount as number,
-				children = hasChildren
-					? itemsWithRepeat(grid.children as IGrid[], repeatCount)
+				repeatCount: number = grid.repeatCount as number;
+
+			if (hasChildren) {
+				collectedChildren = grid.children!.map(
+					(key: string) => gridState[key]
+				) as IGrid[];
+			}
+			if (hasSkeletons) {
+				collectedSkeletons = grid.skeletons!.map(
+					(key: string) => gridState[key]
+				) as ISkeleton[];
+			}
+			const children = hasChildren
+					? itemsWithRepeat(collectedChildren as IGrid[], repeatCount)
 					: [],
 				gridStyle = generateCSSGridArea({
 					grid,
 					hasChildren,
 					children,
+					skeletons: collectedSkeletons,
 					repeatCount,
-					reservedProps: _reservedProps,
+					reservedProps: _reservedPropsFromParent,
 					keyLevel,
 				}),
 				withOpacity = grid.withOpacity,
@@ -94,35 +117,43 @@ export const GridLayout = () => {
 						margin: generateMargin(grid.margin || ''),
 						grid: gridStyle,
 						height:
-							reservedProps?.[keyLevel]?.h ??
+							reservedPropsFromParent?.[keyLevel]?.h ??
 							(typeof grid.h === 'function' ? grid.h() : grid.h),
 						width:
-							reservedProps?.[keyLevel]?.w ??
+							reservedPropsFromParent?.[keyLevel]?.w ??
 							(typeof grid.w === 'function' ? grid.w() : grid.w),
 						alignItems: grid.alignItems,
 						justifyContent: grid.justifyContent,
 						opacity: setOpacity(index, repeatCount, length, withOpacity),
 						...convertCssToReactStyles(style),
+						...generateBorders({
+							keyLevel,
+							highlightedNode,
+							isDark,
+							parent: reservedPropsFromParent?.parent,
+						}),
 					}}
 					className={grid.className || ''}
 				>
 					{hasChildren
-						? (grid.children as IGrid[]).map((g, gridItemIndex) =>
+						? (collectedChildren as IGrid[]).map((g, gridItemIndex) =>
 								renderGridLayout({
 									grid: g,
-									dataKey: `${keyLevel}_${gridItemIndex}`,
+									dataKey: `${keyLevel}_${gridItemIndex + 1}`,
 									index: gridItemIndex,
 									length: children.length,
-									reservedProps: _reservedProps,
+									reservedPropsFromParent: _reservedPropsFromParent,
 								})
 							)
 						: hasSkeletons
-							? (grid.skeletons as ISkeleton[]).map((s) => renderSkeletons(s))
+							? (collectedSkeletons as ISkeleton[]).map((s) =>
+									renderSkeletons(s)
+								)
 							: null}
 				</Box>
 			);
 		},
-		[]
+		[gridState, highlightedNode, isDark]
 	);
 
 	useEffect(() => {
@@ -132,8 +163,9 @@ export const GridLayout = () => {
 	return (
 		<Box
 			style={convertedStyles as CSSProperties}
-			border="1px dashed"
-			borderColor="brand.500"
+			// border="1px dashed"
+			// borderColor="brand.500"
+			p="1px"
 			overflow="hidden"
 		>
 			{renderGridLayout({

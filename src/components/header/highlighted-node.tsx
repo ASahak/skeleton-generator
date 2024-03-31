@@ -9,8 +9,12 @@ import {
 	Icon,
 } from '@chakra-ui/react';
 import { RiLayout2Fill, RiRectangleLine, RiAddFill } from 'react-icons/ri';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { selectHighlightedNodeState } from '@/store/selectors/global';
+import { gridState } from '@/store/atoms/global';
+import { GridKeyType } from '@/common/types';
+import { findAbsentIndex, generateDefaultValues } from '@/utils/helpers';
+import { ROOT_KEY } from '@/constants/general-settings';
 
 const OPTIONS = [
 	{
@@ -22,9 +26,23 @@ const OPTIONS = [
 ];
 export const HighlightedNode: FC = () => {
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
+	const [grid, setGridState] = useRecoilState(gridState);
 
 	const onSelect = (value: string) => {
-		console.log(value);
+		if (value === 'create-children') {
+			const _grid = structuredClone(grid);
+			const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
+				GridKeyType,
+				any
+			>;
+			const newKey =
+				highlightedNode +
+				'_' +
+				findAbsentIndex(ROOT_KEY.split('1')[0], obj.children || []);
+			_grid[newKey] = { ...generateDefaultValues() };
+			obj.children = (obj.children || []).concat(newKey);
+			setGridState(_grid);
+		}
 	};
 
 	return (

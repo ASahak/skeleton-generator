@@ -134,7 +134,6 @@ export const GridLayout = () => {
 							parent: reservedPropsFromParent?.parent,
 						}),
 					}}
-					position="relative"
 					className={grid.className || ''}
 				>
 					{hasChildren

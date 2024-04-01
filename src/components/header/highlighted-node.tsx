@@ -14,7 +14,6 @@ import { selectHighlightedNodeState } from '@/store/selectors/global';
 import { gridState } from '@/store/atoms/global';
 import { GridKeyType } from '@/common/types';
 import { findAbsentIndex, generateDefaultValues } from '@/utils/helpers';
-import { ROOT_KEY } from '@/constants/general-settings';
 
 const OPTIONS = [
 	{
@@ -35,10 +34,8 @@ export const HighlightedNode: FC = () => {
 				GridKeyType,
 				any
 			>;
-			const newKey =
-				highlightedNode +
-				'_' +
-				findAbsentIndex(ROOT_KEY.split('1')[0], obj.children || []);
+			const newRoot = highlightedNode + '_';
+			const newKey = newRoot + findAbsentIndex(newRoot, obj.children || []);
 			_grid[newKey] = { ...generateDefaultValues() };
 			obj.children = (obj.children || []).concat(newKey);
 			setGridState(_grid);

@@ -2,6 +2,7 @@ import { CSSProperties, useCallback, useEffect, useRef } from 'react';
 import { Box, useColorMode } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 import parse from 'style-to-object';
+import { HighlightPulse } from './highlight-pulse';
 import {
 	selectGridState,
 	selectHighlightedNodeState,
@@ -35,7 +36,7 @@ export const GridLayout = () => {
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const validStyles = useRef<Record<string, any>>({});
 	const isDark = colorMode === 'dark';
-	console.log(gridState);
+
 	const renderSkeletons = (skeleton: ISkeleton) => {
 		console.log(skeleton);
 		return <Box></Box>;
@@ -133,6 +134,7 @@ export const GridLayout = () => {
 							parent: reservedPropsFromParent?.parent,
 						}),
 					}}
+					position="relative"
 					className={grid.className || ''}
 				>
 					{hasChildren
@@ -161,13 +163,16 @@ export const GridLayout = () => {
 	}, [highlightedNode]);
 
 	return (
-		<Box style={convertedStyles as CSSProperties} p="1px" overflow="hidden">
-			{renderGridLayout({
-				grid: gridState[ROOT_KEY] as IGrid,
-				dataKey: ROOT_KEY,
-				index: 0,
-				length: 1,
-			})}
-		</Box>
+		<>
+			<HighlightPulse />
+			<Box style={convertedStyles as CSSProperties} p="1px" overflow="hidden">
+				{renderGridLayout({
+					grid: gridState[ROOT_KEY] as IGrid,
+					dataKey: ROOT_KEY,
+					index: 0,
+					length: 1,
+				})}
+			</Box>
+		</>
 	);
 };

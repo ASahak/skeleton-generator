@@ -10,6 +10,7 @@ import {
 	DEFAULT_GRID_CONTAINER_WIDTH,
 	DEFAULT_HEIGHT,
 	DEFAULT_WIDTH,
+	ROOT_KEY,
 } from '@/constants/general-settings';
 import { IGenerateCSSGridAreaArgs, IGrid, ISkeleton } from '@/common/types';
 
@@ -254,18 +255,83 @@ export const generateBorders = ({
 	highlightedNode,
 	parent,
 	isDark,
+	hasChildren,
 }: {
 	keyLevel: string;
 	highlightedNode: string;
 	parent: string | undefined;
 	isDark: boolean;
+	hasChildren: boolean;
 }) =>
 	keyLevel === highlightedNode
 		? {
 				boxShadow: '0px 0px 1px 1px var(--chakra-colors-brand-500)',
 			}
-		: parent === highlightedNode || highlightedNode.includes(keyLevel)
+		: parent === highlightedNode
 			? {
 					boxShadow: `0px 0px 1px 1px inset ${isDark ? '#323441' : '#e6e6e6'}`,
 				}
-			: {};
+			: !hasChildren
+				? {
+						boxShadow: `0px 0px 0px 1px inset ${isDark ? 'rgba(50,52,65,0.24)' : 'rgba(230,230,230,0.27)'}`,
+					}
+				: {};
+
+export const findTrap = (
+	node: HTMLElement | null,
+	highlightedNode: string,
+	trap: (key: string) => void
+) => {
+	if (node) {
+		const keyLevel = node.getAttribute('data-key') || '';
+
+		const currentSplit = keyLevel.split('_');
+		// if trap is the same as highlighted
+		if (keyLevel === highlightedNode) {
+			// if trap is the root node
+			if (keyLevel === ROOT_KEY) return;
+
+			trap([...currentSplit].slice(0, currentSplit.length - 1).join('_'));
+			return;
+		}
+
+		// if keyLevel is parent of highlightedNode
+		if (highlightedNode.indexOf(keyLevel) > -1) {
+			trap(keyLevel);
+			return;
+		}
+
+		const highlightedNodeSplit = highlightedNode.split('_');
+
+		const inTheSameLevel = (current: string[]) =>
+			current.length === highlightedNodeSplit.length &&
+			[...current].slice(0, current.length - 1).join('_') ===
+				[...highlightedNodeSplit]
+					.slice(0, highlightedNodeSplit.length - 1)
+					.join('_');
+
+		const isDirectChild = (current: string[]) =>
+			[...current].slice(0, current.length - 1).join('_') ===
+			[...highlightedNodeSplit].join('_');
+
+		if (isDirectChild(currentSplit) || inTheSameLevel(currentSplit)) {
+			trap(keyLevel);
+			return;
+		}
+
+		for (let i = currentSplit.length - 1; i > 1; i--) {
+			const newKey = [...currentSplit].splice(0, i);
+			if (inTheSameLevel(newKey) || isDirectChild(newKey)) {
+				trap(newKey.join('_'));
+				return;
+			}
+
+			if (newKey.join('_') === highlightedNode) {
+				trap(newKey.concat(currentSplit[i]).join('_'));
+				return;
+			}
+		}
+
+		trap(ROOT_KEY);
+	}
+};

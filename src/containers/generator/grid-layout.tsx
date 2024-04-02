@@ -1,11 +1,10 @@
 import { CSSProperties, useCallback, useEffect, useRef } from 'react';
 import { Box, useColorMode } from '@chakra-ui/react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import parse from 'style-to-object';
 import { HighlightPulse } from './highlight-pulse';
 import {
 	selectGridState,
-	selectHighlightedNodeState,
 	selectRootStylesState,
 } from '@/store/selectors/global';
 import { useConvertStringToStyleObject } from '@/hooks';
@@ -13,12 +12,14 @@ import { ROOT_KEY, STYLE_PARSING_REGEXP } from '@/constants/general-settings';
 import { IGrid, ISkeleton } from '@/common/types';
 import {
 	convertCssToReactStyles,
+	findTrap,
 	generateBorders,
 	generateCSSGridArea,
 	generateMargin,
 	itemsWithRepeat,
 	setOpacity,
 } from '@/utils/helpers';
+import { highlightedNodeState } from '@/store/atoms/global';
 
 interface IGridLayout {
 	grid: IGrid;
@@ -33,7 +34,8 @@ export const GridLayout = () => {
 	const gridState = useRecoilValue(selectGridState);
 	const rootStyles = useRecoilValue(selectRootStylesState);
 	const convertedStyles = useConvertStringToStyleObject(rootStyles);
-	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
+	const [highlightedNode, setHighlightedNode] =
+		useRecoilState(highlightedNodeState);
 	const validStyles = useRef<Record<string, any>>({});
 	const isDark = colorMode === 'dark';
 
@@ -62,6 +64,13 @@ export const GridLayout = () => {
 		} catch {
 			return validStyles.current;
 		}
+	};
+
+	const highlightNode = (e: Event) => {
+		const node: HTMLElement | null = e.target as HTMLElement;
+		findTrap(node, highlightedNode, (key) => {
+			setHighlightedNode(key);
+		});
 	};
 
 	const renderGridLayout = useCallback(
@@ -132,6 +141,7 @@ export const GridLayout = () => {
 							highlightedNode,
 							isDark,
 							parent: reservedPropsFromParent?.parent,
+							hasChildren,
 						}),
 					}}
 					className={grid.className || ''}
@@ -164,7 +174,12 @@ export const GridLayout = () => {
 	return (
 		<>
 			<HighlightPulse />
-			<Box style={convertedStyles as CSSProperties} p="1px" overflow="hidden">
+			<Box
+				style={convertedStyles as CSSProperties}
+				p="1px"
+				overflow="hidden"
+				onDoubleClick={highlightNode as any}
+			>
 				{renderGridLayout({
 					grid: gridState[ROOT_KEY] as IGrid,
 					dataKey: ROOT_KEY,

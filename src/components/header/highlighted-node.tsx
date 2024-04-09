@@ -1,19 +1,26 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import {
-	Tooltip,
 	Menu,
 	MenuButton,
 	Button,
 	MenuList,
 	MenuItem,
 	Icon,
+	Box,
+	Popover,
+	PopoverTrigger,
+	Portal,
+	PopoverContent,
+	PopoverBody,
 } from '@chakra-ui/react';
-import { RiLayout2Fill, RiRectangleLine, RiAddFill } from 'react-icons/ri';
+import { RiLayout2Fill, RiRectangleLine } from 'react-icons/ri';
+import { RxTriangleDown } from 'react-icons/rx';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { selectHighlightedNodeState } from '@/store/selectors/global';
 import { gridState } from '@/store/atoms/global';
 import { GridKeyType } from '@/common/types';
 import { findAbsentIndex, generateDefaultValues } from '@/utils/helpers';
+import { GridTree } from '@/components/header/grid-tree';
 
 const OPTIONS = [
 	{
@@ -23,7 +30,7 @@ const OPTIONS = [
 	},
 	{ label: 'Create Skeleton', value: 'create-skeleton', icon: RiLayout2Fill },
 ];
-export const HighlightedNode: FC = () => {
+export const HighlightedNode: FC = memo(() => {
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const [grid, setGridState] = useRecoilState(gridState);
 
@@ -43,37 +50,52 @@ export const HighlightedNode: FC = () => {
 	};
 
 	return (
-		<Menu variant="base">
-			<Tooltip
-				motionProps={{ borderRadius: 4 } as never}
-				hasArrow
-				label="Highlighted Node"
-				placement="right"
-				variant="base"
-			>
+		<Box display="flex" alignItems="center">
+			<Popover placement="bottom-start" variant="base">
+				<PopoverTrigger>
+					<Button
+						borderTopRightRadius={0}
+						borderBottomRightRadius={0}
+						variant="menu-outline"
+					>
+						{highlightedNode}
+					</Button>
+				</PopoverTrigger>
+				<Portal>
+					<PopoverContent minW="25rem">
+						<PopoverBody>
+							<GridTree />
+						</PopoverBody>
+					</PopoverContent>
+				</Portal>
+			</Popover>
+			<Menu variant="base" placement="bottom-end">
 				<MenuButton
 					as={Button}
-					rightIcon={<Icon fontSize="1.6rem" as={RiAddFill} />}
+					borderTopLeftRadius={0}
+					borderBottomLeftRadius={0}
+					ml="-1px"
+					px="1rem"
 					variant="menu-outline"
 					gap={2}
 				>
-					{highlightedNode}
+					<Icon as={RxTriangleDown} fontSize="1.8rem" />
 				</MenuButton>
-			</Tooltip>
-			<MenuList minW="20rem">
-				{OPTIONS.map((opt) => (
-					<MenuItem
-						as={Button}
-						variant="dropdown-item"
-						key={opt.value}
-						onClick={() => onSelect(opt.value)}
-						bgColor="transparent"
-						gap={2}
-					>
-						<Icon fontSize="1.6rem" as={opt.icon} /> {opt.label}
-					</MenuItem>
-				))}
-			</MenuList>
-		</Menu>
+				<MenuList minW="20rem">
+					{OPTIONS.map((opt) => (
+						<MenuItem
+							as={Button}
+							variant="dropdown-item"
+							key={opt.value}
+							onClick={() => onSelect(opt.value)}
+							bgColor="transparent"
+							gap={2}
+						>
+							<Icon fontSize="1.6rem" as={opt.icon} /> {opt.label}
+						</MenuItem>
+					))}
+				</MenuList>
+			</Menu>
+		</Box>
 	);
-};
+});

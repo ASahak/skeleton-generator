@@ -5,6 +5,10 @@ export default defineStyleConfig({
 	sizes: {},
 	variants: {
 		base: ({ colorMode }) => ({
+			popover: {
+				maxWidth: 'unset',
+				width: 'unset',
+			},
 			content: {
 				boxShadow: 'lg',
 				border: '1px solid',

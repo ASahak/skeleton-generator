@@ -51,7 +51,7 @@ export const HighlightedNode: FC = memo(() => {
 
 	return (
 		<Box display="flex" alignItems="center">
-			<Popover placement="bottom-start" variant="base">
+			<Popover placement="bottom-start" variant="base" isLazy>
 				<PopoverTrigger>
 					<Button
 						borderTopRightRadius={0}
@@ -62,8 +62,8 @@ export const HighlightedNode: FC = memo(() => {
 					</Button>
 				</PopoverTrigger>
 				<Portal>
-					<PopoverContent minW="25rem">
-						<PopoverBody>
+					<PopoverContent minW="20rem">
+						<PopoverBody p={0}>
 							<GridTree />
 						</PopoverBody>
 					</PopoverContent>

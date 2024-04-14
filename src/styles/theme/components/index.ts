@@ -6,3 +6,4 @@ export { default as Menu } from './Menu';
 export { default as Badge } from './Badge';
 export { default as Checkbox } from './Checkbox';
 export { default as Popover } from './Popover';
+export { default as Modal } from './Modal';

@@ -88,7 +88,6 @@ export const HighlightedNode: FC = memo(() => {
 							variant="dropdown-item"
 							key={opt.value}
 							onClick={() => onSelect(opt.value)}
-							bgColor="transparent"
 							gap={2}
 						>
 							<Icon fontSize="1.6rem" as={opt.icon} /> {opt.label}

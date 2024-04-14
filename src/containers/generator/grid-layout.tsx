@@ -20,6 +20,7 @@ import {
 	setOpacity,
 } from '@/utils/helpers';
 import { highlightedNodeState } from '@/store/atoms/global';
+import { WithContextMenu } from '@/containers/generator/with-context-menu';
 
 interface IGridLayout {
 	grid: IGrid;
@@ -118,50 +119,51 @@ export const GridLayout = () => {
 				style = convertStyles(grid.styles as string) || {};
 
 			return (
-				<Box
-					display="grid"
-					data-key={keyLevel}
-					key={keyLevel}
-					style={{
-						gap: gridGap,
-						margin: generateMargin(grid.margin || ''),
-						grid: gridStyle,
-						height:
-							reservedPropsFromParent?.[keyLevel]?.h ??
-							(typeof grid.h === 'function' ? grid.h() : grid.h),
-						width:
-							reservedPropsFromParent?.[keyLevel]?.w ??
-							(typeof grid.w === 'function' ? grid.w() : grid.w),
-						alignItems: grid.alignItems,
-						justifyContent: grid.justifyContent,
-						opacity: setOpacity(index, repeatCount, length, withOpacity),
-						...convertCssToReactStyles(style),
-						...generateBorders({
-							keyLevel,
-							highlightedNode,
-							isDark,
-							parent: reservedPropsFromParent?.parent,
-							hasChildren,
-						}),
-					}}
-					className={grid.className || ''}
-				>
-					{hasChildren
-						? (collectedChildren as IGrid[]).map((g, gridItemIndex) =>
-								renderGridLayout({
-									grid: g,
-									dataKey: `${keyLevel}_${gridItemIndex + 1}`,
-									index: gridItemIndex,
-									length: children.length,
-									reservedPropsFromParent: _reservedPropsFromParent,
-								})
-							)
-						: hasSkeletons
-							? (collectedSkeletons as ISkeleton[]).map((s) =>
-									renderSkeletons(s)
+				<WithContextMenu isAble={keyLevel === highlightedNode} key={keyLevel}>
+					<Box
+						display="grid"
+						data-key={keyLevel}
+						style={{
+							gap: gridGap,
+							margin: generateMargin(grid.margin || ''),
+							grid: gridStyle,
+							height:
+								reservedPropsFromParent?.[keyLevel]?.h ??
+								(typeof grid.h === 'function' ? grid.h() : grid.h),
+							width:
+								reservedPropsFromParent?.[keyLevel]?.w ??
+								(typeof grid.w === 'function' ? grid.w() : grid.w),
+							alignItems: grid.alignItems,
+							justifyContent: grid.justifyContent,
+							opacity: setOpacity(index, repeatCount, length, withOpacity),
+							...convertCssToReactStyles(style),
+							...generateBorders({
+								keyLevel,
+								highlightedNode,
+								isDark,
+								parent: reservedPropsFromParent?.parent,
+								hasChildren,
+							}),
+						}}
+						className={grid.className || ''}
+					>
+						{hasChildren
+							? (collectedChildren as IGrid[]).map((g, gridItemIndex) =>
+									renderGridLayout({
+										grid: g,
+										dataKey: `${keyLevel}_${gridItemIndex + 1}`,
+										index: gridItemIndex,
+										length: children.length,
+										reservedPropsFromParent: _reservedPropsFromParent,
+									})
 								)
-							: null}
-				</Box>
+							: hasSkeletons
+								? (collectedSkeletons as ISkeleton[]).map((s) =>
+										renderSkeletons(s)
+									)
+								: null}
+					</Box>
+				</WithContextMenu>
 			);
 		},
 		[gridState, highlightedNode, isDark]

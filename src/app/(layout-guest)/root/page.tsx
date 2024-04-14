@@ -26,7 +26,7 @@ export default function View() {
 		>
 			<Box p={20} textAlign="center" mx="auto" w="full" maxW="100rem">
 				<Heading color={gray800_gray50} fontSize="8xl" lineHeight="8rem">
-					Create accessible and reusable Skeletons{' '}
+					Create flexible and reusable Skeletons{' '}
 					<Text as="span" color="brand.500">
 						with speed
 					</Text>

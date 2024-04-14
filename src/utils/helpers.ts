@@ -335,3 +335,11 @@ export const findTrap = (
 		trap(ROOT_KEY);
 	}
 };
+
+export const getParent = (path: string): string => {
+	if (path === ROOT_KEY) return path;
+
+	const paths = path.split('_');
+	paths.pop();
+	return paths.join('_');
+};

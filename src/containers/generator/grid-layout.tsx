@@ -84,7 +84,7 @@ export const GridLayout = () => {
 		}: IGridLayout) => {
 			const keyLevel = dataKey;
 			const _reservedPropsFromParent: any = { parent: keyLevel };
-			let collectedChildren: IGrid[] = [];
+			const collectedChildren: Record<string, IGrid> = {};
 			let collectedSkeletons: ISkeleton[] = [];
 			const gridGap = (grid.gridGap || 0) + 'rem',
 				hasChildren =
@@ -94,9 +94,9 @@ export const GridLayout = () => {
 				repeatCount: number = grid.repeatCount as number;
 
 			if (hasChildren) {
-				collectedChildren = grid.children!.map(
-					(key: string) => gridState[key]
-				) as IGrid[];
+				grid.children!.forEach(
+					(key: string) => (collectedChildren[key] = gridState[key] as IGrid)
+				);
 			}
 			if (hasSkeletons) {
 				collectedSkeletons = grid.skeletons!.map(
@@ -104,7 +104,10 @@ export const GridLayout = () => {
 				) as ISkeleton[];
 			}
 			const children = hasChildren
-					? itemsWithRepeat(collectedChildren as IGrid[], repeatCount)
+					? itemsWithRepeat(
+							Object.values(collectedChildren) as IGrid[],
+							repeatCount
+						)
 					: [],
 				gridStyle = generateCSSGridArea({
 					grid,
@@ -148,14 +151,15 @@ export const GridLayout = () => {
 						className={grid.className || ''}
 					>
 						{hasChildren
-							? (collectedChildren as IGrid[]).map((g, gridItemIndex) =>
-									renderGridLayout({
-										grid: g,
-										dataKey: `${keyLevel}_${gridItemIndex + 1}`,
-										index: gridItemIndex,
-										length: children.length,
-										reservedPropsFromParent: _reservedPropsFromParent,
-									})
+							? (Object.keys(collectedChildren) as string[]).map(
+									(key, gridItemIndex) =>
+										renderGridLayout({
+											grid: collectedChildren[key],
+											dataKey: key,
+											index: gridItemIndex,
+											length: children.length,
+											reservedPropsFromParent: _reservedPropsFromParent,
+										})
 								)
 							: hasSkeletons
 								? (collectedSkeletons as ISkeleton[]).map((s) =>
@@ -175,7 +179,6 @@ export const GridLayout = () => {
 
 	return (
 		<>
-			<HighlightPulse />
 			<Box
 				style={convertedStyles as CSSProperties}
 				p="1px"
@@ -189,6 +192,7 @@ export const GridLayout = () => {
 					length: 1,
 				})}
 			</Box>
+			<HighlightPulse />
 		</>
 	);
 };

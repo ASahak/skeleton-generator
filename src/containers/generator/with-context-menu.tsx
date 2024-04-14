@@ -14,6 +14,7 @@ import { useRecoilState } from 'recoil';
 import { gridState, highlightedNodeState } from '@/store/atoms/global';
 import { GridKeyType } from '@/common/types';
 import { findAbsentIndex, getParent } from '@/utils/helpers';
+import { ROOT_KEY } from '@/constants/general-settings';
 
 type IProps = {
 	isAble: boolean;
@@ -37,7 +38,18 @@ export const WithContextMenu = memo(({ isAble, children }: IProps) => {
 				1
 			);
 		}
-		delete _grid[highlightedNode as GridKeyType];
+		if (_grid[highlightedNode as GridKeyType].children?.length) {
+			const removeChildren = (children: GridKeyType[]) => {
+				children.forEach((e) => {
+					if (_grid[e as GridKeyType].children?.length) {
+						removeChildren(_grid[e as GridKeyType].children);
+					}
+					delete _grid[e as GridKeyType];
+				});
+			};
+			removeChildren(_grid[highlightedNode as GridKeyType].children);
+			delete _grid[highlightedNode as GridKeyType];
+		}
 		setHighlightedNode(parentKey);
 		setGridState(_grid);
 		onModalClose();
@@ -50,20 +62,28 @@ export const WithContextMenu = memo(({ isAble, children }: IProps) => {
 			const obj: Record<GridKeyType, any> = _grid[parentKey as GridKeyType];
 			const newRoot = parentKey + '_';
 			const newKey = newRoot + findAbsentIndex(newRoot, obj.children || []);
-			_grid[newKey as GridKeyType] = {
-				..._grid[highlightedNode as GridKeyType],
-				children: [],
-			};
-			(_grid[highlightedNode as GridKeyType].children || []).forEach(
-				(c: string) => {
-					const newChild = c.replace(highlightedNode, newKey);
-					_grid[newKey as GridKeyType].children.push(newChild);
-					_grid[newChild as GridKeyType] = _grid[c as GridKeyType];
-				}
+			_grid[newKey as GridKeyType] = structuredClone(
+				_grid[highlightedNode as GridKeyType]
 			);
+			if (_grid[highlightedNode as GridKeyType].children?.length) {
+				const generateClone = (children: GridKeyType[], newKey: string) => {
+					_grid[newKey as GridKeyType].children = [];
+					children.forEach((c: string) => {
+						const newChild = newKey + c.substring(newKey.length, c.length);
+						_grid[newKey as GridKeyType].children.push(newChild);
+						_grid[newChild as GridKeyType] = structuredClone(
+							_grid[c as GridKeyType]
+						);
+						if (_grid[c as GridKeyType].children?.length) {
+							generateClone(_grid[c as GridKeyType].children, newChild);
+						}
+					});
+				};
+
+				generateClone(_grid[highlightedNode as GridKeyType].children, newKey);
+			}
 			obj.children = (obj.children || []).concat(newKey);
 
-			setHighlightedNode(newKey);
 			setGridState(_grid);
 		}
 	};
@@ -93,6 +113,10 @@ export const WithContextMenu = memo(({ isAble, children }: IProps) => {
 			<Menu isOpen={isOpen} onClose={onClose} variant="base">
 				{React.cloneElement(children as any, {
 					onContextMenu: (e: any) => {
+						if (highlightedNode === ROOT_KEY) {
+							return;
+						}
+
 						let x = e.clientX;
 						let y = e.clientY;
 						e.preventDefault();

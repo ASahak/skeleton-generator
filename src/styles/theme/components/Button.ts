@@ -72,7 +72,7 @@ export default defineStyleConfig({
 			_hover: {
 				bgColor:
 					colorMode === 'dark'
-						? 'darcula.580 !important'
+						? 'darcula.500 !important'
 						: 'gray.50 !important',
 			},
 			_focus: {

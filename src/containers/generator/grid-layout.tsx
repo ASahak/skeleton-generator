@@ -39,7 +39,7 @@ export const GridLayout = () => {
 		useRecoilState(highlightedNodeState);
 	const validStyles = useRef<Record<string, any>>({});
 	const isDark = colorMode === 'dark';
-
+	console.log(gridState);
 	const renderSkeletons = (skeleton: ISkeleton) => {
 		console.log(skeleton);
 		return <Box></Box>;

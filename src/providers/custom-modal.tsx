@@ -15,7 +15,9 @@ import {
 	ModalOverlay,
 	useDisclosure,
 } from '@chakra-ui/react';
-import { ConfirmDelete } from '@/components/modals';
+import { ConfirmDelete, FunctionUnitEditor } from '@/components/modals';
+import { dispatchBus } from '@/hooks';
+import { ON_CLOSE_MODAL } from '@/constants/event-bus-types';
 
 type contextType = {
 	isOpen: boolean;
@@ -36,10 +38,12 @@ const CustomModalContext = createContext<contextType>({
 
 export enum MODALS_KEYS {
 	CONFIRM_DELETE = 'confirm-delete',
+	FUNCTION_UNIT_EDITOR = 'function-unit-editor',
 }
 
 const MODALS: Record<MODALS_KEYS, FC<any>> = {
 	[MODALS_KEYS.CONFIRM_DELETE]: ConfirmDelete,
+	[MODALS_KEYS.FUNCTION_UNIT_EDITOR]: FunctionUnitEditor,
 };
 export const CustomModal = ({ children }: { children: ReactNode }) => {
 	const [modal, setModal] = useState<{
@@ -57,6 +61,11 @@ export const CustomModal = ({ children }: { children: ReactNode }) => {
 		return null;
 	};
 
+	const onCloseMiddleware = () => {
+		dispatchBus({ type: ON_CLOSE_MODAL });
+		onClose();
+	};
+
 	useEffect(() => {
 		if (modal) {
 			onOpen();
@@ -68,7 +77,12 @@ export const CustomModal = ({ children }: { children: ReactNode }) => {
 			value={{ isOpen, modal, setModal, onOpen, onClose }}
 		>
 			{children}
-			<Modal isCentered isOpen={isOpen} onClose={onClose} variant="base">
+			<Modal
+				isCentered
+				isOpen={isOpen}
+				onClose={onCloseMiddleware}
+				variant="base"
+			>
 				<ModalOverlay />
 				<ModalContent pt={10} pb={6} px={6} minW="3xl">
 					<ModalCloseButton fontSize="1rem" mt={1} />

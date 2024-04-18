@@ -52,6 +52,7 @@ export enum JUSTIFY_CONTENT {
 export enum SIZE_UNITS {
 	AUTO = 'auto',
 	PERCENT = '%',
+	FN = 'fn',
 	PX = 'px',
 	FR = 'fr',
 	REM = 'rem',

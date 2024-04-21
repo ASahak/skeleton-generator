@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import { useBus, useThemeColors } from '@/hooks';
@@ -14,13 +14,14 @@ const INITIAL_FUNC_EXEC = `() => {
 }`;
 export const FunctionUnitEditor = ({ title, onApply, onClose }: IProps) => {
 	const [localValue, setLocalValue] = useState(INITIAL_FUNC_EXEC);
+	const filteredValue = useRef(localValue);
 	const { gray100_dark400, white_dark550 } = useThemeColors();
 
 	const onChange = (e: ContentEditableEvent) => {
 		setLocalValue(e.target.value);
-		// filteredValue.current = (
-		// 	e.currentTarget as unknown as HTMLElement
-		// ).innerText;
+		filteredValue.current = (
+			e.currentTarget as unknown as HTMLElement
+		).innerText;
 	};
 
 	useBus(
@@ -57,7 +58,11 @@ export const FunctionUnitEditor = ({ title, onApply, onClose }: IProps) => {
 				}}
 			/>
 			<Flex justifyContent="flex-end" mt={8} gap={3}>
-				<Button variant="base" size="sm" onClick={() => onApply(localValue)}>
+				<Button
+					variant="base"
+					size="sm"
+					onClick={() => onApply(filteredValue.current)}
+				>
 					Apply
 				</Button>
 			</Flex>

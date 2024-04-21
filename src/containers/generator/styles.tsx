@@ -10,6 +10,7 @@ import {
 import { GridKeyType } from '@/common/types';
 import { gridState } from '@/store/atoms/global';
 import { useThemeColors } from '@/hooks';
+import cloneDeep from 'clone-deep';
 
 export const Styles: FC = memo(() => {
 	const styles = useRecoilValue(selectHighlightedNodeGridPropState('styles'));
@@ -22,7 +23,7 @@ export const Styles: FC = memo(() => {
 	useDebounce(
 		() => {
 			const code = filteredValue.current;
-			const _grid = structuredClone(grid);
+			const _grid = cloneDeep(grid);
 			const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
 				GridKeyType,
 				any

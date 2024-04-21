@@ -12,6 +12,7 @@ import {
 	Portal,
 } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import cloneDeep from 'clone-deep';
 import {
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
@@ -48,7 +49,7 @@ export const Alignment: FC = memo(() => {
 		v: ALIGN_ITEMS | JUSTIFY_CONTENT,
 		alignment: 'alignItems' | 'justifyContent'
 	) => {
-		const _grid = structuredClone(grid);
+		const _grid = cloneDeep(grid);
 		const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
 			GridKeyType,
 			any

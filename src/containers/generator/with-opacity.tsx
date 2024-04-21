@@ -1,6 +1,7 @@
 import { ChangeEvent, FC, memo } from 'react';
 import { Box, Checkbox } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import cloneDeep from 'clone-deep';
 import {
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
@@ -16,7 +17,7 @@ export const WithOpacity: FC = memo(() => {
 	const [grid, setGridState] = useRecoilState(gridState);
 
 	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-		const _grid = structuredClone(grid);
+		const _grid = cloneDeep(grid);
 		const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
 			GridKeyType,
 			any

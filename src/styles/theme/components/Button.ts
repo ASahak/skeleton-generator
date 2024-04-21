@@ -67,18 +67,13 @@ export default defineStyleConfig({
 			color: colorMode === 'dark' ? 'white' : 'gray.800',
 			fontWeight: '500',
 			fontSize: '1.2rem',
-			background: 'transparent !important',
 			textAlign: 'left',
+			bgColor: 'transparent',
+			background: 'transparent !important',
 			_hover: {
 				bgColor:
 					colorMode === 'dark'
 						? 'darcula.500 !important'
-						: 'gray.50 !important',
-			},
-			_focus: {
-				bgColor:
-					colorMode === 'dark'
-						? 'darcula.580 !important'
 						: 'gray.50 !important',
 			},
 		}),

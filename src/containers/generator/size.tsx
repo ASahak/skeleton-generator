@@ -1,4 +1,5 @@
 import { ChangeEvent, FC, memo, useCallback } from 'react';
+import cloneDeep from 'clone-deep';
 import {
 	Box,
 	Button,
@@ -76,8 +77,12 @@ export const Size: FC = memo(() => {
 		[]
 	);
 
+	const isReadOnly = (unit: string) => {
+		return unit === SIZE_UNITS.AUTO || unit === SIZE_UNITS.FN;
+	};
+
 	const onSelectUnit = async (v: SIZE_UNITS, size: 'w' | 'h') => {
-		const _grid = structuredClone(grid);
+		const _grid = cloneDeep(grid);
 		const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
 			GridKeyType,
 			any
@@ -87,7 +92,7 @@ export const Size: FC = memo(() => {
 			if (failed) {
 				return;
 			}
-			obj[size] = functionExec;
+			obj[size] = eval(functionExec!);
 		} else if (v === SIZE_UNITS.AUTO) {
 			obj[size] = SIZE_UNITS.AUTO;
 		} else {
@@ -113,7 +118,7 @@ export const Size: FC = memo(() => {
 	};
 
 	const onChange = (e: ChangeEvent<HTMLInputElement>, size: 'w' | 'h') => {
-		const _grid = structuredClone(grid);
+		const _grid = cloneDeep(grid);
 		const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
 			GridKeyType,
 			any
@@ -148,6 +153,7 @@ export const Size: FC = memo(() => {
 							</InputLeftAddon>
 						</Tooltip>
 						<Input
+							isTruncated
 							borderColor={!width.value ? 'red.400' : gray100_dark400}
 							variant="base"
 							value={width.value}
@@ -155,8 +161,8 @@ export const Size: FC = memo(() => {
 							size="sm"
 							borderTopLeftRadius={0}
 							borderBottomLeftRadius={0}
-							readOnly={width.value === SIZE_UNITS.AUTO}
-							type={width.value === SIZE_UNITS.AUTO ? 'text' : 'number'}
+							readOnly={isReadOnly(width.unit)}
+							type={isReadOnly(width.unit) ? 'text' : 'number'}
 						/>
 						<InputRightAddon h="3rem" p={0} borderColor={gray100_dark400}>
 							<Menu variant="base" placement="bottom-end" closeOnSelect={false}>
@@ -172,7 +178,7 @@ export const Size: FC = memo(() => {
 									variant="menu-outline"
 									gap={0}
 								>
-									{width.unit}
+									{width.unit === SIZE_UNITS.AUTO ? '' : width.unit}
 								</MenuButton>
 								<Portal>
 									<MenuList
@@ -193,16 +199,17 @@ export const Size: FC = memo(() => {
 												variant="dropdown-item"
 												key={unit.value}
 												onClick={() => onSelectUnit(unit.value, 'w')}
-												bgColor="transparent"
 												gap={2}
-												{...((width.unit || width.value) === unit.value && {
-													bgColor: 'brand.500 !important',
-													color: 'white !important',
-													_hover: {
-														bgColor: 'brand.500 !important',
-														color: 'white !important',
-													},
-												})}
+												{...((width.unit || width.value) === unit.value
+													? {
+															bgColor: 'brand.500 !important',
+															color: 'white !important',
+															_hover: {
+																bgColor: 'brand.500 !important',
+																color: 'white !important',
+															},
+														}
+													: { bgColor: 'transparent' })}
 											>
 												{unit.label}
 											</MenuItem>
@@ -232,6 +239,7 @@ export const Size: FC = memo(() => {
 							</InputLeftAddon>
 						</Tooltip>
 						<Input
+							isTruncated
 							borderColor={!height.value ? 'red.400' : gray100_dark400}
 							variant="base"
 							value={height.value}
@@ -239,8 +247,8 @@ export const Size: FC = memo(() => {
 							size="sm"
 							borderTopLeftRadius={0}
 							borderBottomLeftRadius={0}
-							readOnly={height.value === SIZE_UNITS.AUTO}
-							type={height.value === SIZE_UNITS.AUTO ? 'text' : 'number'}
+							readOnly={isReadOnly(height.unit)}
+							type={isReadOnly(height.unit) ? 'text' : 'number'}
 						/>
 						<InputRightAddon h="3rem" p={0} borderColor={gray100_dark400}>
 							<Menu variant="base" placement="bottom-end" closeOnSelect={false}>
@@ -256,7 +264,7 @@ export const Size: FC = memo(() => {
 									variant="menu-outline"
 									gap={0}
 								>
-									{height.unit}
+									{height.unit === SIZE_UNITS.AUTO ? '' : height.unit}
 								</MenuButton>
 								<Portal>
 									<MenuList
@@ -277,12 +285,17 @@ export const Size: FC = memo(() => {
 												variant="dropdown-item"
 												key={unit.value}
 												onClick={() => onSelectUnit(unit.value, 'h')}
-												bgColor="transparent"
 												gap={2}
-												{...((height.unit || height.value) === unit.value && {
-													bgColor: 'brand.500 !important',
-													color: 'white !important',
-												})}
+												{...((height.unit || height.value) === unit.value
+													? {
+															bgColor: 'brand.500 !important',
+															color: 'white !important',
+															_hover: {
+																bgColor: 'brand.500 !important',
+																color: 'white !important',
+															},
+														}
+													: { bgColor: 'transparent' })}
 											>
 												{unit.label}
 											</MenuItem>

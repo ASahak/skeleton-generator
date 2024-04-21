@@ -58,10 +58,15 @@ export const overrideSides = (
 
 export const valueWithPrefix = (v: string): { value: string; unit: string } => {
 	try {
-		if (v === 'auto')
+		if (typeof v === 'function')
 			return {
-				value: 'auto',
-				unit: '',
+				value: 'function...',
+				unit: SIZE_UNITS.FN,
+			};
+		if (v === SIZE_UNITS.AUTO)
+			return {
+				value: SIZE_UNITS.AUTO,
+				unit: SIZE_UNITS.AUTO,
 			};
 
 		const match = v.match(/^([\d.]+)([a-zA-Z%]+)$/);
@@ -342,4 +347,24 @@ export const getParent = (path: string): string => {
 	const paths = path.split('_');
 	paths.pop();
 	return paths.join('_');
+};
+
+export const copyExecCommand = (target: HTMLElement) => {
+	let range, select;
+	if (document.createRange) {
+		range = document.createRange();
+		range.selectNodeContents(target);
+		select = window.getSelection();
+		if (select) {
+			select.removeAllRanges();
+			select.addRange(range);
+			document.execCommand('copy');
+			select.removeAllRanges();
+		}
+	} else {
+		range = (document.body as any).createTextRange();
+		range.moveToElementText(target);
+		range.select();
+		document.execCommand('copy');
+	}
 };

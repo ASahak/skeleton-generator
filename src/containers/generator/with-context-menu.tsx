@@ -8,6 +8,7 @@ import {
 	useDisclosure,
 	Portal,
 } from '@chakra-ui/react';
+import cloneDeep from 'clone-deep';
 import { RiDeleteBin6Line, RiFileCopyLine } from 'react-icons/ri';
 import { MODALS_KEYS, useModal } from '@/providers/custom-modal';
 import { useRecoilState } from 'recoil';
@@ -30,7 +31,7 @@ export const WithContextMenu = memo(({ isAble, children }: IProps) => {
 	const menuList = useRef();
 
 	const onDelete = () => {
-		const _grid: Record<GridKeyType, any> = structuredClone(getGridState);
+		const _grid: Record<GridKeyType, any> = cloneDeep(getGridState);
 		const parentKey = getParent(highlightedNode);
 		if (parentKey in _grid) {
 			_grid[parentKey as GridKeyType].children.splice(
@@ -49,6 +50,8 @@ export const WithContextMenu = memo(({ isAble, children }: IProps) => {
 			};
 			removeChildren(_grid[highlightedNode as GridKeyType].children);
 			delete _grid[highlightedNode as GridKeyType];
+		} else {
+			delete _grid[highlightedNode as GridKeyType];
 		}
 		setHighlightedNode(parentKey);
 		setGridState(_grid);
@@ -56,13 +59,13 @@ export const WithContextMenu = memo(({ isAble, children }: IProps) => {
 	};
 
 	const onCopy = () => {
-		const _grid: Record<GridKeyType, any> = structuredClone(getGridState);
+		const _grid: Record<GridKeyType, any> = cloneDeep(getGridState);
 		const parentKey = getParent(highlightedNode);
 		if (parentKey in _grid) {
 			const obj: Record<GridKeyType, any> = _grid[parentKey as GridKeyType];
 			const newRoot = parentKey + '_';
 			const newKey = newRoot + findAbsentIndex(newRoot, obj.children || []);
-			_grid[newKey as GridKeyType] = structuredClone(
+			_grid[newKey as GridKeyType] = cloneDeep(
 				_grid[highlightedNode as GridKeyType]
 			);
 			if (_grid[highlightedNode as GridKeyType].children?.length) {
@@ -71,9 +74,7 @@ export const WithContextMenu = memo(({ isAble, children }: IProps) => {
 					children.forEach((c: string) => {
 						const newChild = newKey + c.substring(newKey.length, c.length);
 						_grid[newKey as GridKeyType].children.push(newChild);
-						_grid[newChild as GridKeyType] = structuredClone(
-							_grid[c as GridKeyType]
-						);
+						_grid[newChild as GridKeyType] = cloneDeep(_grid[c as GridKeyType]);
 						if (_grid[c as GridKeyType].children?.length) {
 							generateClone(_grid[c as GridKeyType].children, newChild);
 						}

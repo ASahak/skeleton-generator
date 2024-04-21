@@ -13,6 +13,7 @@ import {
 	PopoverContent,
 	PopoverBody,
 } from '@chakra-ui/react';
+import cloneDeep from 'clone-deep';
 import { RiLayout2Fill, RiRectangleLine } from 'react-icons/ri';
 import { RxTriangleDown } from 'react-icons/rx';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -36,7 +37,7 @@ export const HighlightedNode: FC = memo(() => {
 
 	const onSelect = (value: string) => {
 		if (value === 'create-children') {
-			const _grid = structuredClone(grid);
+			const _grid = cloneDeep(grid);
 			const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
 				GridKeyType,
 				any

@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useDebounce } from 'react-use';
+import cloneDeep from 'clone-deep';
 import {
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
@@ -46,7 +47,7 @@ export const Margin: FC = memo(() => {
 	);
 
 	const toggleVariant = (e: ChangeEvent<HTMLInputElement>) => {
-		const _grid = structuredClone(grid);
+		const _grid = cloneDeep(grid);
 		const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
 			GridKeyType,
 			any
@@ -77,7 +78,7 @@ export const Margin: FC = memo(() => {
 	};
 
 	const finalChange = (targetValue: string) => {
-		const _grid = structuredClone(grid);
+		const _grid = cloneDeep(grid);
 		const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
 			GridKeyType,
 			any

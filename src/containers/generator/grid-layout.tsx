@@ -8,9 +8,15 @@ import {
 	selectRootStylesState,
 } from '@/store/selectors/global';
 import { useConvertStringToStyleObject } from '@/hooks';
-import { ROOT_KEY, STYLE_PARSING_REGEXP } from '@/constants/general-settings';
+import {
+	DEFAULT_HEIGHT,
+	DEFAULT_WIDTH,
+	ROOT_KEY,
+	STYLE_PARSING_REGEXP,
+} from '@/constants/general-settings';
 import { IGrid, ISkeleton } from '@/common/types';
 import {
+	applicableValue,
 	convertCssToReactStyles,
 	findTrap,
 	generateBorders,
@@ -130,12 +136,18 @@ export const GridLayout = () => {
 							gap: gridGap,
 							margin: generateMargin(grid.margin || ''),
 							grid: gridStyle,
-							height:
-								reservedPropsFromParent?.[keyLevel]?.h ??
-								(typeof grid.h === 'function' ? grid.h() : grid.h),
-							width:
-								reservedPropsFromParent?.[keyLevel]?.w ??
-								(typeof grid.w === 'function' ? grid.w() : grid.w),
+							height: reservedPropsFromParent?.parent
+								? DEFAULT_HEIGHT
+								: applicableValue(
+										reservedPropsFromParent?.[keyLevel]?.h ??
+											(typeof grid.h === 'function' ? grid.h() : grid.h)
+									),
+							width: reservedPropsFromParent?.parent
+								? DEFAULT_WIDTH
+								: applicableValue(
+										reservedPropsFromParent?.[keyLevel]?.w ??
+											(typeof grid.w === 'function' ? grid.w() : grid.w)
+									),
 							alignItems: grid.alignItems,
 							justifyContent: grid.justifyContent,
 							opacity: setOpacity(index, repeatCount, length, withOpacity),

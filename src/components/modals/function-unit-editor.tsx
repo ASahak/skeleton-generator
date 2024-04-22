@@ -3,17 +3,33 @@ import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import { useBus, useThemeColors } from '@/hooks';
 import { ON_CLOSE_MODAL } from '@/constants/event-bus-types';
+import { useRecoilValue } from 'recoil';
+import { selectHighlightedNodeGridPropState } from '@/store/selectors/global';
+import { valueWithPrefix } from '@/utils/helpers';
+import { SIZE_UNITS } from '@/common/enums';
 
 type IProps = {
 	title: string;
+	propKey: 'w' | 'h';
 	onApply: (v: string) => void;
 	onClose: () => void;
 };
 const INITIAL_FUNC_EXEC = `() => {
 	// your code here
 }`;
-export const FunctionUnitEditor = ({ title, onApply, onClose }: IProps) => {
-	const [localValue, setLocalValue] = useState(INITIAL_FUNC_EXEC);
+export const FunctionUnitEditor = ({
+	title,
+	onApply,
+	onClose,
+	propKey,
+}: IProps) => {
+	const value = useRecoilValue(selectHighlightedNodeGridPropState(propKey));
+	const convertBySuffix = valueWithPrefix(value);
+	const [localValue, setLocalValue] = useState(
+		convertBySuffix.unit === SIZE_UNITS.FN
+			? value.toString()
+			: INITIAL_FUNC_EXEC
+	);
 	const filteredValue = useRef(localValue);
 	const { gray100_dark400, white_dark550 } = useThemeColors();
 

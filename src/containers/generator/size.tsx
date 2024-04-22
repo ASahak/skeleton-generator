@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, memo, useCallback } from 'react';
+import { ChangeEvent, FC, memo, useCallback, useMemo } from 'react';
 import cloneDeep from 'clone-deep';
 import {
 	Box,
@@ -26,11 +26,15 @@ import {
 } from '@/store/selectors/global';
 import { gridState } from '@/store/atoms/global';
 import { RiArrowDownSLine } from 'react-icons/ri';
-import { GridKeyType } from '@/common/types';
+import { GridKeyType, IGrid } from '@/common/types';
 import { useThemeColors } from '@/hooks';
-import { SIZE_UNITS } from '@/common/enums';
-import { valueWithPrefix } from '@/utils/helpers';
+import { DIRECTION, SIZE_UNITS } from '@/common/enums';
+import { getParent, valueWithPrefix } from '@/utils/helpers';
 import { MODALS_KEYS, useModal } from '@/providers/custom-modal';
+import {
+	ROOT_KEY,
+	SIZE_UNITS_INITIAL_VALUES,
+} from '@/constants/general-settings';
 
 const UNITS_OPTIONS: {
 	label: SIZE_UNITS;
@@ -48,8 +52,14 @@ export const Size: FC = memo(() => {
 	const [grid, setGridState] = useRecoilState(gridState);
 	const { gray100_dark400 } = useThemeColors();
 
+	const parent = useMemo(() => {
+		return grid[getParent(highlightedNode)] as IGrid;
+	}, [grid, highlightedNode]);
+
 	const createOpener = useCallback(
-		async (): Promise<{
+		async (
+			propKey: 'w' | 'h'
+		): Promise<{
 			ok?: boolean;
 			failed?: boolean;
 			msg?: string;
@@ -68,6 +78,7 @@ export const Size: FC = memo(() => {
 				setModal({
 					key: MODALS_KEYS.FUNCTION_UNIT_EDITOR,
 					props: {
+						propKey,
 						title: `Your function here:`,
 						onApply: handleOK,
 						onClose: handleClose,
@@ -88,31 +99,13 @@ export const Size: FC = memo(() => {
 			any
 		>;
 		if (v === SIZE_UNITS.FN) {
-			const { failed, functionExec } = await createOpener();
+			const { failed, functionExec } = await createOpener(size);
 			if (failed) {
 				return;
 			}
 			obj[size] = eval(functionExec!);
-		} else if (v === SIZE_UNITS.AUTO) {
-			obj[size] = SIZE_UNITS.AUTO;
 		} else {
-			if (size === 'w') {
-				const value =
-					v === SIZE_UNITS.FR
-						? 1
-						: width.value === SIZE_UNITS.AUTO
-							? 100
-							: width.value;
-				obj[size] = `${value}${v}`;
-			} else {
-				const value =
-					v === SIZE_UNITS.FR
-						? 1
-						: height.value === SIZE_UNITS.AUTO
-							? 100
-							: height.value;
-				obj[size] = `${value}${v}`;
-			}
+			obj[size] = `${SIZE_UNITS_INITIAL_VALUES[v]}${v}`;
 		}
 		setGridState(_grid);
 	};
@@ -131,6 +124,15 @@ export const Size: FC = memo(() => {
 			obj.h = `${newValue}${height.unit}`;
 		}
 		setGridState(_grid);
+	};
+
+	const ableToDisable = (size: 'w' | 'h') => {
+		if (size === 'w') {
+			return (
+				parent.direction === DIRECTION.COLUMN && highlightedNode !== ROOT_KEY
+			);
+		}
+		return parent.direction === DIRECTION.ROW && highlightedNode !== ROOT_KEY;
 	};
 
 	return (
@@ -161,12 +163,13 @@ export const Size: FC = memo(() => {
 							size="sm"
 							borderTopLeftRadius={0}
 							borderBottomLeftRadius={0}
-							readOnly={isReadOnly(width.unit)}
+							readOnly={isReadOnly(width.unit) || ableToDisable('w')}
 							type={isReadOnly(width.unit) ? 'text' : 'number'}
 						/>
 						<InputRightAddon h="3rem" p={0} borderColor={gray100_dark400}>
 							<Menu variant="base" placement="bottom-end" closeOnSelect={false}>
 								<MenuButton
+									isDisabled={ableToDisable('w')}
 									as={Button}
 									w="full"
 									textAlign="left"
@@ -247,12 +250,13 @@ export const Size: FC = memo(() => {
 							size="sm"
 							borderTopLeftRadius={0}
 							borderBottomLeftRadius={0}
-							readOnly={isReadOnly(height.unit)}
+							readOnly={isReadOnly(height.unit) || ableToDisable('h')}
 							type={isReadOnly(height.unit) ? 'text' : 'number'}
 						/>
 						<InputRightAddon h="3rem" p={0} borderColor={gray100_dark400}>
 							<Menu variant="base" placement="bottom-end" closeOnSelect={false}>
 								<MenuButton
+									isDisabled={ableToDisable('h')}
 									as={Button}
 									w="full"
 									textAlign="left"

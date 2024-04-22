@@ -134,7 +134,7 @@ export const generateGridArea = (
 		const isFunction = typeof item.w === 'function';
 		if (isFunction) {
 			const w = (item.w as any)();
-			acc += Array.isArray(item) ? DEFAULT_GRID_CONTAINER_WIDTH : w;
+			acc += (Array.isArray(item) ? DEFAULT_GRID_CONTAINER_WIDTH : w) + ' ';
 			cb(index, 'w', w);
 		} else {
 			acc += Array.isArray(item)
@@ -155,7 +155,8 @@ export const generateGridAreaAsColDirection = (
 			const isFunction = typeof item.h === 'function';
 			if (isFunction) {
 				const h = (item.h as any)();
-				acc += alignItems === 'center' ? DEFAULT_GRID_CONTAINER_HEIGHT : h;
+				acc +=
+					(alignItems === 'center' ? DEFAULT_GRID_CONTAINER_HEIGHT : h) + ' ';
 				cb(index, 'h', h);
 			} else {
 				acc +=
@@ -367,4 +368,12 @@ export const copyExecCommand = (target: HTMLElement) => {
 		range.select();
 		document.execCommand('copy');
 	}
+};
+
+export const applicableValue = (v: string): string => {
+	if (v.indexOf('fr') > -1) {
+		return 'auto';
+	}
+
+	return v;
 };

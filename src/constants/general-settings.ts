@@ -1,5 +1,5 @@
 /*TODO need to import from npm package*/
-import { DIRECTION } from '@/common/enums';
+import { DIRECTION, SIZE_UNITS } from '@/common/enums';
 
 export const STYLE_PARSING_REGEXP = /(^\{|\}$)/g;
 
@@ -43,4 +43,24 @@ export const CONTAINER_INITIAL_VALUES = {
 	justifyContent: DEFAULT_JUSTIFY_ALIGNMENT,
 	withOpacity: false,
 	styles: `{}`,
+};
+
+export const SIZE_UNITS_INITIAL_VALUES = {
+	[SIZE_UNITS.FN]: '',
+	[SIZE_UNITS.AUTO]: '',
+	[SIZE_UNITS.PERCENT]: '100',
+	[SIZE_UNITS.PX]: '100',
+	[SIZE_UNITS.FR]: '1',
+	[SIZE_UNITS.REM]: '1',
+	[SIZE_UNITS.VH]: '100',
+	[SIZE_UNITS.VW]: '100',
+	[SIZE_UNITS.PC]: '1',
+	[SIZE_UNITS.CM]: '1',
+	[SIZE_UNITS.MM]: '100',
+	[SIZE_UNITS.IN]: '1',
+	[SIZE_UNITS.PT]: '1',
+	[SIZE_UNITS.CH]: '1',
+	[SIZE_UNITS.EM]: '1',
+	[SIZE_UNITS.V_MIN]: '100',
+	[SIZE_UNITS.V_MAX]: '100',
 };

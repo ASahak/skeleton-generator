@@ -1,4 +1,5 @@
-import { ChangeEvent, FC, memo } from 'react';
+import { ChangeEvent, FC, memo, useCallback } from 'react';
+import cloneDeep from 'clone-deep';
 import {
 	Box,
 	Button,
@@ -14,8 +15,8 @@ import {
 	MenuItem,
 	MenuList,
 	Portal,
-	Tooltip,
 	Text,
+	Tooltip,
 } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { RxHeight, RxWidth } from 'react-icons/rx';
@@ -29,12 +30,14 @@ import { GridKeyType } from '@/common/types';
 import { useThemeColors } from '@/hooks';
 import { SIZE_UNITS } from '@/common/enums';
 import { valueWithPrefix } from '@/utils/helpers';
+import { MODALS_KEYS, useModal } from '@/providers/custom-modal';
 
-const UNITS_OPTIONS: Array<{
+const UNITS_OPTIONS: {
 	label: SIZE_UNITS;
 	value: SIZE_UNITS;
-}> = Object.values(SIZE_UNITS).map((unit) => ({ label: unit, value: unit }));
+}[] = Object.values(SIZE_UNITS).map((unit) => ({ label: unit, value: unit }));
 export const Size: FC = memo(() => {
+	const { setModal, onClose } = useModal();
 	const width = valueWithPrefix(
 		useRecoilValue(selectHighlightedNodeGridPropState('w'))
 	);
@@ -45,29 +48,77 @@ export const Size: FC = memo(() => {
 	const [grid, setGridState] = useRecoilState(gridState);
 	const { gray100_dark400 } = useThemeColors();
 
-	const onSelectUnit = (v: SIZE_UNITS, size: 'w' | 'h') => {
-		const _grid = structuredClone(grid);
+	const createOpener = useCallback(
+		async (): Promise<{
+			ok?: boolean;
+			failed?: boolean;
+			msg?: string;
+			functionExec?: string;
+		}> =>
+			await new Promise((resolve) => {
+				const handleClose = () => {
+					resolve({ failed: true, msg: 'Canceled by user!' });
+				};
+
+				const handleOK = (v: string) => {
+					onClose();
+					resolve({ ok: true, functionExec: v });
+				};
+
+				setModal({
+					key: MODALS_KEYS.FUNCTION_UNIT_EDITOR,
+					props: {
+						title: `Your function here:`,
+						onApply: handleOK,
+						onClose: handleClose,
+					},
+				});
+			}),
+		[]
+	);
+
+	const isReadOnly = (unit: string) => {
+		return unit === SIZE_UNITS.AUTO || unit === SIZE_UNITS.FN;
+	};
+
+	const onSelectUnit = async (v: SIZE_UNITS, size: 'w' | 'h') => {
+		const _grid = cloneDeep(grid);
 		const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
 			GridKeyType,
 			any
 		>;
-
-		if (v === SIZE_UNITS.AUTO) {
+		if (v === SIZE_UNITS.FN) {
+			const { failed, functionExec } = await createOpener();
+			if (failed) {
+				return;
+			}
+			obj[size] = eval(functionExec!);
+		} else if (v === SIZE_UNITS.AUTO) {
 			obj[size] = SIZE_UNITS.AUTO;
 		} else {
 			if (size === 'w') {
-				obj[size] =
-					`${width.value === SIZE_UNITS.AUTO ? 100 : width.value}${v}`;
+				const value =
+					v === SIZE_UNITS.FR
+						? 1
+						: width.value === SIZE_UNITS.AUTO
+							? 100
+							: width.value;
+				obj[size] = `${value}${v}`;
 			} else {
-				obj[size] =
-					`${height.value === SIZE_UNITS.AUTO ? 100 : height.value}${v}`;
+				const value =
+					v === SIZE_UNITS.FR
+						? 1
+						: height.value === SIZE_UNITS.AUTO
+							? 100
+							: height.value;
+				obj[size] = `${value}${v}`;
 			}
 		}
 		setGridState(_grid);
 	};
 
 	const onChange = (e: ChangeEvent<HTMLInputElement>, size: 'w' | 'h') => {
-		const _grid = structuredClone(grid);
+		const _grid = cloneDeep(grid);
 		const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
 			GridKeyType,
 			any
@@ -102,6 +153,7 @@ export const Size: FC = memo(() => {
 							</InputLeftAddon>
 						</Tooltip>
 						<Input
+							isTruncated
 							borderColor={!width.value ? 'red.400' : gray100_dark400}
 							variant="base"
 							value={width.value}
@@ -109,11 +161,11 @@ export const Size: FC = memo(() => {
 							size="sm"
 							borderTopLeftRadius={0}
 							borderBottomLeftRadius={0}
-							readOnly={width.value === SIZE_UNITS.AUTO}
-							type={width.value === SIZE_UNITS.AUTO ? 'text' : 'number'}
+							readOnly={isReadOnly(width.unit)}
+							type={isReadOnly(width.unit) ? 'text' : 'number'}
 						/>
 						<InputRightAddon h="3rem" p={0} borderColor={gray100_dark400}>
-							<Menu variant="base" placement="bottom-end">
+							<Menu variant="base" placement="bottom-end" closeOnSelect={false}>
 								<MenuButton
 									as={Button}
 									w="full"
@@ -126,7 +178,7 @@ export const Size: FC = memo(() => {
 									variant="menu-outline"
 									gap={0}
 								>
-									{width.unit}
+									{width.unit === SIZE_UNITS.AUTO ? '' : width.unit}
 								</MenuButton>
 								<Portal>
 									<MenuList
@@ -147,12 +199,17 @@ export const Size: FC = memo(() => {
 												variant="dropdown-item"
 												key={unit.value}
 												onClick={() => onSelectUnit(unit.value, 'w')}
-												bgColor="transparent"
 												gap={2}
-												{...((width.unit || width.value) === unit.value && {
-													bgColor: 'brand.500 !important',
-													color: 'white !important',
-												})}
+												{...((width.unit || width.value) === unit.value
+													? {
+															bgColor: 'brand.500 !important',
+															color: 'white !important',
+															_hover: {
+																bgColor: 'brand.500 !important',
+																color: 'white !important',
+															},
+														}
+													: { bgColor: 'transparent' })}
 											>
 												{unit.label}
 											</MenuItem>
@@ -182,6 +239,7 @@ export const Size: FC = memo(() => {
 							</InputLeftAddon>
 						</Tooltip>
 						<Input
+							isTruncated
 							borderColor={!height.value ? 'red.400' : gray100_dark400}
 							variant="base"
 							value={height.value}
@@ -189,11 +247,11 @@ export const Size: FC = memo(() => {
 							size="sm"
 							borderTopLeftRadius={0}
 							borderBottomLeftRadius={0}
-							readOnly={height.value === SIZE_UNITS.AUTO}
-							type={height.value === SIZE_UNITS.AUTO ? 'text' : 'number'}
+							readOnly={isReadOnly(height.unit)}
+							type={isReadOnly(height.unit) ? 'text' : 'number'}
 						/>
 						<InputRightAddon h="3rem" p={0} borderColor={gray100_dark400}>
-							<Menu variant="base" placement="bottom-end">
+							<Menu variant="base" placement="bottom-end" closeOnSelect={false}>
 								<MenuButton
 									as={Button}
 									w="full"
@@ -206,7 +264,7 @@ export const Size: FC = memo(() => {
 									variant="menu-outline"
 									gap={0}
 								>
-									{height.unit}
+									{height.unit === SIZE_UNITS.AUTO ? '' : height.unit}
 								</MenuButton>
 								<Portal>
 									<MenuList
@@ -227,12 +285,17 @@ export const Size: FC = memo(() => {
 												variant="dropdown-item"
 												key={unit.value}
 												onClick={() => onSelectUnit(unit.value, 'h')}
-												bgColor="transparent"
 												gap={2}
-												{...((height.unit || height.value) === unit.value && {
-													bgColor: 'brand.500 !important',
-													color: 'white !important',
-												})}
+												{...((height.unit || height.value) === unit.value
+													? {
+															bgColor: 'brand.500 !important',
+															color: 'white !important',
+															_hover: {
+																bgColor: 'brand.500 !important',
+																color: 'white !important',
+															},
+														}
+													: { bgColor: 'transparent' })}
 											>
 												{unit.label}
 											</MenuItem>

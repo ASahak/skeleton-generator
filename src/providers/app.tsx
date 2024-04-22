@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { RecoilRoot } from 'recoil';
 import { Chakra } from './chakra';
+import { CustomModal } from './custom-modal';
 
 export const AppProviders = ({
 	children,
@@ -17,7 +18,9 @@ export const AppProviders = ({
 
 	return (
 		<Chakra>
-			<RecoilRoot>{appMounted ? children : null}</RecoilRoot>
+			<RecoilRoot>
+				<CustomModal>{appMounted ? children : null}</CustomModal>
+			</RecoilRoot>
 		</Chakra>
 	);
 };

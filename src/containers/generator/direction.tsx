@@ -9,6 +9,7 @@ import {
 	MenuItem,
 	MenuList,
 } from '@chakra-ui/react';
+import cloneDeep from 'clone-deep';
 import { RiArrowDownSLine } from 'react-icons/ri';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
@@ -28,7 +29,7 @@ export const Direction: FC = memo(() => {
 	const [grid, setGridState] = useRecoilState(gridState);
 
 	const onSelect = (value: DIRECTION) => {
-		const _grid = structuredClone(grid);
+		const _grid = cloneDeep(grid);
 		const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
 			GridKeyType,
 			any

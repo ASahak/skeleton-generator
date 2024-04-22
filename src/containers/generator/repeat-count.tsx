@@ -1,6 +1,7 @@
 import { ChangeEvent, FC, useState, memo } from 'react';
 import { Box, Heading, Input } from '@chakra-ui/react';
 import { useDebounce } from 'react-use';
+import cloneDeep from 'clone-deep';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
 	DEFAULT_REPEAT_COUNT,
@@ -23,7 +24,7 @@ export const RepeatCount: FC = memo(() => {
 
 	useDebounce(
 		() => {
-			const _grid = structuredClone(grid);
+			const _grid = cloneDeep(grid);
 			const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
 				GridKeyType,
 				any

@@ -2,6 +2,7 @@ import { ChangeEvent, FC, memo, useState } from 'react';
 import { Box, Heading, Input } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useDebounce } from 'react-use';
+import cloneDeep from 'clone-deep';
 import {
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
@@ -17,7 +18,7 @@ export const ClassName: FC = memo(() => {
 
 	useDebounce(
 		() => {
-			const _grid = structuredClone(grid);
+			const _grid = cloneDeep(grid);
 			const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
 				GridKeyType,
 				any

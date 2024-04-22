@@ -30,6 +30,13 @@ export default defineStyleConfig({
 				backgroundColor: 'brand.600',
 			},
 		},
+		red: {
+			backgroundColor: 'red.500',
+			color: 'white',
+			_hover: {
+				backgroundColor: 'red.600',
+			},
+		},
 		'group-dropdowns': ({ colorMode }) => ({
 			padding: '1.3rem',
 			borderRadius: '0.6rem',
@@ -61,8 +68,14 @@ export default defineStyleConfig({
 			fontWeight: '500',
 			fontSize: '1.2rem',
 			textAlign: 'left',
-			_hover: { bgColor: colorMode === 'dark' ? 'darcula.580' : 'gray.50' },
-			_focus: { bgColor: colorMode === 'dark' ? 'darcula.580' : 'gray.50' },
+			bgColor: 'transparent',
+			background: 'transparent !important',
+			_hover: {
+				bgColor:
+					colorMode === 'dark'
+						? 'darcula.500 !important'
+						: 'gray.50 !important',
+			},
 		}),
 	},
 	defaultProps: {},

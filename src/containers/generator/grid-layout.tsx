@@ -1,11 +1,10 @@
 import { CSSProperties, useCallback, useEffect, useRef } from 'react';
 import { Box, useColorMode } from '@chakra-ui/react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import parse from 'style-to-object';
 import { HighlightPulse } from './highlight-pulse';
 import {
 	selectGridState,
-	selectHighlightedNodeState,
 	selectRootStylesState,
 } from '@/store/selectors/global';
 import { useConvertStringToStyleObject } from '@/hooks';
@@ -13,12 +12,15 @@ import { ROOT_KEY, STYLE_PARSING_REGEXP } from '@/constants/general-settings';
 import { IGrid, ISkeleton } from '@/common/types';
 import {
 	convertCssToReactStyles,
+	findTrap,
 	generateBorders,
 	generateCSSGridArea,
 	generateMargin,
 	itemsWithRepeat,
 	setOpacity,
 } from '@/utils/helpers';
+import { highlightedNodeState } from '@/store/atoms/global';
+import { WithContextMenu } from '@/containers/generator/with-context-menu';
 
 interface IGridLayout {
 	grid: IGrid;
@@ -33,10 +35,11 @@ export const GridLayout = () => {
 	const gridState = useRecoilValue(selectGridState);
 	const rootStyles = useRecoilValue(selectRootStylesState);
 	const convertedStyles = useConvertStringToStyleObject(rootStyles);
-	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
+	const [highlightedNode, setHighlightedNode] =
+		useRecoilState(highlightedNodeState);
 	const validStyles = useRef<Record<string, any>>({});
 	const isDark = colorMode === 'dark';
-
+	console.log(gridState);
 	const renderSkeletons = (skeleton: ISkeleton) => {
 		console.log(skeleton);
 		return <Box></Box>;
@@ -64,6 +67,13 @@ export const GridLayout = () => {
 		}
 	};
 
+	const highlightNode = (e: Event) => {
+		const node: HTMLElement | null = e.target as HTMLElement;
+		findTrap(node, highlightedNode, (key) => {
+			setHighlightedNode(key);
+		});
+	};
+
 	const renderGridLayout = useCallback(
 		({
 			grid,
@@ -74,7 +84,7 @@ export const GridLayout = () => {
 		}: IGridLayout) => {
 			const keyLevel = dataKey;
 			const _reservedPropsFromParent: any = { parent: keyLevel };
-			let collectedChildren: IGrid[] = [];
+			const collectedChildren: Record<string, IGrid> = {};
 			let collectedSkeletons: ISkeleton[] = [];
 			const gridGap = (grid.gridGap || 0) + 'rem',
 				hasChildren =
@@ -84,9 +94,9 @@ export const GridLayout = () => {
 				repeatCount: number = grid.repeatCount as number;
 
 			if (hasChildren) {
-				collectedChildren = grid.children!.map(
-					(key: string) => gridState[key]
-				) as IGrid[];
+				grid.children!.forEach(
+					(key: string) => (collectedChildren[key] = gridState[key] as IGrid)
+				);
 			}
 			if (hasSkeletons) {
 				collectedSkeletons = grid.skeletons!.map(
@@ -94,7 +104,10 @@ export const GridLayout = () => {
 				) as ISkeleton[];
 			}
 			const children = hasChildren
-					? itemsWithRepeat(collectedChildren as IGrid[], repeatCount)
+					? itemsWithRepeat(
+							Object.values(collectedChildren) as IGrid[],
+							repeatCount
+						)
 					: [],
 				gridStyle = generateCSSGridArea({
 					grid,
@@ -109,49 +122,52 @@ export const GridLayout = () => {
 				style = convertStyles(grid.styles as string) || {};
 
 			return (
-				<Box
-					display="grid"
-					data-key={keyLevel}
-					key={keyLevel}
-					style={{
-						gap: gridGap,
-						margin: generateMargin(grid.margin || ''),
-						grid: gridStyle,
-						height:
-							reservedPropsFromParent?.[keyLevel]?.h ??
-							(typeof grid.h === 'function' ? grid.h() : grid.h),
-						width:
-							reservedPropsFromParent?.[keyLevel]?.w ??
-							(typeof grid.w === 'function' ? grid.w() : grid.w),
-						alignItems: grid.alignItems,
-						justifyContent: grid.justifyContent,
-						opacity: setOpacity(index, repeatCount, length, withOpacity),
-						...convertCssToReactStyles(style),
-						...generateBorders({
-							keyLevel,
-							highlightedNode,
-							isDark,
-							parent: reservedPropsFromParent?.parent,
-						}),
-					}}
-					className={grid.className || ''}
-				>
-					{hasChildren
-						? (collectedChildren as IGrid[]).map((g, gridItemIndex) =>
-								renderGridLayout({
-									grid: g,
-									dataKey: `${keyLevel}_${gridItemIndex + 1}`,
-									index: gridItemIndex,
-									length: children.length,
-									reservedPropsFromParent: _reservedPropsFromParent,
-								})
-							)
-						: hasSkeletons
-							? (collectedSkeletons as ISkeleton[]).map((s) =>
-									renderSkeletons(s)
+				<WithContextMenu isAble={keyLevel === highlightedNode} key={keyLevel}>
+					<Box
+						display="grid"
+						data-key={keyLevel}
+						style={{
+							gap: gridGap,
+							margin: generateMargin(grid.margin || ''),
+							grid: gridStyle,
+							height:
+								reservedPropsFromParent?.[keyLevel]?.h ??
+								(typeof grid.h === 'function' ? grid.h() : grid.h),
+							width:
+								reservedPropsFromParent?.[keyLevel]?.w ??
+								(typeof grid.w === 'function' ? grid.w() : grid.w),
+							alignItems: grid.alignItems,
+							justifyContent: grid.justifyContent,
+							opacity: setOpacity(index, repeatCount, length, withOpacity),
+							...convertCssToReactStyles(style),
+							...generateBorders({
+								keyLevel,
+								highlightedNode,
+								isDark,
+								parent: reservedPropsFromParent?.parent,
+								hasChildren,
+							}),
+						}}
+						className={grid.className || ''}
+					>
+						{hasChildren
+							? (Object.keys(collectedChildren) as string[]).map(
+									(key, gridItemIndex) =>
+										renderGridLayout({
+											grid: collectedChildren[key],
+											dataKey: key,
+											index: gridItemIndex,
+											length: children.length,
+											reservedPropsFromParent: _reservedPropsFromParent,
+										})
 								)
-							: null}
-				</Box>
+							: hasSkeletons
+								? (collectedSkeletons as ISkeleton[]).map((s) =>
+										renderSkeletons(s)
+									)
+								: null}
+					</Box>
+				</WithContextMenu>
 			);
 		},
 		[gridState, highlightedNode, isDark]
@@ -163,8 +179,12 @@ export const GridLayout = () => {
 
 	return (
 		<>
-			<HighlightPulse />
-			<Box style={convertedStyles as CSSProperties} p="1px" overflow="hidden">
+			<Box
+				style={convertedStyles as CSSProperties}
+				p="1px"
+				overflow="hidden"
+				onDoubleClick={highlightNode as any}
+			>
 				{renderGridLayout({
 					grid: gridState[ROOT_KEY] as IGrid,
 					dataKey: ROOT_KEY,
@@ -172,6 +192,7 @@ export const GridLayout = () => {
 					length: 1,
 				})}
 			</Box>
+			<HighlightPulse />
 		</>
 	);
 };

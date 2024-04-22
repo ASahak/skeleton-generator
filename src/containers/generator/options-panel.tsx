@@ -77,15 +77,17 @@ export const OptionsPanel: FC = memo(() => {
 								Configs of -{' '}
 								<Badge variant="pill-docs">{highlightedNode}</Badge>
 							</Heading>
-							<Size />
-							<Direction />
-							<Alignment />
-							<GridGap />
-							<Margin />
-							<ClassName />
-							<RepeatCount />
-							<WithOpacity />
-							<Styles />
+							<Box key={highlightedNode}>
+								<Size />
+								<Direction />
+								<Alignment />
+								<GridGap />
+								<Margin />
+								<ClassName />
+								<RepeatCount />
+								<WithOpacity />
+								<Styles />
+							</Box>
 						</Box>
 					</Flex>
 				</motion.div>

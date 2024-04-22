@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, memo } from 'react';
+import { useRef, useState, memo, useLayoutEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { usePrevious } from 'react-use';
 import { useRecoilValue } from 'recoil';
@@ -8,6 +8,7 @@ import {
 	selectGridState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
+import { getParent } from '@/utils/helpers';
 
 export const HighlightPulse = memo(() => {
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
@@ -16,13 +17,22 @@ export const HighlightPulse = memo(() => {
 	const [rect, setRect] = useState<Record<string, unknown> | null>(null);
 	const key = useRef(null);
 	const { added } = useDiffArray(
-		(gridState[highlightedNode] as IGrid)?.children || [],
+		[
+			...((gridState[getParent(highlightedNode)] as IGrid)?.children || []),
+			...((gridState[highlightedNode] as IGrid)?.children || []),
+		],
 		prevGridState
-			? (prevGridState[highlightedNode as keyof IGrid] as IGrid)?.children || []
+			? [
+					...((prevGridState[highlightedNode as keyof IGrid] as IGrid)
+						?.children || []),
+					...((
+						prevGridState[getParent(highlightedNode) as keyof IGrid] as IGrid
+					)?.children || []),
+				]
 			: []
 	);
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		key.current = added[added.length - 1];
 		const node = document.querySelector(`[data-key=${key.current}]`);
 		if (node) {

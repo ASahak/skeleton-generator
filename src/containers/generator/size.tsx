@@ -283,6 +283,7 @@ export const Size: FC = memo(() => {
 									>
 										{UNITS_OPTIONS.map((unit) => (
 											<MenuItem
+												as={Button}
 												size="sm"
 												key={unit.value}
 												onClick={() => onSelectUnit(unit.value, 'h')}

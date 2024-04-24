@@ -59,6 +59,7 @@ export const Direction: FC = memo(() => {
 				<MenuList minW="20rem">
 					{OPTIONS.map((opt) => (
 						<MenuItem
+							as={Button}
 							size="sm"
 							key={opt.value}
 							onClick={() => onSelect(opt.value)}

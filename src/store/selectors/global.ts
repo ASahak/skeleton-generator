@@ -5,14 +5,22 @@ import {
 	highlightedNodeState,
 	optionsPanelIsOpenState,
 	rootStylesState,
+	skeletonsState,
 } from '@/store/atoms/global';
-import { GridKeyType } from '@/common/types';
+import { GridKeyType, ISkeleton } from '@/common/types';
 import { CONTAINER_INITIAL_VALUES } from '@/constants/general-settings';
 
 export const selectGridState = selector({
 	key: 'select-grid',
 	get: ({ get }) => {
 		return get(gridState);
+	},
+});
+
+export const selectSkeletonsState = selector({
+	key: 'select-skeletons',
+	get: ({ get }) => {
+		return get(skeletonsState);
 	},
 });
 
@@ -37,6 +45,15 @@ export const selectHighlightedNodeGridPropState = selectorFamily({
 					propName as keyof typeof CONTAINER_INITIAL_VALUES
 				]
 			);
+		},
+});
+
+export const selectSkeletonsByParentKey = selectorFamily({
+	key: 'select-skeletons-by-parent-key',
+	get:
+		(parentKey: string) =>
+		({ get }) => {
+			return dlv(get(skeletonsState), parentKey) as ISkeleton[];
 		},
 });
 

@@ -95,15 +95,19 @@ export const Alignment: FC = memo(() => {
 									<MenuItem
 										as={Button}
 										size="sm"
-										variant="dropdown-item"
 										key={unit.value}
 										onClick={() => onSelectUnit(unit.value, 'alignItems')}
-										bgColor="transparent"
 										gap={2}
-										{...(alignItems === unit.value && {
-											bgColor: 'brand.500 !important',
-											color: 'white !important',
-										})}
+										{...(alignItems === unit.value
+											? {
+													bgColor: 'brand.500 !important',
+													color: 'white !important',
+													_hover: {
+														bgColor: 'brand.500 !important',
+														color: 'white !important',
+													},
+												}
+											: { bgColor: 'transparent' })}
 									>
 										{unit.label}
 									</MenuItem>
@@ -145,15 +149,19 @@ export const Alignment: FC = memo(() => {
 									<MenuItem
 										as={Button}
 										size="sm"
-										variant="dropdown-item"
 										key={unit.value}
 										onClick={() => onSelectUnit(unit.value, 'justifyContent')}
-										bgColor="transparent"
 										gap={2}
-										{...(justifyContent === unit.value && {
-											bgColor: 'brand.500 !important',
-											color: 'white !important',
-										})}
+										{...(justifyContent === unit.value
+											? {
+													bgColor: 'brand.500 !important',
+													color: 'white !important',
+													_hover: {
+														bgColor: 'brand.500 !important',
+														color: 'white !important',
+													},
+												}
+											: { bgColor: 'transparent' })}
 									>
 										{unit.label}
 									</MenuItem>

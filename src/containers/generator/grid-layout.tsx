@@ -6,6 +6,7 @@ import { HighlightPulse } from './highlight-pulse';
 import {
 	selectGridState,
 	selectRootStylesState,
+	selectSkeletonsState,
 } from '@/store/selectors/global';
 import { useConvertStringToStyleObject } from '@/hooks';
 import {
@@ -13,8 +14,9 @@ import {
 	DEFAULT_WIDTH,
 	ROOT_KEY,
 	STYLE_PARSING_REGEXP,
+	VARIANTS,
 } from '@/constants/general-settings';
-import { IGrid, ISkeleton } from '@/common/types';
+import { IGrid, ISkeleton, SizeFunction } from '@/common/types';
 import {
 	applicableValue,
 	convertCssToReactStyles,
@@ -22,6 +24,7 @@ import {
 	generateBorders,
 	generateCSSGridArea,
 	generateMargin,
+	isClickedOnSkeleton,
 	itemsWithRepeat,
 	setOpacity,
 } from '@/utils/helpers';
@@ -39,16 +42,57 @@ interface IGridLayout {
 export const GridLayout = () => {
 	const { colorMode } = useColorMode();
 	const gridState = useRecoilValue(selectGridState);
+	const skeletonsState = useRecoilValue(selectSkeletonsState);
 	const rootStyles = useRecoilValue(selectRootStylesState);
 	const convertedStyles = useConvertStringToStyleObject(rootStyles);
 	const [highlightedNode, setHighlightedNode] =
 		useRecoilState(highlightedNodeState);
 	const validStyles = useRef<Record<string, any>>({});
 	const isDark = colorMode === 'dark';
-	console.log(gridState);
-	const renderSkeletons = (skeleton: ISkeleton) => {
-		console.log(skeleton);
-		return <Box></Box>;
+
+	const renderSkeletons = (
+		skeletons: Record<string, ISkeleton>,
+		repeatCount: number,
+		withOpacity?: boolean
+	) => {
+		const skeletonKeys = Object.keys(skeletons);
+		return skeletonKeys.map((key, index) => (
+			<WithContextMenu isAble={key === highlightedNode} key={key}>
+				<Box
+					data-key={key}
+					key={key}
+					style={{
+						width: applicableValue(
+							(typeof skeletons[key].w === 'function'
+								? (skeletons[key].w as SizeFunction)()
+								: skeletons[key].w)!.toString()
+						),
+						height: applicableValue(
+							(typeof skeletons[key].h === 'function'
+								? (skeletons[key].h as SizeFunction)()
+								: skeletons[key].h)!.toString()
+						),
+						borderRadius: skeletons[key].r || '0px',
+						margin: generateMargin(skeletons[key].margin || ''),
+						backgroundColor: VARIANTS.dark.main, //todo
+						opacity: setOpacity(
+							index,
+							repeatCount,
+							skeletonKeys.length,
+							withOpacity
+						),
+						...generateBorders({
+							keyLevel: key,
+							highlightedNode,
+							isDark,
+							hasChildren: false,
+						}),
+					}}
+					position="relative"
+					overflow="hidden"
+				/>
+			</WithContextMenu>
+		));
 	};
 
 	const convertStyles = (styles: string) => {
@@ -75,6 +119,14 @@ export const GridLayout = () => {
 
 	const highlightNode = (e: Event) => {
 		const node: HTMLElement | null = e.target as HTMLElement;
+		const key = node.getAttribute('data-key');
+		const isSkeleton = isClickedOnSkeleton(key as string, skeletonsState);
+
+		if (isSkeleton) {
+			setHighlightedNode(key as string);
+			return;
+		}
+
 		findTrap(node, highlightedNode, (key) => {
 			setHighlightedNode(key);
 		});
@@ -91,7 +143,7 @@ export const GridLayout = () => {
 			const keyLevel = dataKey;
 			const _reservedPropsFromParent: any = { parent: keyLevel };
 			const collectedChildren: Record<string, IGrid> = {};
-			let collectedSkeletons: ISkeleton[] = [];
+			const collectedSkeletons: Record<string, ISkeleton> = {};
 			const gridGap = (grid.gridGap || 0) + 'rem',
 				hasChildren =
 					Object.hasOwn(grid, 'children') && Array.isArray(grid.children),
@@ -105,9 +157,10 @@ export const GridLayout = () => {
 				);
 			}
 			if (hasSkeletons) {
-				collectedSkeletons = grid.skeletons!.map(
-					(key: string) => gridState[key]
-				) as ISkeleton[];
+				grid.skeletons!.forEach(
+					(key: string) =>
+						(collectedSkeletons[key] = skeletonsState[key] as ISkeleton)
+				);
 			}
 			const children = hasChildren
 					? itemsWithRepeat(
@@ -115,11 +168,17 @@ export const GridLayout = () => {
 							repeatCount
 						)
 					: [],
+				skeletons = hasSkeletons
+					? itemsWithRepeat(
+							Object.values(collectedSkeletons) as ISkeleton[],
+							repeatCount
+						)
+					: [],
 				gridStyle = generateCSSGridArea({
 					grid,
 					hasChildren,
 					children,
-					skeletons: collectedSkeletons,
+					skeletons,
 					repeatCount,
 					reservedProps: _reservedPropsFromParent,
 					keyLevel,
@@ -174,15 +233,13 @@ export const GridLayout = () => {
 										})
 								)
 							: hasSkeletons
-								? (collectedSkeletons as ISkeleton[]).map((s) =>
-										renderSkeletons(s)
-									)
+								? renderSkeletons(collectedSkeletons, repeatCount, withOpacity)
 								: null}
 					</Box>
 				</WithContextMenu>
 			);
 		},
-		[gridState, highlightedNode, isDark]
+		[gridState, skeletonsState, highlightedNode, isDark]
 	);
 
 	useEffect(() => {

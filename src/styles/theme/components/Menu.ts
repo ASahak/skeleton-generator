@@ -15,6 +15,28 @@ export default defineStyleConfig({
 				width: '100%',
 				backgroundColor: colorMode === 'dark' ? 'darcula.550' : 'white',
 			},
+			item: {
+				display: 'inline-flex !important',
+				minH: '3.4rem',
+				alignItems: 'center',
+				justifyContent: 'start',
+				color: colorMode === 'dark' ? 'white' : 'gray.800',
+				fontWeight: '500',
+				fontSize: '1.2rem',
+				textAlign: 'left',
+				bgColor: 'transparent',
+				borderRadius: '.4rem',
+				background: 'transparent !important',
+				_disabled: {
+					cursor: 'not-allowed !important',
+				},
+				_hover: {
+					bgColor:
+						colorMode === 'dark'
+							? 'darcula.510 !important'
+							: 'gray.50 !important',
+				},
+			},
 		}),
 	},
 	defaultProps: {},

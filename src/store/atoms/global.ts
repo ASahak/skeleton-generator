@@ -1,7 +1,13 @@
 import { atom, RecoilState } from 'recoil';
+import { IGrid, ISkeleton } from '@/common/types';
 
-export const gridState: RecoilState<Record<string, unknown>> = atom({
+export const gridState: RecoilState<Record<string, IGrid>> = atom({
 	key: 'grid',
+	default: {},
+});
+
+export const skeletonsState: RecoilState<Record<string, ISkeleton>> = atom({
+	key: 'skeletons',
 	default: {},
 });
 

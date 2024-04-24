@@ -96,15 +96,25 @@ export const GridTree: FC = memo(() => {
 					key: i,
 					children: [],
 				});
-				if (Object.hasOwn(grid[i] as IGrid, 'children')) {
+				if (Object.hasOwn((grid[i] || {}) as IGrid, 'children')) {
 					findChildren(
 						(grid[i] as IGrid).children || [],
+						set.children[set.children.length - 1]
+					);
+				} else if (Object.hasOwn((grid[i] || {}) as IGrid, 'skeletons')) {
+					findChildren(
+						(grid[i] as IGrid).skeletons || [],
 						set.children[set.children.length - 1]
 					);
 				}
 			}
 		};
-		findChildren((grid[ROOT_KEY] as IGrid).children || [], acc);
+		findChildren(
+			(grid[ROOT_KEY] as IGrid).children ||
+				(grid[ROOT_KEY] as IGrid).skeletons ||
+				[],
+			acc
+		);
 		return [acc];
 	}, [grid]);
 

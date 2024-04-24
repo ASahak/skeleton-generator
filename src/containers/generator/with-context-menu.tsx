@@ -3,7 +3,6 @@ import {
 	Menu,
 	MenuItem,
 	MenuList,
-	Button,
 	Icon,
 	useDisclosure,
 	Portal,
@@ -150,10 +149,8 @@ export const WithContextMenu = memo(({ isAble, children }: IProps) => {
 						<MenuItem
 							minH="3rem"
 							h="3rem"
-							as={Button}
 							gap={3}
 							alignItems="center"
-							variant="dropdown-item"
 							onClick={() => onAction('delete')}
 						>
 							<Icon as={RiDeleteBin6Line} />
@@ -162,10 +159,8 @@ export const WithContextMenu = memo(({ isAble, children }: IProps) => {
 						<MenuItem
 							minH="3rem"
 							h="3rem"
-							as={Button}
 							gap={3}
 							alignItems="center"
-							variant="dropdown-item"
 							onClick={() => onAction('copy')}
 						>
 							<Icon as={RiFileCopyLine} />

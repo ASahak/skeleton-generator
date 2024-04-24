@@ -1,6 +1,17 @@
 /*TODO need to import from npm package*/
 import { DIRECTION, SIZE_UNITS } from '@/common/enums';
 
+export const VARIANTS = {
+	gray: {
+		main: 'rgb(241 241 241)',
+		gradient: 'rgb(236,236,236)',
+	},
+	dark: {
+		main: 'rgb(40 44 52)',
+		gradient: 'rgb(44 48 58)',
+	},
+};
+
 export const STYLE_PARSING_REGEXP = /(^\{|\}$)/g;
 
 export const DEFAULT_GAP = '1'; // expressed by rem
@@ -43,6 +54,14 @@ export const CONTAINER_INITIAL_VALUES = {
 	justifyContent: DEFAULT_JUSTIFY_ALIGNMENT,
 	withOpacity: false,
 	styles: `{}`,
+};
+
+export const SKELETON_INITIAL_VALUES = {
+	margin: '0',
+	w: DEFAULT_WIDTH,
+	h: DEFAULT_HEIGHT,
+	r: '0px',
+	skeletonW: DEFAULT_WIDTH,
 };
 
 export const SIZE_UNITS_INITIAL_VALUES = {

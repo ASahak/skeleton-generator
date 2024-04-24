@@ -59,24 +59,6 @@ export default defineStyleConfig({
 			display: 'flex',
 			alignItems: 'center',
 		}),
-		'dropdown-item': ({ colorMode }) => ({
-			display: 'inline-flex !important',
-			minH: '3.4rem',
-			alignItems: 'center',
-			justifyContent: 'start',
-			color: colorMode === 'dark' ? 'white' : 'gray.800',
-			fontWeight: '500',
-			fontSize: '1.2rem',
-			textAlign: 'left',
-			bgColor: 'transparent',
-			background: 'transparent !important',
-			_hover: {
-				bgColor:
-					colorMode === 'dark'
-						? 'darcula.510 !important'
-						: 'gray.50 !important',
-			},
-		}),
 	},
 	defaultProps: {},
 });

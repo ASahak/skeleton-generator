@@ -72,7 +72,7 @@ export const Size: FC = memo(() => {
 
 				const handleOK = (v: string) => {
 					onClose();
-					resolve({ ok: true, functionExec: v });
+					resolve({ ok: true, functionExec: v || 'auto' });
 				};
 
 				setModal({
@@ -197,9 +197,7 @@ export const Size: FC = memo(() => {
 									>
 										{UNITS_OPTIONS.map((unit) => (
 											<MenuItem
-												as={Button}
 												size="sm"
-												variant="dropdown-item"
 												key={unit.value}
 												onClick={() => onSelectUnit(unit.value, 'w')}
 												gap={2}
@@ -284,9 +282,7 @@ export const Size: FC = memo(() => {
 									>
 										{UNITS_OPTIONS.map((unit) => (
 											<MenuItem
-												as={Button}
 												size="sm"
-												variant="dropdown-item"
 												key={unit.value}
 												onClick={() => onSelectUnit(unit.value, 'h')}
 												gap={2}

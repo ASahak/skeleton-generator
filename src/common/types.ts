@@ -17,17 +17,17 @@ export type GridKeyType =
 
 export interface ISkeleton extends Pick<IGrid, 'w' | 'h' | 'margin'> {
 	r?: string | number;
-	skeletonW?: number;
+	skeletonW?: number | string;
 }
-
+export type SizeFunction = () => number | string;
 export interface IGrid {
 	direction?: DIRECTION;
 	gridGap?: number | string;
 	repeatCount?: number;
 	className?: string;
 	margin?: string;
-	w?: (() => number | string) | number | string;
-	h?: (() => number | string) | number | string;
+	w?: SizeFunction | number | string;
+	h?: SizeFunction | number | string;
 	alignItems?: ALIGN_ITEMS;
 	justifyContent?: JUSTIFY_CONTENT;
 	withOpacity?: boolean;

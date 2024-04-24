@@ -228,7 +228,12 @@ export const generateCSSGridArea = ({
 				}
 			)
 		: generateGridAreaAsColDirection(
-				(children || skeletons) as (IGrid | ISkeleton)[],
+				(hasChildren
+					? children
+					: itemsWithRepeat((skeletons || []) as ISkeleton[], repeatCount)) as (
+					| ISkeleton
+					| IGrid
+				)[],
 				grid.alignItems as ALIGN_ITEMS,
 				(index, prop, val) => {
 					if (!reservedProps[`${keyLevel}_${index + 1}`]) {
@@ -265,7 +270,7 @@ export const generateBorders = ({
 }: {
 	keyLevel: string;
 	highlightedNode: string;
-	parent: string | undefined;
+	parent?: string | undefined;
 	isDark: boolean;
 	hasChildren: boolean;
 }) =>
@@ -376,4 +381,11 @@ export const applicableValue = (v: string): string => {
 	}
 
 	return v;
+};
+
+export const isClickedOnSkeleton = (
+	key: string,
+	skeletons: Record<string, ISkeleton>
+) => {
+	return Object.hasOwn(skeletons, key);
 };

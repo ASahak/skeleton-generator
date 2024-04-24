@@ -59,17 +59,20 @@ export const Direction: FC = memo(() => {
 				<MenuList minW="20rem">
 					{OPTIONS.map((opt) => (
 						<MenuItem
-							as={Button}
 							size="sm"
-							variant="dropdown-item"
 							key={opt.value}
 							onClick={() => onSelect(opt.value)}
-							bgColor="transparent"
 							gap={2}
-							{...(value === opt.value && {
-								bgColor: 'brand.500 !important',
-								color: 'white !important',
-							})}
+							{...(value === opt.value
+								? {
+										bgColor: 'brand.500 !important',
+										color: 'white !important',
+										_hover: {
+											bgColor: 'brand.500 !important',
+											color: 'white !important',
+										},
+									}
+								: { bgColor: 'transparent' })}
 						>
 							{opt.label}
 						</MenuItem>

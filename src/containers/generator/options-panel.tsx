@@ -4,6 +4,7 @@ import { RiCloseFill } from 'react-icons/ri';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useThemeColors } from '@/hooks';
+import { isSkeletonHighlighted } from '@/utils/helpers';
 import { RootStyle } from '@/containers/generator/root-style';
 import { GridGap } from '@/containers/generator/grid-gap';
 import { Direction } from '@/containers/generator/direction';
@@ -73,20 +74,33 @@ export const OptionsPanel: FC = memo(() => {
 							<Box borderBottomWidth={1} borderColor={gray100_dark400}>
 								<RootStyle />
 							</Box>
-							<Heading fontSize="1.8rem" fontWeight={600} p={4}>
+							<Heading
+								fontSize="1.8rem"
+								fontWeight={600}
+								p={4}
+								whiteSpace="normal"
+							>
 								Configs of -{' '}
 								<Badge variant="pill-docs">{highlightedNode}</Badge>
 							</Heading>
 							<Box key={highlightedNode}>
-								<Size />
-								<Direction />
-								<Alignment />
-								<GridGap />
-								<Margin />
-								<ClassName />
-								<RepeatCount />
-								<WithOpacity />
-								<Styles />
+								{isSkeletonHighlighted(highlightedNode) ? (
+									<>
+										<Size />
+									</>
+								) : (
+									<>
+										<Size />
+										<Direction />
+										<Alignment />
+										<GridGap />
+										<Margin />
+										<ClassName />
+										<RepeatCount />
+										<WithOpacity />
+										<Styles />
+									</>
+								)}
 							</Box>
 						</Box>
 					</Flex>

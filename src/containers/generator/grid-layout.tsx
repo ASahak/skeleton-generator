@@ -24,7 +24,6 @@ import {
 	generateBorders,
 	generateCSSGridArea,
 	generateMargin,
-	isClickedOnSkeleton,
 	itemsWithRepeat,
 	setOpacity,
 } from '@/utils/helpers';
@@ -49,7 +48,7 @@ export const GridLayout = () => {
 		useRecoilState(highlightedNodeState);
 	const validStyles = useRef<Record<string, any>>({});
 	const isDark = colorMode === 'dark';
-
+	console.log(highlightedNode, gridState);
 	const renderSkeletons = (
 		skeletons: Record<string, ISkeleton>,
 		repeatCount: number,
@@ -119,13 +118,6 @@ export const GridLayout = () => {
 
 	const highlightNode = (e: Event) => {
 		const node: HTMLElement | null = e.target as HTMLElement;
-		const key = node.getAttribute('data-key');
-		const isSkeleton = isClickedOnSkeleton(key as string, skeletonsState);
-
-		if (isSkeleton) {
-			setHighlightedNode(key as string);
-			return;
-		}
 
 		findTrap(node, highlightedNode, (key) => {
 			setHighlightedNode(key);

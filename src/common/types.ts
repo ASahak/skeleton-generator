@@ -1,5 +1,7 @@
 import { ALIGN_ITEMS, DIRECTION, JUSTIFY_CONTENT } from '@/common/enums';
 
+export type SkeletonKeyType = 'w' | 'h' | 'margin' | 'r' | 'skeletonW';
+
 export type GridKeyType =
 	| 'gridGap'
 	| 'repeatCount'

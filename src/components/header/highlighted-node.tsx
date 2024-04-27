@@ -53,6 +53,18 @@ export const HighlightedNode: FC = memo(() => {
 		}
 	};
 
+	const disableSkeletonCreation = (type: string) => {
+		if (
+			Object.hasOwn(
+				(grid[highlightedNode] as Record<GridKeyType, any>) || {},
+				'children'
+			) &&
+			type === 'create-skeleton'
+		) {
+			return true;
+		}
+	};
+
 	const onSelect = (value: string) => {
 		const _grid = cloneDeep(grid);
 		const obj: Record<GridKeyType, any> = _grid[highlightedNode] as Record<
@@ -113,7 +125,10 @@ export const HighlightedNode: FC = memo(() => {
 					<MenuList minW="20rem">
 						{OPTIONS.map((opt) => (
 							<MenuItem
-								isDisabled={disableContainerCreation(opt.value)}
+								isDisabled={
+									disableContainerCreation(opt.value) ||
+									disableSkeletonCreation(opt.value)
+								}
 								key={opt.value}
 								onClick={() => onSelect(opt.value)}
 								gap={2}

@@ -296,12 +296,11 @@ export const findTrap = (
 	if (node) {
 		const keyLevel = node.getAttribute('data-key') || '';
 
-		const currentSplit = keyLevel.split('_');
+		const currentSplit = keyLevel.split('_').filter(filterFromSkeleton);
 		// if trap is the same as highlighted
 		if (keyLevel === highlightedNode) {
 			// if trap is the root node
 			if (keyLevel === ROOT_KEY) return;
-
 			trap([...currentSplit].slice(0, currentSplit.length - 1).join('_'));
 			return;
 		}
@@ -312,7 +311,9 @@ export const findTrap = (
 			return;
 		}
 
-		const highlightedNodeSplit = highlightedNode.split('_');
+		const highlightedNodeSplit = highlightedNode
+			.split('_')
+			.filter(filterFromSkeleton);
 
 		const inTheSameLevel = (current: string[]) =>
 			current.length === highlightedNodeSplit.length &&
@@ -350,7 +351,7 @@ export const findTrap = (
 export const getParent = (path: string): string => {
 	if (path === ROOT_KEY) return path;
 
-	const paths = path.split('_');
+	const paths = path.split('_').filter(filterFromSkeleton);
 	paths.pop();
 	return paths.join('_');
 };
@@ -389,3 +390,8 @@ export const isClickedOnSkeleton = (
 ) => {
 	return Object.hasOwn(skeletons, key);
 };
+
+export const filterFromSkeleton = (e: string) => e !== 'skeleton';
+
+export const isSkeletonHighlighted = (highlightedNode: string) =>
+	highlightedNode.includes('skeleton');

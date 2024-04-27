@@ -58,15 +58,13 @@ const SizeComponent = memo(
 	}) => {
 		const gridState = useRecoilValue(selectGridState);
 		const { setModal, onClose } = useModal();
-		const width = valueWithPrefix(
-			useRecoilValue(selectHighlightedNodeGridPropState('w'))
-		);
-		const height = valueWithPrefix(
-			useRecoilValue(selectHighlightedNodeGridPropState('h'))
-		);
-		const [localValue, setLocalValue] = useState({ width, height });
+		const w = useRecoilValue(selectHighlightedNodeGridPropState('w'));
+		const h = useRecoilValue(selectHighlightedNodeGridPropState('h'));
+		const [localValue, setLocalValue] = useState({ w, h });
 		const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 		const { gray100_dark400 } = useThemeColors();
+		const width = valueWithPrefix(localValue.w);
+		const height = valueWithPrefix(localValue.h);
 
 		useDebounce(
 			() => {
@@ -74,12 +72,22 @@ const SizeComponent = memo(
 				const obj: Record<GridKeyType | SkeletonKeyType, any> = _store[
 					highlightedNode
 				] as Record<GridKeyType | SkeletonKeyType, any>;
-				obj.w = `${localValue.width.value}${localValue.width.unit}`;
-				obj.h = `${localValue.height.value}${localValue.height.unit}`;
+				// width
+				if (width.unit === SIZE_UNITS.FN) {
+					obj.w = localValue.w;
+				} else {
+					obj.w = `${width.value}${width.unit}`;
+				}
+				// height
+				if (height.unit === SIZE_UNITS.FN) {
+					obj.h = localValue.h;
+				} else {
+					obj.h = `${height.value}${height.unit}`;
+				}
 				setStore(_store);
 			},
 			300,
-			[localValue]
+			[width.value, height.value]
 		);
 
 		const parent = useMemo(() => {
@@ -123,30 +131,28 @@ const SizeComponent = memo(
 		};
 
 		const onSelectUnit = async (v: SIZE_UNITS, size: 'w' | 'h') => {
-			const _store = cloneDeep(store);
-			const obj: Record<GridKeyType | SkeletonKeyType, any> = _store[
-				highlightedNode
-			] as Record<GridKeyType | SkeletonKeyType, any>;
 			if (v === SIZE_UNITS.FN) {
 				const { failed, functionExec } = await createOpener(size);
 				if (failed) {
 					return;
 				}
-				obj[size] = eval(functionExec!);
+				setLocalValue((prevState) => ({
+					...prevState,
+					[size]: eval(functionExec!),
+				}));
 			} else {
-				obj[size] = `${SIZE_UNITS_INITIAL_VALUES[v]}${v}`;
+				setLocalValue((prevState) => ({
+					...prevState,
+					[size]: `${SIZE_UNITS_INITIAL_VALUES[v]}${v}`,
+				}));
 			}
-			setStore(_store);
 		};
 
-		const onChange = (
-			e: ChangeEvent<HTMLInputElement>,
-			size: 'height' | 'width'
-		) => {
+		const onChange = (e: ChangeEvent<HTMLInputElement>, size: 'h' | 'w') => {
 			const newValue = e.target.value ?? '';
 			setLocalValue((prevState) => ({
 				...prevState,
-				[size]: { value: newValue, unit: prevState[size].unit },
+				[size]: `${newValue}${size === 'w' ? width.unit : height.unit}`,
 			}));
 		};
 
@@ -180,21 +186,17 @@ const SizeComponent = memo(
 							</Tooltip>
 							<Input
 								isTruncated
-								borderColor={
-									!localValue.width.value ? 'red.400' : gray100_dark400
-								}
+								borderColor={!width.value ? 'red.400' : gray100_dark400}
 								variant="base"
-								value={localValue.width.value}
+								value={width.value}
 								onChange={(e: ChangeEvent<HTMLInputElement>) =>
-									onChange(e, 'width')
+									onChange(e, 'w')
 								}
 								size="sm"
 								borderTopLeftRadius={0}
 								borderBottomLeftRadius={0}
-								readOnly={
-									isReadOnly(localValue.width.unit) || ableToDisable('w')
-								}
-								type={isReadOnly(localValue.width.unit) ? 'text' : 'number'}
+								readOnly={isReadOnly(width.unit) || ableToDisable('w')}
+								type={isReadOnly(width.unit) ? 'text' : 'number'}
 							/>
 							<InputRightAddon h="3rem" p={0} borderColor={gray100_dark400}>
 								<Menu
@@ -215,9 +217,7 @@ const SizeComponent = memo(
 										variant="menu-outline"
 										gap={0}
 									>
-										{localValue.width.unit === SIZE_UNITS.AUTO
-											? ''
-											: localValue.width.unit}
+										{width.unit === SIZE_UNITS.AUTO ? '' : width.unit}
 									</MenuButton>
 									<Portal>
 										<MenuList
@@ -238,8 +238,7 @@ const SizeComponent = memo(
 													key={unit.value}
 													onClick={() => onSelectUnit(unit.value, 'w')}
 													gap={2}
-													{...((localValue.width.unit ||
-														localValue.width.value) === unit.value
+													{...((width.unit || width.value) === unit.value
 														? {
 																bgColor: 'brand.500 !important',
 																color: 'white !important',
@@ -258,7 +257,7 @@ const SizeComponent = memo(
 								</Menu>
 							</InputRightAddon>
 						</InputGroup>
-						{!localValue.width.value ? (
+						{!width.value ? (
 							<Text color="red.400" mt={1}>
 								Required*
 							</Text>
@@ -279,21 +278,17 @@ const SizeComponent = memo(
 							</Tooltip>
 							<Input
 								isTruncated
-								borderColor={
-									!localValue.height.value ? 'red.400' : gray100_dark400
-								}
+								borderColor={!height.value ? 'red.400' : gray100_dark400}
 								variant="base"
-								value={localValue.height.value}
+								value={height.value}
 								onChange={(e: ChangeEvent<HTMLInputElement>) =>
-									onChange(e, 'height')
+									onChange(e, 'h')
 								}
 								size="sm"
 								borderTopLeftRadius={0}
 								borderBottomLeftRadius={0}
-								readOnly={
-									isReadOnly(localValue.height.unit) || ableToDisable('h')
-								}
-								type={isReadOnly(localValue.height.unit) ? 'text' : 'number'}
+								readOnly={isReadOnly(height.unit) || ableToDisable('h')}
+								type={isReadOnly(height.unit) ? 'text' : 'number'}
 							/>
 							<InputRightAddon h="3rem" p={0} borderColor={gray100_dark400}>
 								<Menu
@@ -314,9 +309,7 @@ const SizeComponent = memo(
 										variant="menu-outline"
 										gap={0}
 									>
-										{localValue.height.unit === SIZE_UNITS.AUTO
-											? ''
-											: localValue.height.unit}
+										{height.unit === SIZE_UNITS.AUTO ? '' : height.unit}
 									</MenuButton>
 									<Portal>
 										<MenuList
@@ -337,8 +330,7 @@ const SizeComponent = memo(
 													key={unit.value}
 													onClick={() => onSelectUnit(unit.value, 'h')}
 													gap={2}
-													{...((localValue.height.unit ||
-														localValue.height.value) === unit.value
+													{...((height.unit || height.value) === unit.value
 														? {
 																bgColor: 'brand.500 !important',
 																color: 'white !important',
@@ -357,7 +349,7 @@ const SizeComponent = memo(
 								</Menu>
 							</InputRightAddon>
 						</InputGroup>
-						{!localValue.height.value ? (
+						{!height.value ? (
 							<Text color="red.400" mt={1}>
 								Required*
 							</Text>

@@ -52,7 +52,8 @@ export const GridLayout = () => {
 	const renderSkeletons = (
 		skeletons: Record<string, ISkeleton>,
 		repeatCount: number,
-		withOpacity?: boolean
+		withOpacity?: boolean,
+		reservedPropsFromParent?: Record<string, any>
 	) => {
 		const skeletonKeys = Object.keys(skeletons);
 		return skeletonKeys.map((key, index) => (
@@ -61,16 +62,20 @@ export const GridLayout = () => {
 					data-key={key}
 					key={key}
 					style={{
-						width: applicableValue(
-							(typeof skeletons[key].w === 'function'
-								? (skeletons[key].w as SizeFunction)()
-								: skeletons[key].w)!.toString()
-						),
-						height: applicableValue(
-							(typeof skeletons[key].h === 'function'
-								? (skeletons[key].h as SizeFunction)()
-								: skeletons[key].h)!.toString()
-						),
+						width: reservedPropsFromParent?.parent
+							? DEFAULT_WIDTH
+							: applicableValue(
+									(typeof skeletons[key].w === 'function'
+										? (skeletons[key].w as SizeFunction)()
+										: skeletons[key].w)!.toString()
+								),
+						height: reservedPropsFromParent?.parent
+							? DEFAULT_HEIGHT
+							: applicableValue(
+									(typeof skeletons[key].h !== 'function'
+										? skeletons[key].h
+										: (skeletons[key].h as SizeFunction)())!.toString()
+								),
 						borderRadius: skeletons[key].r || '0px',
 						margin: generateMargin(skeletons[key].margin || ''),
 						backgroundColor: VARIANTS.dark.main, //todo
@@ -225,7 +230,12 @@ export const GridLayout = () => {
 										})
 								)
 							: hasSkeletons
-								? renderSkeletons(collectedSkeletons, repeatCount, withOpacity)
+								? renderSkeletons(
+										collectedSkeletons,
+										repeatCount,
+										withOpacity,
+										_reservedPropsFromParent
+									)
 								: null}
 					</Box>
 				</WithContextMenu>

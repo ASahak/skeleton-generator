@@ -40,7 +40,7 @@ export const selectHighlightedNodeGridPropState = selectorFamily({
 	get:
 		(propName: GridKeyType | SkeletonKeyType) =>
 		({ get }) => {
-			const dataKey = get(highlightedNodeState);
+			const dataKey: string = get(highlightedNodeState);
 			if (isSkeletonHighlighted(dataKey)) {
 				const skeleton: Record<string, any> = dlv(get(skeletonsState), dataKey);
 

@@ -25,6 +25,7 @@ import {
 	generateBorders,
 	generateCSSGridArea,
 	generateMargin,
+	getDirectParentWithDataKeyAttr,
 	itemsWithRepeat,
 	setOpacity,
 } from '@/utils/helpers';
@@ -139,8 +140,9 @@ export const GridLayout = () => {
 	};
 
 	const highlightNode = (e: Event) => {
-		const node: HTMLElement | null = e.target as HTMLElement;
-
+		const node: HTMLElement | null = getDirectParentWithDataKeyAttr(
+			e.target as HTMLElement
+		);
 		findTrap(node, highlightedNode, (key) => {
 			setHighlightedNode(key);
 		});

@@ -395,3 +395,18 @@ export const filterFromSkeleton = (e: string) => e !== 'skeleton';
 
 export const isSkeletonHighlighted = (highlightedNode: string) =>
 	highlightedNode.includes('skeleton');
+
+export const getDirectParentWithDataKeyAttr = (node: HTMLElement) => {
+	let parent = node;
+	let hasExactAttr = parent.hasAttribute('data-key');
+
+	while (!hasExactAttr) {
+		if (parent === document.body) {
+			return null;
+		}
+		parent = node.parentElement as HTMLElement;
+		hasExactAttr = parent.hasAttribute('data-key');
+	}
+
+	return parent;
+};

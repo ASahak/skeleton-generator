@@ -11,9 +11,17 @@ import cloneDeep from 'clone-deep';
 import { RiDeleteBin6Line, RiFileCopyLine } from 'react-icons/ri';
 import { MODALS_KEYS, useModal } from '@/providers/custom-modal';
 import { useRecoilState } from 'recoil';
-import { gridState, highlightedNodeState } from '@/store/atoms/global';
-import { GridKeyType } from '@/common/types';
-import { findAbsentIndex, getParent } from '@/utils/helpers';
+import {
+	gridState,
+	highlightedNodeState,
+	skeletonsState,
+} from '@/store/atoms/global';
+import { GridKeyType, SkeletonKeyType } from '@/common/types';
+import {
+	findAbsentIndex,
+	getParent,
+	isSkeletonHighlighted,
+} from '@/utils/helpers';
 import { ROOT_KEY } from '@/constants/general-settings';
 
 type IProps = {
@@ -26,31 +34,60 @@ export const WithContextMenu = memo(({ isAble, children }: IProps) => {
 		useRecoilState(highlightedNodeState);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [offset, setOffset] = useState([0, 0]);
-	const [getGridState, setGridState] = useRecoilState(gridState);
+	const [grid, setGridState] = useRecoilState(gridState);
+	const [skeletons, setSkeletonsState] = useRecoilState(skeletonsState);
 	const menuList = useRef();
 
 	const onDelete = () => {
-		const _grid: Record<GridKeyType, any> = cloneDeep(getGridState);
+		const _grid: Record<string, any> = cloneDeep(grid);
+		const _skeletons: Record<string, any> = cloneDeep(skeletons);
 		const parentKey = getParent(highlightedNode);
-		if (parentKey in _grid) {
-			_grid[parentKey as GridKeyType].children.splice(
-				_grid[parentKey as GridKeyType].children.indexOf(highlightedNode),
+
+		if (isSkeletonHighlighted(highlightedNode)) {
+			const _skeletons: Record<string, any> = cloneDeep(skeletons);
+			_grid[parentKey].skeletons.splice(
+				_grid[parentKey].skeletons.indexOf(highlightedNode),
 				1
 			);
-		}
-		if (_grid[highlightedNode as GridKeyType].children?.length) {
-			const removeChildren = (children: GridKeyType[]) => {
-				children.forEach((e) => {
-					if (_grid[e as GridKeyType].children?.length) {
-						removeChildren(_grid[e as GridKeyType].children);
-					}
-					delete _grid[e as GridKeyType];
-				});
-			};
-			removeChildren(_grid[highlightedNode as GridKeyType].children);
-			delete _grid[highlightedNode as GridKeyType];
+			delete _skeletons[highlightedNode];
+			setSkeletonsState(_skeletons);
 		} else {
-			delete _grid[highlightedNode as GridKeyType];
+			if (parentKey in _grid) {
+				_grid[parentKey].children.splice(
+					_grid[parentKey].children.indexOf(highlightedNode),
+					1
+				);
+			}
+
+			if (_grid[highlightedNode].children?.length) {
+				let shouldUpdateSkeletons = false;
+				const removeChildren = (children: GridKeyType[]) => {
+					children.forEach((e) => {
+						if (_grid[e].children?.length) {
+							removeChildren(_grid[e].children);
+						} else if (_grid[e].skeletons?.length) {
+							shouldUpdateSkeletons = true;
+							_grid[e].skeletons.forEach((s: string) => {
+								delete _skeletons[s];
+							});
+						}
+						delete _grid[e];
+					});
+				};
+				removeChildren(_grid[highlightedNode].children);
+
+				if (shouldUpdateSkeletons) {
+					setSkeletonsState(_skeletons);
+				}
+			} else if (_grid[highlightedNode].skeletons?.length) {
+				const _skeletons: Record<string, any> = cloneDeep(skeletons);
+
+				_grid[highlightedNode].skeletons.forEach((s: string) => {
+					delete _skeletons[s];
+				});
+				setSkeletonsState(_skeletons);
+			}
+			delete _grid[highlightedNode];
 		}
 		setHighlightedNode(parentKey);
 		setGridState(_grid);
@@ -58,32 +95,65 @@ export const WithContextMenu = memo(({ isAble, children }: IProps) => {
 	};
 
 	const onCopy = () => {
-		const _grid: Record<GridKeyType, any> = cloneDeep(getGridState);
+		const _grid: Record<string, any> = cloneDeep(grid);
 		const parentKey = getParent(highlightedNode);
+
 		if (parentKey in _grid) {
-			const obj: Record<GridKeyType, any> = _grid[parentKey as GridKeyType];
+			const obj: Record<string, any> = _grid[parentKey];
+			if (isSkeletonHighlighted(highlightedNode)) {
+				const newRoot = parentKey + '_skeleton_';
+				const newKey = newRoot + findAbsentIndex(newRoot, obj.skeletons || []);
+				const _skeletons: Record<string, any> = cloneDeep(skeletons);
+				_grid[parentKey].skeletons.push(newKey);
+				_skeletons[newKey] = cloneDeep(_skeletons[highlightedNode]);
+				setSkeletonsState(_skeletons);
+				setGridState(_grid);
+				return;
+			}
+
 			const newRoot = parentKey + '_';
 			const newKey = newRoot + findAbsentIndex(newRoot, obj.children || []);
-			_grid[newKey as GridKeyType] = cloneDeep(
-				_grid[highlightedNode as GridKeyType]
-			);
-			if (_grid[highlightedNode as GridKeyType].children?.length) {
+			_grid[newKey] = cloneDeep(_grid[highlightedNode]);
+			const _skeletons: Record<string, any> = cloneDeep(skeletons);
+
+			const generateSkeletonsClone = (
+				skeletons: SkeletonKeyType[],
+				newKey: string
+			) => {
+				_grid[newKey].skeletons = [];
+				skeletons.forEach((c: string) => {
+					const newChild = newKey + c.substring(newKey.length, c.length);
+					_grid[newKey].skeletons.push(newChild);
+					_skeletons[newChild] = cloneDeep(_skeletons[c]);
+				});
+			};
+
+			if (_grid[highlightedNode].children?.length) {
+				let shouldUpdateSkeletons = false;
 				const generateClone = (children: GridKeyType[], newKey: string) => {
-					_grid[newKey as GridKeyType].children = [];
+					_grid[newKey].children = [];
 					children.forEach((c: string) => {
 						const newChild = newKey + c.substring(newKey.length, c.length);
-						_grid[newKey as GridKeyType].children.push(newChild);
-						_grid[newChild as GridKeyType] = cloneDeep(_grid[c as GridKeyType]);
-						if (_grid[c as GridKeyType].children?.length) {
-							generateClone(_grid[c as GridKeyType].children, newChild);
+						_grid[newKey].children.push(newChild);
+						_grid[newChild] = cloneDeep(_grid[c]);
+						if (_grid[c].children?.length) {
+							generateClone(_grid[c].children, newChild);
+						} else if (_grid[c].skeletons?.length) {
+							shouldUpdateSkeletons = true;
+							generateSkeletonsClone(_grid[c].skeletons, newChild);
 						}
 					});
 				};
 
-				generateClone(_grid[highlightedNode as GridKeyType].children, newKey);
+				generateClone(_grid[highlightedNode].children, newKey);
+				if (shouldUpdateSkeletons) {
+					setSkeletonsState(_skeletons);
+				}
+			} else if (_grid[highlightedNode].skeletons?.length) {
+				generateSkeletonsClone(_grid[highlightedNode].skeletons, newKey);
+				setSkeletonsState(_skeletons);
 			}
 			obj.children = (obj.children || []).concat(newKey);
-
 			setGridState(_grid);
 		}
 	};
@@ -108,37 +178,39 @@ export const WithContextMenu = memo(({ isAble, children }: IProps) => {
 		}
 	};
 
+	const onContextMenu = (e: any) => {
+		if (highlightedNode === ROOT_KEY) {
+			return;
+		}
+
+		let x = e.clientX;
+		let y = e.clientY;
+		e.preventDefault();
+		onClose();
+		setTimeout(() => {
+			if (menuList.current) {
+				const rectOfMenu: DOMRect = (
+					menuList.current as HTMLElement
+				).getBoundingClientRect();
+				const h = (rectOfMenu.height * 100) / 80; // 80 comes from chakra-ui's scale(.8)
+				const w = (rectOfMenu.width * 100) / 80; // 80 comes from chakra-ui's scale(.8)
+				if (h + y > window.innerHeight) {
+					y = window.innerHeight - (h + 10); // 10 is for just spacing gap
+				}
+				if (w + x > window.innerWidth) {
+					x = window.innerWidth - (w + 10); // 10 is for just spacing gap
+				}
+				setOffset([x, y]);
+			}
+			onOpen();
+		}, 200); // 200 is transition timer of menu component from chakra ui
+	};
+
 	return isAble ? (
 		<>
 			<Menu isOpen={isOpen} onClose={onClose} variant="base">
 				{React.cloneElement(children as any, {
-					onContextMenu: (e: any) => {
-						if (highlightedNode === ROOT_KEY) {
-							return;
-						}
-
-						let x = e.clientX;
-						let y = e.clientY;
-						e.preventDefault();
-						onClose();
-						setTimeout(() => {
-							if (menuList.current) {
-								const rectOfMenu: DOMRect = (
-									menuList.current as HTMLElement
-								).getBoundingClientRect();
-								const h = (rectOfMenu.height * 100) / 80; // 80 comes from chakra-ui's scale(.8)
-								const w = (rectOfMenu.width * 100) / 80; // 80 comes from chakra-ui's scale(.8)
-								if (h + y > window.innerHeight) {
-									y = window.innerHeight - (h + 10); // 10 is for just spacing gap
-								}
-								if (w + x > window.innerWidth) {
-									x = window.innerWidth - (w + 10); // 10 is for just spacing gap
-								}
-								setOffset([x, y]);
-							}
-							onOpen();
-						}, 200); // 200 is transition timer of menu component from chakra ui
-					},
+					onContextMenu,
 				})}
 				<Portal>
 					<MenuList

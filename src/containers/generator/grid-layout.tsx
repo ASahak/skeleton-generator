@@ -11,6 +11,7 @@ import {
 import { useConvertStringToStyleObject } from '@/hooks';
 import {
 	DEFAULT_HEIGHT,
+	DEFAULT_SKELETON_GRADIENT_WIDTH,
 	DEFAULT_WIDTH,
 	ROOT_KEY,
 	STYLE_PARSING_REGEXP,
@@ -48,7 +49,7 @@ export const GridLayout = () => {
 		useRecoilState(highlightedNodeState);
 	const validStyles = useRef<Record<string, any>>({});
 	const isDark = colorMode === 'dark';
-	console.log(highlightedNode, gridState);
+	console.log(highlightedNode, gridState, skeletonsState);
 	const renderSkeletons = (
 		skeletons: Record<string, ISkeleton>,
 		repeatCount: number,
@@ -94,7 +95,23 @@ export const GridLayout = () => {
 					}}
 					position="relative"
 					overflow="hidden"
-				/>
+				>
+					<Box
+						left={0}
+						position="absolute"
+						h="full"
+						top={0}
+						style={{
+							width: `${skeletons[key].skeletonW || DEFAULT_SKELETON_GRADIENT_WIDTH}px`,
+							backgroundImage: `linear-gradient(
+                90deg,
+                ${VARIANTS.dark.main} 0px,
+                ${VARIANTS.dark.gradient} ${(Number(skeletons[key].skeletonW) || DEFAULT_SKELETON_GRADIENT_WIDTH) / 2}px,
+                ${VARIANTS.dark.main} ${skeletons[key].skeletonW || DEFAULT_SKELETON_GRADIENT_WIDTH}px
+              )`,
+						}}
+					/>
+				</Box>
 			</WithContextMenu>
 		));
 	};

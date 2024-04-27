@@ -10,6 +10,8 @@ import { GridGap } from '@/containers/generator/grid-gap';
 import { Direction } from '@/containers/generator/direction';
 import { ClassName } from '@/containers/generator/class-name';
 import { Margin } from '@/containers/generator/margin';
+import { Radius } from '@/containers/generator/radius';
+import { SkeletonWidth } from '@/containers/generator/skeleton-width';
 import { Size } from '@/containers/generator/size';
 import { Alignment } from '@/containers/generator/alignment';
 import { WithOpacity } from '@/containers/generator/with-opacity';
@@ -87,6 +89,9 @@ export const OptionsPanel: FC = memo(() => {
 								{isSkeletonHighlighted(highlightedNode) ? (
 									<>
 										<Size />
+										<Radius />
+										<Margin />
+										<SkeletonWidth />
 									</>
 								) : (
 									<>

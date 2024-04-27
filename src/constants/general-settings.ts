@@ -14,6 +14,7 @@ export const VARIANTS = {
 
 export const STYLE_PARSING_REGEXP = /(^\{|\}$)/g;
 
+export const DEFAULT_RADIUS = '0px';
 export const DEFAULT_GAP = '1'; // expressed by rem
 export const DEFAULT_SKELETON_WIDTH = '100%';
 export const DEFAULT_GRID_CONTAINER_WIDTH = '1fr';
@@ -61,7 +62,7 @@ export const SKELETON_INITIAL_VALUES = {
 	w: DEFAULT_WIDTH,
 	h: DEFAULT_HEIGHT,
 	r: '0px',
-	skeletonW: DEFAULT_WIDTH,
+	skeletonW: DEFAULT_SKELETON_GRADIENT_WIDTH,
 };
 
 export const SIZE_UNITS_INITIAL_VALUES = {

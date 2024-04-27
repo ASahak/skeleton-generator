@@ -87,7 +87,7 @@ const SizeComponent = memo(
 				setStore(_store);
 			},
 			300,
-			[width.value, height.value]
+			[width.value, width.unit, height.value, height.unit]
 		);
 
 		const parent = useMemo(() => {

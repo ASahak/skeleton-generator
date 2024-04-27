@@ -7,7 +7,7 @@ import {
 	rootStylesState,
 	skeletonsState,
 } from '@/store/atoms/global';
-import { GridKeyType, ISkeleton } from '@/common/types';
+import { GridKeyType, ISkeleton, SkeletonKeyType } from '@/common/types';
 import {
 	CONTAINER_INITIAL_VALUES,
 	SKELETON_INITIAL_VALUES,
@@ -38,7 +38,7 @@ export const selectHighlightedNodeState = selector({
 export const selectHighlightedNodeGridPropState = selectorFamily({
 	key: 'select-highlighted-node-grid-prop',
 	get:
-		(propName: GridKeyType) =>
+		(propName: GridKeyType | SkeletonKeyType) =>
 		({ get }) => {
 			const dataKey = get(highlightedNodeState);
 			if (isSkeletonHighlighted(dataKey)) {

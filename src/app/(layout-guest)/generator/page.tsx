@@ -32,6 +32,8 @@ export default function View() {
 								rounded="md"
 								bgColor={white_dark700}
 								boxShadow="md"
+								overflow="hidden"
+								maxH="full"
 								p={4}
 							>
 								<GridLayout />

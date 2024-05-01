@@ -63,8 +63,8 @@ const SizeComponent = memo(
 		const [localValue, setLocalValue] = useState({ w, h });
 		const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 		const { gray100_dark400 } = useThemeColors();
-		const width = valueWithPrefix(localValue.w);
-		const height = valueWithPrefix(localValue.h);
+		const width = useMemo(() => valueWithPrefix(localValue.w), [localValue.w]);
+		const height = useMemo(() => valueWithPrefix(localValue.h), [localValue.h]);
 
 		useDebounce(
 			() => {
@@ -87,7 +87,7 @@ const SizeComponent = memo(
 				setStore(_store);
 			},
 			300,
-			[width.value, width.unit, height.value, height.unit]
+			[localValue.w, localValue.h]
 		);
 
 		const parent = useMemo(() => {
@@ -159,10 +159,16 @@ const SizeComponent = memo(
 		const ableToDisable = (size: 'w' | 'h') => {
 			if (size === 'w') {
 				return (
-					parent.direction === DIRECTION.COLUMN && highlightedNode !== ROOT_KEY
+					parent.direction === DIRECTION.COLUMN &&
+					highlightedNode !== ROOT_KEY &&
+					!isSkeletonHighlighted(highlightedNode)
 				);
 			}
-			return parent.direction === DIRECTION.ROW && highlightedNode !== ROOT_KEY;
+			return (
+				parent.direction === DIRECTION.ROW &&
+				highlightedNode !== ROOT_KEY &&
+				!isSkeletonHighlighted(highlightedNode)
+			);
 		};
 
 		return (

@@ -17,7 +17,8 @@ export type GridKeyType =
 	| 'skeletons'
 	| 'styles';
 
-export interface ISkeleton extends Pick<IGrid, 'w' | 'h' | 'margin'> {
+export interface ISkeleton
+	extends Pick<IGrid, 'w' | 'h' | 'margin' | 'isRepeated'> {
 	r?: string | number;
 	skeletonW?: number | string;
 }
@@ -36,6 +37,7 @@ export interface IGrid {
 	styles?: string;
 	children?: string[];
 	skeletons?: string[];
+	isRepeated?: boolean;
 }
 
 export interface IGenerateCSSGridAreaArgs {

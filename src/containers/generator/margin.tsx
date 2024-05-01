@@ -43,9 +43,11 @@ export const MarginComponent = memo(
 			| SetterOrUpdater<Record<string, IGrid>>
 			| SetterOrUpdater<Record<string, ISkeleton>>;
 	}) => {
-		const [sideBySideChecked, setSideBySideChecked] = useState(false);
 		const value = useRecoilValue(selectHighlightedNodeGridPropState('margin'));
 		const [localValue, setLocalValue] = useState(value);
+		const [sideBySideChecked, setSideBySideChecked] = useState(
+			() => convertToArray(value).length > 1
+		);
 		const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 		const { gray100_dark400 } = useThemeColors();
 		const marginSide = useRef<MARGIN_SIDES | null>(null);

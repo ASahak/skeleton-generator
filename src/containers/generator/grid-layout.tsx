@@ -27,6 +27,7 @@ import {
 	generateMargin,
 	getDirectParentWithDataKeyAttr,
 	itemsWithRepeat,
+	mutateWithRepeated,
 	setOpacity,
 } from '@/utils/helpers';
 import { highlightedNodeState } from '@/store/atoms/global';
@@ -50,71 +51,84 @@ export const GridLayout = () => {
 		useRecoilState(highlightedNodeState);
 	const validStyles = useRef<Record<string, any>>({});
 	const isDark = colorMode === 'dark';
-	console.log(highlightedNode, gridState, skeletonsState);
+
 	const renderSkeletons = (
-		skeletons: Record<string, ISkeleton>,
+		skeletons: (ISkeleton & { key: string })[],
 		repeatCount: number,
 		withOpacity?: boolean,
-		reservedPropsFromParent?: Record<string, any>
+		parentKey?: string | undefined
 	) => {
-		const skeletonKeys = Object.keys(skeletons);
-		return skeletonKeys.map((key, index) => (
-			<WithContextMenu isAble={key === highlightedNode} key={key}>
-				<Box
-					data-key={key}
-					key={key}
-					style={{
-						width: reservedPropsFromParent?.parent
-							? DEFAULT_WIDTH
-							: applicableValue(
-									(typeof skeletons[key].w === 'function'
-										? (skeletons[key].w as SizeFunction)()
-										: skeletons[key].w)!.toString()
-								),
-						height: reservedPropsFromParent?.parent
-							? DEFAULT_HEIGHT
-							: applicableValue(
-									(typeof skeletons[key].h !== 'function'
-										? skeletons[key].h
-										: (skeletons[key].h as SizeFunction)())!.toString()
-								),
-						borderRadius: skeletons[key].r || '0px',
-						margin: generateMargin(skeletons[key].margin || ''),
-						backgroundColor: VARIANTS.dark.main, //todo
-						opacity: setOpacity(
-							index,
-							repeatCount,
-							skeletonKeys.length,
-							withOpacity
-						),
-						...generateBorders({
-							keyLevel: key,
-							highlightedNode,
-							isDark,
-							hasChildren: false,
-						}),
+		return skeletons.map(
+			(
+				skeleton: ISkeleton & { key: string; isRepeated?: boolean },
+				index: number
+			) => (
+				<WithContextMenu
+					isAble={skeleton.key === highlightedNode && !skeleton.isRepeated}
+					disabledState={{
+						copy: repeatCount > 0,
 					}}
-					position="relative"
-					overflow="hidden"
+					key={skeleton.key}
 				>
 					<Box
-						left={0}
-						position="absolute"
-						h="full"
-						top={0}
+						data-key={skeleton.key}
 						style={{
-							width: `${skeletons[key].skeletonW || DEFAULT_SKELETON_GRADIENT_WIDTH}px`,
-							backgroundImage: `linear-gradient(
+							width: applicableValue(
+								(typeof skeleton.w === 'function'
+									? (skeleton.w as SizeFunction)()
+									: skeleton.w)!.toString()
+							),
+							height: applicableValue(
+								(typeof skeleton.h !== 'function'
+									? skeleton.h
+									: (skeleton.h as SizeFunction)())!.toString()
+							),
+							borderRadius: skeleton.r || '0px',
+							margin: generateMargin(skeleton.margin || ''),
+							backgroundColor: VARIANTS.dark.main, //todo
+							opacity: setOpacity(
+								index,
+								repeatCount,
+								skeletons.length,
+								withOpacity
+							),
+							...generateBorders({
+								keyLevel: skeleton.key,
+								highlightedNode,
+								isDark,
+								parent: parentKey,
+								hasChildren: false,
+							}),
+						}}
+						position="relative"
+						overflow="hidden"
+						{...(skeleton.isRepeated && {
+							'data-repeated-node': true,
+							pointerEvents: 'none',
+						})}
+					>
+						{!skeleton.isRepeated ? (
+							<Box
+								display={skeleton.isRepeated ? 'none' : 'block'}
+								left={0}
+								position="absolute"
+								h="full"
+								top={0}
+								style={{
+									width: `${skeleton.skeletonW || DEFAULT_SKELETON_GRADIENT_WIDTH}px`,
+									backgroundImage: `linear-gradient(
                 90deg,
                 ${VARIANTS.dark.main} 0px,
-                ${VARIANTS.dark.gradient} ${(Number(skeletons[key].skeletonW) || DEFAULT_SKELETON_GRADIENT_WIDTH) / 2}px,
-                ${VARIANTS.dark.main} ${skeletons[key].skeletonW || DEFAULT_SKELETON_GRADIENT_WIDTH}px
+                ${VARIANTS.dark.gradient} ${(Number(skeleton.skeletonW) || DEFAULT_SKELETON_GRADIENT_WIDTH) / 2}px,
+                ${VARIANTS.dark.main} ${skeleton.skeletonW || DEFAULT_SKELETON_GRADIENT_WIDTH}px
               )`,
-						}}
-					/>
-				</Box>
-			</WithContextMenu>
-		));
+								}}
+							/>
+						) : null}
+					</Box>
+				</WithContextMenu>
+			)
+		);
 	};
 
 	const convertStyles = (styles: string) => {
@@ -143,6 +157,8 @@ export const GridLayout = () => {
 		const node: HTMLElement | null = getDirectParentWithDataKeyAttr(
 			e.target as HTMLElement
 		);
+		if (node?.hasAttribute('data-repeated-node')) return;
+
 		findTrap(node, highlightedNode, (key) => {
 			setHighlightedNode(key);
 		});
@@ -157,44 +173,73 @@ export const GridLayout = () => {
 			reservedPropsFromParent,
 		}: IGridLayout) => {
 			const keyLevel = dataKey;
-			const _reservedPropsFromParent: any = { parent: keyLevel };
-			const collectedChildren: Record<string, IGrid> = {};
-			const collectedSkeletons: Record<string, ISkeleton> = {};
+			const _reservedPropsFromParent: any = {
+				parent: keyLevel,
+				withOpacity: grid.withOpacity,
+			};
+			const collectedChildren: (IGrid & { key: string })[] = [];
+			const collectedSkeletons: (ISkeleton & { key: string })[] = [];
 			const gridGap = (grid.gridGap || 0) + 'rem',
 				hasChildren =
-					Object.hasOwn(grid, 'children') && Array.isArray(grid.children),
+					Object.hasOwn(grid, 'children') &&
+					Array.isArray(grid.children) &&
+					grid.children.length > 0,
 				hasSkeletons =
-					Object.hasOwn(grid, 'skeletons') && Array.isArray(grid.skeletons),
+					Object.hasOwn(grid, 'skeletons') &&
+					Array.isArray(grid.skeletons) &&
+					grid.skeletons.length > 0,
 				repeatCount: number = grid.repeatCount as number;
 
+			if (repeatCount > 0) {
+				_reservedPropsFromParent.repeatCount = repeatCount;
+			}
 			if (hasChildren) {
-				grid.children!.forEach(
-					(key: string) => (collectedChildren[key] = gridState[key] as IGrid)
-				);
+				itemsWithRepeat(grid.children!, repeatCount)
+					.map(mutateWithRepeated.bind(null, repeatCount))
+					.forEach(
+						({
+							path,
+							key,
+							isRepeated,
+						}: {
+							path: string;
+							key: string;
+							isRepeated?: boolean;
+						}) => {
+							collectedChildren.push({
+								...(gridState[path] as IGrid),
+								key,
+								isRepeated: Boolean(isRepeated),
+							});
+						}
+					);
 			}
 			if (hasSkeletons) {
-				grid.skeletons!.forEach(
-					(key: string) =>
-						(collectedSkeletons[key] = skeletonsState[key] as ISkeleton)
-				);
+				itemsWithRepeat(grid.skeletons!, repeatCount)
+					.map(mutateWithRepeated.bind(null, repeatCount))
+					.forEach(
+						({
+							path,
+							key,
+							isRepeated,
+						}: {
+							path: string;
+							key: string;
+							isRepeated?: boolean;
+						}) => {
+							collectedSkeletons.push({
+								...(skeletonsState[path] as ISkeleton),
+								key,
+								isRepeated: Boolean(isRepeated),
+							});
+						}
+					);
 			}
-			const children = hasChildren
-					? itemsWithRepeat(
-							Object.values(collectedChildren) as IGrid[],
-							repeatCount
-						)
-					: [],
-				skeletons = hasSkeletons
-					? itemsWithRepeat(
-							Object.values(collectedSkeletons) as ISkeleton[],
-							repeatCount
-						)
-					: [],
-				gridStyle = generateCSSGridArea({
+			const gridStyle = generateCSSGridArea({
 					grid,
 					hasChildren,
-					children,
-					skeletons,
+					children: collectedChildren,
+					skeletons: collectedSkeletons,
 					repeatCount,
 					reservedProps: _reservedPropsFromParent,
 					keyLevel,
@@ -203,7 +248,10 @@ export const GridLayout = () => {
 				style = convertStyles(grid.styles as string) || {};
 
 			return (
-				<WithContextMenu isAble={keyLevel === highlightedNode} key={keyLevel}>
+				<WithContextMenu
+					isAble={keyLevel === highlightedNode && !grid.isRepeated}
+					key={keyLevel}
+				>
 					<Box
 						display="grid"
 						data-key={keyLevel}
@@ -225,7 +273,12 @@ export const GridLayout = () => {
 									),
 							alignItems: grid.alignItems,
 							justifyContent: grid.justifyContent,
-							opacity: setOpacity(index, repeatCount, length, withOpacity),
+							opacity: setOpacity(
+								index,
+								reservedPropsFromParent?.repeatCount,
+								length,
+								reservedPropsFromParent?.withOpacity
+							),
 							...convertCssToReactStyles(style),
 							...generateBorders({
 								keyLevel,
@@ -236,24 +289,27 @@ export const GridLayout = () => {
 							}),
 						}}
 						className={grid.className || ''}
+						{...(grid.isRepeated && {
+							'data-repeated-node': true,
+							pointerEvents: 'none',
+						})}
 					>
 						{hasChildren
-							? (Object.keys(collectedChildren) as string[]).map(
-									(key, gridItemIndex) =>
-										renderGridLayout({
-											grid: collectedChildren[key],
-											dataKey: key,
-											index: gridItemIndex,
-											length: children.length,
-											reservedPropsFromParent: _reservedPropsFromParent,
-										})
+							? collectedChildren.map((child, gridItemIndex) =>
+									renderGridLayout({
+										grid: child,
+										dataKey: child.key,
+										index: gridItemIndex,
+										length: collectedChildren.length,
+										reservedPropsFromParent: _reservedPropsFromParent,
+									})
 								)
 							: hasSkeletons
 								? renderSkeletons(
 										collectedSkeletons,
 										repeatCount,
 										withOpacity,
-										_reservedPropsFromParent
+										_reservedPropsFromParent.parent
 									)
 								: null}
 					</Box>

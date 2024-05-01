@@ -56,7 +56,7 @@ export const overrideSides = (
 	return [top, right, bottom, left];
 };
 
-export const valueWithPrefix = (v: string): { value: string; unit: string } => {
+export const valueWithPrefix = (v: any): { value: string; unit: string } => {
 	try {
 		if (typeof v === 'function')
 			return {
@@ -171,11 +171,29 @@ export const generateGridAreaAsColDirection = (
 	);
 };
 
-export const itemsWithRepeat = (
-	skeletons: (ISkeleton | IGrid)[],
-	repeatCount: number
+export const mutateWithRepeated = (
+	repeatCount: number,
+	key: string,
+	index: number
 ) => {
 	return repeatCount > 0
+		? {
+				path: key,
+				...(index > 0
+					? {
+							isRepeated: true,
+							key: key + '_repeated_' + index,
+						}
+					: { key }),
+			}
+		: { path: key, key };
+};
+
+export const itemsWithRepeat = (
+	skeletons: (ISkeleton | IGrid | string)[],
+	repeatCount: number
+) => {
+	return repeatCount > 0 && skeletons[0]
 		? [].constructor(repeatCount).fill(skeletons[0])
 		: skeletons;
 };
@@ -218,7 +236,7 @@ export const generateCSSGridArea = ({
 		? generateGridArea(
 				(hasChildren
 					? children
-					: itemsWithRepeat((skeletons || []) as ISkeleton[], repeatCount)
+					: itemsWithRepeat(skeletons as ISkeleton[], repeatCount)
 				).map(({ w = DEFAULT_GRID_CONTAINER_WIDTH }) => ({ w })),
 				(index, prop, val) => {
 					if (!reservedProps[`${keyLevel}_${index + 1}` as any]) {
@@ -230,7 +248,7 @@ export const generateCSSGridArea = ({
 		: generateGridAreaAsColDirection(
 				(hasChildren
 					? children
-					: itemsWithRepeat((skeletons || []) as ISkeleton[], repeatCount)) as (
+					: itemsWithRepeat(skeletons as ISkeleton[], repeatCount)) as (
 					| ISkeleton
 					| IGrid
 				)[],
@@ -261,6 +279,10 @@ export const findAbsentIndex = (base: string, arr: string[]): number => {
 	return max + 1;
 };
 
+const notRepeated = (key?: string, parentKey?: string | undefined) => {
+	return !key?.includes('repeated') && !parentKey?.includes('repeated');
+};
+
 export const generateBorders = ({
 	keyLevel,
 	highlightedNode,
@@ -274,7 +296,7 @@ export const generateBorders = ({
 	isDark: boolean;
 	hasChildren: boolean;
 }) =>
-	keyLevel === highlightedNode
+	keyLevel === highlightedNode && notRepeated(keyLevel, parent)
 		? {
 				boxShadow: '0px 0px 1px 1px var(--chakra-colors-brand-500)',
 			}

@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useState, memo } from 'react';
+import { ChangeEvent, FC, useState, memo, useMemo } from 'react';
 import { Box, Heading, Input } from '@chakra-ui/react';
 import { useDebounce } from 'react-use';
 import cloneDeep from 'clone-deep';
@@ -36,6 +36,16 @@ export const RepeatCount: FC = memo(() => {
 		[localValue]
 	);
 
+	const isDisabled = useMemo(() => {
+		if (Object.hasOwn(grid[highlightedNode], 'children')) {
+			return grid[highlightedNode].children!.length !== 1;
+		} else if (Object.hasOwn(grid[highlightedNode], 'skeletons')) {
+			return grid[highlightedNode].skeletons!.length !== 1;
+		}
+
+		return true;
+	}, [highlightedNode, grid]);
+
 	const onBlur = () => {
 		if (!localValue) {
 			setLocalValue(DEFAULT_REPEAT_COUNT);
@@ -63,6 +73,8 @@ export const RepeatCount: FC = memo(() => {
 				Repeat count
 			</Heading>
 			<Input
+				disabled={isDisabled}
+				readOnly={isDisabled}
 				variant="base"
 				value={localValue}
 				onChange={onChange}

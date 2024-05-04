@@ -24,6 +24,7 @@ export default defineStyleConfig({
 	},
 	variants: {
 		base: {
+			borderRadius: '0.6rem',
 			backgroundColor: 'brand.500',
 			color: 'white',
 			_hover: {

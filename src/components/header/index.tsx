@@ -12,6 +12,7 @@ import {
 	RiMoonLine,
 	RiPaintFill,
 	RiSunLine,
+	RiCodeSSlashFill,
 } from 'react-icons/ri';
 import { useRecoilState } from 'recoil';
 import { useThemeColors } from '@/hooks';
@@ -48,6 +49,13 @@ export const Header: FC = memo(() => {
 		});
 	};
 
+	const onOpenGetCodeModal = () => {
+		setModal({
+			key: MODALS_KEYS.GET_CODE,
+			props: {},
+		});
+	};
+
 	const onPreview = () => {};
 
 	return (
@@ -72,7 +80,20 @@ export const Header: FC = memo(() => {
 					>
 						{ableToPreview ? 'Preview' : 'Create Root'}
 					</Button>
-					{ableToPreview ? <HighlightedNode /> : null}
+					{ableToPreview ? (
+						<>
+							<Button
+								variant="menu-outline"
+								px={4}
+								gap={2}
+								fontSize="1.3rem"
+								onClick={onOpenGetCodeModal}
+							>
+								Get code <Icon fontSize="1.5rem" as={RiCodeSSlashFill} />
+							</Button>
+							<HighlightedNode />
+						</>
+					) : null}
 				</Flex>
 				<Flex alignItems="center" gap={6}>
 					<Button

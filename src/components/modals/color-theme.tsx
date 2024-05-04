@@ -44,10 +44,12 @@ const TabPanelComponent = ({
 					Main color
 				</Heading>
 				<InputGroup>
-					<InputLeftAddon h="inherit" w="4rem" p={2}>
+					<InputLeftAddon border="none" h="inherit" w="4rem" p={2}>
 						<Input
+							cursor="pointer"
 							h="full"
 							w="full"
+							border="none"
 							p={0}
 							type="color"
 							value={value.main}
@@ -70,10 +72,12 @@ const TabPanelComponent = ({
 					Gradient color
 				</Heading>
 				<InputGroup>
-					<InputLeftAddon h="inherit" w="4rem" p={2}>
+					<InputLeftAddon border="none" h="inherit" w="4rem" p={2}>
 						<Input
 							h="full"
 							w="full"
+							border="none"
+							cursor="pointer"
 							p={0}
 							type="color"
 							value={value.gradient}

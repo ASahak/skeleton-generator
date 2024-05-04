@@ -4,6 +4,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import parse from 'style-to-object';
 import { HighlightPulse } from './highlight-pulse';
 import {
+	selectColorThemeState,
 	selectGridState,
 	selectRootStylesState,
 	selectSkeletonsState,
@@ -15,7 +16,6 @@ import {
 	DEFAULT_WIDTH,
 	ROOT_KEY,
 	STYLE_PARSING_REGEXP,
-	VARIANTS,
 } from '@/constants/general-settings';
 import { IGrid, ISkeleton, SizeFunction } from '@/common/types';
 import {
@@ -32,6 +32,7 @@ import {
 } from '@/utils/helpers';
 import { highlightedNodeState } from '@/store/atoms/global';
 import { WithContextMenu } from '@/containers/generator/with-context-menu';
+import { COLOR_MODE } from '@/common/enums';
 
 interface IGridLayout {
 	grid: IGrid;
@@ -50,6 +51,9 @@ export const GridLayout = () => {
 	const [highlightedNode, setHighlightedNode] =
 		useRecoilState(highlightedNodeState);
 	const validStyles = useRef<Record<string, any>>({});
+	const colorTheme = useRecoilValue(
+		selectColorThemeState(colorMode as COLOR_MODE)
+	);
 	const isDark = colorMode === 'dark';
 
 	const renderSkeletons = (
@@ -85,7 +89,7 @@ export const GridLayout = () => {
 							),
 							borderRadius: skeleton.r || '0px',
 							margin: generateMargin(skeleton.margin || ''),
-							backgroundColor: VARIANTS.dark.main, //todo
+							backgroundColor: colorTheme.main,
 							opacity: setOpacity(
 								index,
 								repeatCount,
@@ -118,9 +122,9 @@ export const GridLayout = () => {
 									width: `${skeleton.skeletonW || DEFAULT_SKELETON_GRADIENT_WIDTH}px`,
 									backgroundImage: `linear-gradient(
                 90deg,
-                ${VARIANTS.dark.main} 0px,
-                ${VARIANTS.dark.gradient} ${(Number(skeleton.skeletonW) || DEFAULT_SKELETON_GRADIENT_WIDTH) / 2}px,
-                ${VARIANTS.dark.main} ${skeleton.skeletonW || DEFAULT_SKELETON_GRADIENT_WIDTH}px
+                ${colorTheme.main} 0px,
+                ${colorTheme.gradient} ${(Number(skeleton.skeletonW) || DEFAULT_SKELETON_GRADIENT_WIDTH) / 2}px,
+                ${colorTheme.main} ${skeleton.skeletonW || DEFAULT_SKELETON_GRADIENT_WIDTH}px
               )`,
 								}}
 							/>
@@ -316,7 +320,7 @@ export const GridLayout = () => {
 				</WithContextMenu>
 			);
 		},
-		[gridState, skeletonsState, highlightedNode, isDark]
+		[gridState, skeletonsState, highlightedNode, isDark, colorTheme]
 	);
 
 	useEffect(() => {

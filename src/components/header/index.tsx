@@ -1,13 +1,18 @@
-import { memo, FC } from 'react';
+import { FC, memo } from 'react';
 import {
 	Box,
 	Button,
+	Flex,
 	HStack,
 	Icon,
 	useColorMode,
-	Flex,
 } from '@chakra-ui/react';
-import { RiListSettingsLine, RiMoonLine, RiSunLine } from 'react-icons/ri';
+import {
+	RiListSettingsLine,
+	RiMoonLine,
+	RiPaintFill,
+	RiSunLine,
+} from 'react-icons/ri';
 import { useRecoilState } from 'recoil';
 import { useThemeColors } from '@/hooks';
 import {
@@ -18,8 +23,10 @@ import {
 import { HighlightedNode } from '@/components/header/highlighted-node';
 import { generateDefaultValues } from '@/utils/helpers';
 import { ROOT_KEY } from '@/constants/general-settings';
+import { MODALS_KEYS, useModal } from '@/providers/custom-modal';
 
 export const Header: FC = memo(() => {
+	const { setModal } = useModal();
 	const { colorMode, toggleColorMode } = useColorMode();
 	const { white_dark700, gray100_dark400 } = useThemeColors();
 	const [getGridState, setGridState] = useRecoilState(gridState);
@@ -32,6 +39,13 @@ export const Header: FC = memo(() => {
 			[ROOT_KEY]: { ...generateDefaultValues() },
 		});
 		setHighlightedNode(ROOT_KEY);
+	};
+
+	const onOpenColorThemeModal = () => {
+		setModal({
+			key: MODALS_KEYS.COLOR_THEME,
+			props: {},
+		});
 	};
 
 	const onPreview = () => {};
@@ -61,6 +75,15 @@ export const Header: FC = memo(() => {
 					{ableToPreview ? <HighlightedNode /> : null}
 				</Flex>
 				<Flex alignItems="center" gap={6}>
+					<Button
+						alignItems="center"
+						display="flex"
+						p={0}
+						variant="unstyled"
+						onClick={onOpenColorThemeModal}
+					>
+						<Icon as={RiPaintFill} fontSize="4xl" />
+					</Button>
 					{ableToPreview ? (
 						<Button
 							alignItems="center"

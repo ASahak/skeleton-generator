@@ -15,7 +15,11 @@ import {
 	ModalOverlay,
 	useDisclosure,
 } from '@chakra-ui/react';
-import { ConfirmDelete, FunctionUnitEditor } from '@/components/modals';
+import {
+	ConfirmDelete,
+	FunctionUnitEditor,
+	ColorTheme,
+} from '@/components/modals';
 import { dispatchBus } from '@/hooks';
 import { ON_CLOSE_MODAL } from '@/constants/event-bus-types';
 
@@ -39,11 +43,13 @@ const CustomModalContext = createContext<contextType>({
 export enum MODALS_KEYS {
 	CONFIRM_DELETE = 'confirm-delete',
 	FUNCTION_UNIT_EDITOR = 'function-unit-editor',
+	COLOR_THEME = 'color-theme',
 }
 
 const MODALS: Record<MODALS_KEYS, FC<any>> = {
 	[MODALS_KEYS.CONFIRM_DELETE]: ConfirmDelete,
 	[MODALS_KEYS.FUNCTION_UNIT_EDITOR]: FunctionUnitEditor,
+	[MODALS_KEYS.COLOR_THEME]: ColorTheme,
 };
 export const CustomModal = ({ children }: { children: ReactNode }) => {
 	const [modal, setModal] = useState<{

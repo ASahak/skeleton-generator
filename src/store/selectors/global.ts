@@ -1,6 +1,7 @@
 import { selector, selectorFamily } from 'recoil';
 import dlv from 'dlv';
 import {
+	colorThemeState,
 	gridState,
 	highlightedNodeState,
 	optionsPanelIsOpenState,
@@ -13,6 +14,7 @@ import {
 	SKELETON_INITIAL_VALUES,
 } from '@/constants/general-settings';
 import { isSkeletonHighlighted } from '@/utils/helpers';
+import { COLOR_MODE } from '@/common/enums';
 
 export const selectGridState = selector({
 	key: 'select-grid',
@@ -84,4 +86,15 @@ export const selectRootStylesState = selector({
 	get: ({ get }) => {
 		return get(rootStylesState);
 	},
+});
+
+export const selectColorThemeState = selectorFamily({
+	key: 'select-color-theme',
+	get:
+		(colorMode: COLOR_MODE) =>
+		({ get }) => {
+			const state = get(colorThemeState);
+
+			return state[colorMode];
+		},
 });

@@ -68,3 +68,8 @@ export enum SIZE_UNITS {
 	V_MIN = 'vmin',
 	V_MAX = 'vmax',
 }
+
+export enum COLOR_MODE {
+	DARK = 'dark',
+	LIGHT = 'light',
+}

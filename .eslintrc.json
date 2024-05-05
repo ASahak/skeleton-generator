@@ -68,7 +68,8 @@
 		// Checks effect dependencies
 		"react/react-in-jsx-scope": "off",
 		"react/prop-types": "off",
-		"prettier/prettier": "warn"
+		"prettier/prettier": "warn",
+		"@typescript-eslint/no-unused-vars": ["error"]
 	},
 	"settings": {
 		"react": {

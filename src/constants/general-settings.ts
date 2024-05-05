@@ -1,17 +1,6 @@
 /*TODO need to import from npm package*/
 import { DIRECTION, SIZE_UNITS } from '@/common/enums';
 
-export const VARIANTS = {
-	gray: {
-		main: 'rgb(241 241 241)',
-		gradient: 'rgb(236,236,236)',
-	},
-	dark: {
-		main: 'rgb(40 44 52)',
-		gradient: 'rgb(44 48 58)',
-	},
-};
-
 export const STYLE_PARSING_REGEXP = /(^\{|\}$)/g;
 
 export const DEFAULT_RADIUS = '0px';

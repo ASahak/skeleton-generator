@@ -1,6 +1,7 @@
 import { selector, selectorFamily } from 'recoil';
 import dlv from 'dlv';
 import {
+	autoDeviceCheckingIsActiveState,
 	colorThemeState,
 	deviceState,
 	gridState,
@@ -103,4 +104,9 @@ export const selectColorThemeState = selectorFamily({
 export const selectDeviceState = selector({
 	key: 'select-device',
 	get: ({ get }) => get(deviceState),
+});
+
+export const selectAutoDeviceCheckingIsActiveState = selector({
+	key: 'select-auto-device-checking',
+	get: ({ get }) => get(autoDeviceCheckingIsActiveState),
 });

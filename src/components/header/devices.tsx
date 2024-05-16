@@ -6,10 +6,22 @@ import {
 	SlScreenSmartphone,
 	SlScreenTablet,
 } from 'react-icons/sl';
-import { deviceState } from '@/store/atoms/global';
+import {
+	autoDeviceCheckingIsActiveState,
+	deviceState,
+} from '@/store/atoms/global';
+import { Device } from '@/common/types';
 
 export const Devices = memo(() => {
 	const [device, setDeviceState] = useRecoilState(deviceState);
+	const [, setIsAutoCheckingDevice] = useRecoilState(
+		autoDeviceCheckingIsActiveState
+	);
+
+	const onChangeDevice = (device: Device) => {
+		setIsAutoCheckingDevice(false);
+		setDeviceState(device);
+	};
 
 	return (
 		<Flex gap={4} flex={1} justifyContent="center" alignItems="center">
@@ -29,7 +41,7 @@ export const Devices = memo(() => {
 					cursor="pointer"
 					as={SlScreenSmartphone}
 					fontSize="4xl"
-					onClick={() => setDeviceState('mobile')}
+					onClick={() => onChangeDevice('mobile')}
 				/>
 			</Flex>
 			<Flex
@@ -48,7 +60,7 @@ export const Devices = memo(() => {
 					cursor="pointer"
 					as={SlScreenTablet}
 					fontSize="4xl"
-					onClick={() => setDeviceState('tablet')}
+					onClick={() => onChangeDevice('tablet')}
 				/>
 			</Flex>
 			<Flex
@@ -67,7 +79,7 @@ export const Devices = memo(() => {
 					cursor="pointer"
 					as={SlScreenDesktop}
 					fontSize="4xl"
-					onClick={() => setDeviceState('desktop')}
+					onClick={() => onChangeDevice('desktop')}
 				/>
 			</Flex>
 		</Flex>

@@ -2,9 +2,14 @@ import { atom, RecoilState } from 'recoil';
 import { Device, IGrid, ISkeleton } from '@/common/types';
 import { COLOR_MODE } from '@/common/enums';
 
-export const deviceState: RecoilState<Device> = atom<Device>({
+export const deviceState: RecoilState<Device | null> = atom<Device | null>({
 	key: 'device',
-	default: 'desktop',
+	default: null,
+});
+
+export const autoDeviceCheckingIsActiveState: RecoilState<boolean> = atom({
+	key: 'auto-device-checking',
+	default: true,
 });
 
 export const gridState: RecoilState<Record<string, IGrid>> = atom({

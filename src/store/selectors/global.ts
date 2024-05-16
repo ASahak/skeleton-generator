@@ -2,6 +2,7 @@ import { selector, selectorFamily } from 'recoil';
 import dlv from 'dlv';
 import {
 	colorThemeState,
+	deviceState,
 	gridState,
 	highlightedNodeState,
 	optionsPanelIsOpenState,
@@ -97,4 +98,9 @@ export const selectColorThemeState = selectorFamily({
 
 			return state[colorMode];
 		},
+});
+
+export const selectDeviceState = selector({
+	key: 'select-device',
+	get: ({ get }) => get(deviceState),
 });

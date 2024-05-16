@@ -1,6 +1,11 @@
 import { atom, RecoilState } from 'recoil';
-import { IGrid, ISkeleton } from '@/common/types';
+import { Device, IGrid, ISkeleton } from '@/common/types';
 import { COLOR_MODE } from '@/common/enums';
+
+export const deviceState: RecoilState<Device> = atom<Device>({
+	key: 'device',
+	default: 'desktop',
+});
 
 export const gridState: RecoilState<Record<string, IGrid>> = atom({
 	key: 'grid',

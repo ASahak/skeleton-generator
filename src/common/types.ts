@@ -40,6 +40,8 @@ export interface IGrid {
 	isRepeated?: boolean;
 }
 
+export type Device = 'mobile' | 'tablet' | 'desktop';
+
 export interface IGenerateCSSGridAreaArgs {
 	grid: IGrid;
 	hasChildren: boolean;

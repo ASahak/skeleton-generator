@@ -25,6 +25,7 @@ import { HighlightedNode } from '@/components/header/highlighted-node';
 import { generateDefaultValues } from '@/utils/helpers';
 import { ROOT_KEY } from '@/constants/general-settings';
 import { MODALS_KEYS, useModal } from '@/providers/custom-modal';
+import { Devices } from './devices';
 
 export const Header: FC = memo(() => {
 	const { setModal } = useModal();
@@ -73,7 +74,7 @@ export const Header: FC = memo(() => {
 			gap={{ base: 8, md: 4 }}
 		>
 			<HStack justifyContent="space-between" w="full">
-				<Flex alignItems="center" gap={4}>
+				<Flex alignItems="center" gap={4} flex={1}>
 					<Button
 						variant="base"
 						onClick={ableToPreview ? onPreview : onCreateRootTemplate}
@@ -95,7 +96,8 @@ export const Header: FC = memo(() => {
 						</>
 					) : null}
 				</Flex>
-				<Flex alignItems="center" gap={6}>
+				{ableToPreview ? <Devices /> : null}
+				<Flex alignItems="center" gap={6} flex={1} justifyContent="end">
 					<Button
 						alignItems="center"
 						display="flex"

@@ -432,3 +432,6 @@ export const getDirectParentWithDataKeyAttr = (node: HTMLElement) => {
 
 	return parent;
 };
+
+export const filterFromPx = (value: string): number =>
+	Number(value.split('px')[0]);

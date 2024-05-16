@@ -8,12 +8,12 @@ import { GridLayout } from '@/containers/generator/grid-layout';
 import { useThemeColors } from '@/hooks';
 import { selectGridState } from '@/store/selectors/global';
 import { optionsPanelIsOpenState } from '@/store/atoms/global';
+import { AdaptiveDeviceContainer } from '@/containers/adaptive-device-container';
 
 export default function View() {
 	const { gray80_dark800 } = useThemeColors();
 	const getGridState = useRecoilValue(selectGridState);
 	const [optionsPanelIsOpen] = useRecoilState(optionsPanelIsOpenState);
-	const { white_dark700 } = useThemeColors();
 	const ableToPreview = Object.keys(getGridState).length > 0;
 
 	return (
@@ -28,15 +28,10 @@ export default function View() {
 							gap={optionsPanelIsOpen ? 4 : 0}
 							transition=".3s"
 						>
-							<GridItem
-								rounded="md"
-								bgColor={white_dark700}
-								boxShadow="md"
-								overflow="hidden"
-								maxH="full"
-								p={4}
-							>
-								<GridLayout />
+							<GridItem overflow="hidden" maxH="full">
+								<AdaptiveDeviceContainer>
+									<GridLayout />
+								</AdaptiveDeviceContainer>
 							</GridItem>
 							<GridItem position="relative">
 								<OptionsPanel />

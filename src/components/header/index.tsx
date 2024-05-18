@@ -26,6 +26,7 @@ import { generateDefaultValues } from '@/utils/helpers';
 import { ROOT_KEY } from '@/constants/general-settings';
 import { MODALS_KEYS, useModal } from '@/providers/custom-modal';
 import { Devices } from './devices';
+import { DeviceResize } from '@/assets/chakra-icons';
 
 export const Header: FC = memo(() => {
 	const { setModal } = useModal();
@@ -58,6 +59,13 @@ export const Header: FC = memo(() => {
 	};
 
 	const onPreview = () => {};
+
+	const openBreakpointsModal = () => {
+		setModal({
+			key: MODALS_KEYS.BREAKPOINTS,
+			props: {},
+		});
+	};
 
 	return (
 		<Box
@@ -108,15 +116,26 @@ export const Header: FC = memo(() => {
 						<Icon as={RiPaintFill} fontSize="4xl" />
 					</Button>
 					{ableToPreview ? (
-						<Button
-							alignItems="center"
-							display="flex"
-							p={0}
-							variant="unstyled"
-							onClick={() => setOptionsPanelIsOpen(true)}
-						>
-							<Icon as={RiListSettingsLine} fontSize="4xl" />
-						</Button>
+						<>
+							<Button
+								alignItems="center"
+								display="flex"
+								p={0}
+								variant="unstyled"
+								onClick={openBreakpointsModal}
+							>
+								<Icon as={DeviceResize} fontSize="4xl" />
+							</Button>
+							<Button
+								alignItems="center"
+								display="flex"
+								p={0}
+								variant="unstyled"
+								onClick={() => setOptionsPanelIsOpen(true)}
+							>
+								<Icon as={RiListSettingsLine} fontSize="4xl" />
+							</Button>
+						</>
 					) : null}
 					<Button
 						variant="unstyled"

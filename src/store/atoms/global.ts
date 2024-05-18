@@ -1,6 +1,8 @@
 import { atom, RecoilState } from 'recoil';
 import { Device, IGrid, ISkeleton } from '@/common/types';
 import { COLOR_MODE } from '@/common/enums';
+import { breakpoints } from '@/styles/theme';
+import { filterFromPx } from '@/utils/helpers';
 
 export const deviceState: RecoilState<Device | null> = atom<Device | null>({
 	key: 'device',
@@ -53,5 +55,14 @@ export const colorThemeState: RecoilState<
 			main: '#f1f1f1',
 			gradient: '#ececec',
 		},
+	},
+});
+
+export const breakpointsState: RecoilState<Record<Device, string>> = atom({
+	key: 'breakpoints',
+	default: {
+		mobile: `${filterFromPx(breakpoints.sm) - 1}px`, // max-width
+		tablet: `${filterFromPx(breakpoints.lg) - 1}px`, // max-width
+		desktop: breakpoints.lg, // min-width
 	},
 });

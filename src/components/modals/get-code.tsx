@@ -15,6 +15,7 @@ import { useRecoilValue } from 'recoil';
 import { ToastContext } from '@/contexts/toast';
 import { useThemeColors } from '@/hooks';
 import { colorThemeState } from '@/store/atoms/global';
+import { selectBreakpointsState } from '@/store/selectors/global';
 
 const TABS = [
 	{ value: 'global-configs', label: 'Global configurations' },
@@ -26,11 +27,13 @@ export const GetCode = () => {
 	const [tabIndex, setTabIndex] = useState(0);
 	const { gray100_dark400, white_dark550 } = useThemeColors();
 	const colorThemes = useRecoilValue(colorThemeState);
+	const breakpoints = useRecoilValue(selectBreakpointsState);
 
 	const generateGlobalConfigs = useMemo(() => {
 		const value = JSON.stringify(
 			{
 				colorTheme: colorThemes,
+				breakpoints,
 			},
 			null,
 			'  '
@@ -42,7 +45,7 @@ export const GetCode = () => {
   {children}
 </ReactSkeletonProvider>
 `;
-	}, [colorThemes]);
+	}, [colorThemes, breakpoints]);
 
 	const generateGridStructure = useMemo(() => {
 		const value = JSON.stringify(

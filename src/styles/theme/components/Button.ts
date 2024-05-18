@@ -28,7 +28,7 @@ export default defineStyleConfig({
 			backgroundColor: 'brand.500',
 			color: 'white',
 			_hover: {
-				backgroundColor: 'brand.600',
+				backgroundColor: 'brand.600 !important',
 			},
 		},
 		red: {

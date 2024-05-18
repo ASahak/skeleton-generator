@@ -20,6 +20,7 @@ import {
 	FunctionUnitEditor,
 	ColorTheme,
 	GetCode,
+	Breakpoints,
 } from '@/components/modals';
 import { dispatchBus } from '@/hooks';
 import { ON_CLOSE_MODAL } from '@/constants/event-bus-types';
@@ -46,6 +47,7 @@ export enum MODALS_KEYS {
 	FUNCTION_UNIT_EDITOR = 'function-unit-editor',
 	COLOR_THEME = 'color-theme',
 	GET_CODE = 'get-code',
+	BREAKPOINTS = 'breakpoints',
 }
 
 const MODALS: Record<MODALS_KEYS, FC<any>> = {
@@ -53,6 +55,7 @@ const MODALS: Record<MODALS_KEYS, FC<any>> = {
 	[MODALS_KEYS.FUNCTION_UNIT_EDITOR]: FunctionUnitEditor,
 	[MODALS_KEYS.COLOR_THEME]: ColorTheme,
 	[MODALS_KEYS.GET_CODE]: GetCode,
+	[MODALS_KEYS.BREAKPOINTS]: Breakpoints,
 };
 export const CustomModal = ({ children }: { children: ReactNode }) => {
 	const [modal, setModal] = useState<{

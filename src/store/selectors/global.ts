@@ -2,6 +2,7 @@ import { selector, selectorFamily } from 'recoil';
 import dlv from 'dlv';
 import {
 	autoDeviceCheckingIsActiveState,
+	breakpointsState,
 	colorThemeState,
 	deviceState,
 	gridState,
@@ -109,4 +110,9 @@ export const selectDeviceState = selector({
 export const selectAutoDeviceCheckingIsActiveState = selector({
 	key: 'select-auto-device-checking',
 	get: ({ get }) => get(autoDeviceCheckingIsActiveState),
+});
+
+export const selectBreakpointsState = selector({
+	key: 'select-breakpoints',
+	get: ({ get }) => get(breakpointsState),
 });

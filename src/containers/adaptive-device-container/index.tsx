@@ -1,7 +1,7 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 import { useContainerQuery } from 'react-container-query';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useThemeColors } from '@/hooks';
 import {
 	autoDeviceCheckingIsActiveState,
@@ -10,20 +10,8 @@ import {
 import { breakpoints } from '@/styles/theme';
 import { filterFromPx } from '@/utils/helpers';
 import { Device } from '@/common/types';
+import { selectBreakpointsState } from '@/store/selectors/global';
 
-const query = {
-	mobile: {
-		minWidth: 0,
-		maxWidth: filterFromPx(breakpoints.sm),
-	},
-	tablet: {
-		minWidth: filterFromPx(breakpoints.sm) + 1,
-		maxWidth: filterFromPx(breakpoints.lg),
-	},
-	desktop: {
-		minWidth: filterFromPx(breakpoints.lg) + 1,
-	},
-};
 const calcContainerWidth = (device: Device | null) => {
 	if (device === 'mobile') return `${filterFromPx(breakpoints.sm)}px`;
 	else if (device === 'tablet') return `${filterFromPx(breakpoints.lg)}px`;
@@ -38,6 +26,23 @@ export const AdaptiveDeviceContainer = memo(
 		children: React.ReactNode;
 		initialSize: { width: number; height: number };
 	}>) => {
+		const breakpoints = useRecoilValue(selectBreakpointsState);
+		const query = useMemo(() => {
+			return {
+				mobile: {
+					minWidth: 0,
+					maxWidth: filterFromPx(breakpoints.mobile),
+				},
+				tablet: {
+					minWidth: filterFromPx(breakpoints.mobile) + 1,
+					maxWidth: filterFromPx(breakpoints.tablet),
+				},
+				desktop: {
+					minWidth: filterFromPx(breakpoints.tablet) + 1,
+				},
+			};
+		}, [breakpoints]);
+
 		const { white_dark700 } = useThemeColors();
 		const [device, setDeviceState] = useRecoilState(deviceState);
 		const [isAutoCheckingDevice, setIsAutoCheckingDevice] = useRecoilState(

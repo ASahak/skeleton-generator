@@ -14,6 +14,7 @@ import {
 import { useRecoilState, useRecoilValue } from 'recoil';
 import cloneDeep from 'clone-deep';
 import {
+	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
@@ -41,6 +42,7 @@ export const Alignment: FC = memo(() => {
 	const justifyContent = useRecoilValue(
 		selectHighlightedNodeGridPropState('justifyContent')
 	);
+	const device = useRecoilValue(selectDeviceState);
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const [grid, setGridState] = useRecoilState(gridState);
 	const { gray100_dark400 } = useThemeColors();
@@ -54,8 +56,15 @@ export const Alignment: FC = memo(() => {
 			GridKeyType,
 			any
 		>;
+		let ref;
 
-		obj[alignment] = v;
+		if (device !== 'desktop') {
+			ref = obj.responsive[device!];
+		} else {
+			ref = obj;
+		}
+
+		ref[alignment] = v;
 		setGridState(_grid);
 	};
 

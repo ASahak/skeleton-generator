@@ -1,9 +1,10 @@
-import { FC, memo, useRef, useState } from 'react';
+import { FC, memo, useEffect, useRef, useState } from 'react';
 import { Box, Heading, Text } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useDebounce } from 'react-use';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import {
+	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
@@ -13,6 +14,7 @@ import { useThemeColors } from '@/hooks';
 import cloneDeep from 'clone-deep';
 
 export const Styles: FC = memo(() => {
+	const device = useRecoilValue(selectDeviceState);
 	const styles = useRecoilValue(selectHighlightedNodeGridPropState('styles'));
 	const [localValue, setLocalValue] = useState(styles);
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
@@ -30,7 +32,15 @@ export const Styles: FC = memo(() => {
 			>;
 			if (code !== obj.styles) {
 				try {
-					obj.styles = code;
+					let ref;
+
+					if (device !== 'desktop') {
+						ref = obj.responsive[device!];
+					} else {
+						ref = obj;
+					}
+
+					ref.styles = code;
 					setGridState(_grid);
 				} catch {
 					console.warn('Invalid CSS');
@@ -47,6 +57,10 @@ export const Styles: FC = memo(() => {
 			e.currentTarget as unknown as HTMLElement
 		).innerText;
 	};
+
+	useEffect(() => {
+		setLocalValue(styles);
+	}, [device]);
 
 	return (
 		<Box p={4}>

@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, memo, useState } from 'react';
+import { ChangeEvent, FC, memo, useEffect, useState } from 'react';
 import {
 	Box,
 	Button,
@@ -19,6 +19,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { RiArrowDownSLine } from 'react-icons/ri';
 import cloneDeep from 'clone-deep';
 import {
+	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
@@ -32,6 +33,7 @@ const UNITS_OPTIONS = [SIZE_UNITS.PX, SIZE_UNITS.REM, SIZE_UNITS.PERCENT].map(
 	(unit) => ({ label: unit, value: unit })
 );
 export const Radius: FC = memo(() => {
+	const device = useRecoilValue(selectDeviceState);
 	const radius = useRecoilValue(selectHighlightedNodeGridPropState('r'));
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const [skeletons, setSkeletonsState] = useRecoilState(skeletonsState);
@@ -45,7 +47,15 @@ export const Radius: FC = memo(() => {
 			const obj: Record<SkeletonKeyType, any> = _skeletons[
 				highlightedNode
 			] as Record<SkeletonKeyType, any>;
-			obj.r = `${value}${unit}`;
+			let ref;
+
+			if (device !== 'desktop') {
+				ref = obj.responsive[device!];
+			} else {
+				ref = obj;
+			}
+
+			ref.r = `${value}${unit}`;
 			setSkeletonsState(_skeletons);
 		},
 		300,
@@ -60,6 +70,10 @@ export const Radius: FC = memo(() => {
 		const newValue = e.target.value ?? '';
 		setLocalValue(`${newValue}${unit}`);
 	};
+
+	useEffect(() => {
+		setLocalValue(radius);
+	}, [device]);
 
 	return (
 		<Box p={4}>

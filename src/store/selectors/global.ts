@@ -11,7 +11,12 @@ import {
 	rootStylesState,
 	skeletonsState,
 } from '@/store/atoms/global';
-import { GridKeyType, ISkeleton, SkeletonKeyType } from '@/common/types';
+import {
+	Device,
+	GridKeyType,
+	ISkeleton,
+	SkeletonKeyType,
+} from '@/common/types';
 import {
 	CONTAINER_INITIAL_VALUES,
 	SKELETON_INITIAL_VALUES,
@@ -46,8 +51,18 @@ export const selectHighlightedNodeGridPropState = selectorFamily({
 		(propName: GridKeyType | SkeletonKeyType) =>
 		({ get }) => {
 			const dataKey: string = get(highlightedNodeState);
+			const device: Device | null = get(selectDeviceState);
 			if (isSkeletonHighlighted(dataKey)) {
 				const skeleton: Record<string, any> = dlv(get(skeletonsState), dataKey);
+
+				if (device && device !== 'desktop') {
+					return (
+						skeleton.responsive[device][propName as string] ??
+						SKELETON_INITIAL_VALUES[
+							propName as keyof typeof SKELETON_INITIAL_VALUES
+						]
+					);
+				}
 
 				return (
 					skeleton[propName as string] ??
@@ -58,6 +73,15 @@ export const selectHighlightedNodeGridPropState = selectorFamily({
 			}
 
 			const grid: Record<string, any> = dlv(get(gridState), dataKey);
+
+			if (device && device !== 'desktop') {
+				return (
+					grid.responsive[device][propName as string] ??
+					CONTAINER_INITIAL_VALUES[
+						propName as keyof typeof CONTAINER_INITIAL_VALUES
+					]
+				);
+			}
 
 			return (
 				grid[propName as string] ??

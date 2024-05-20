@@ -1,6 +1,12 @@
 import { ALIGN_ITEMS, DIRECTION, JUSTIFY_CONTENT } from '@/common/enums';
 
-export type SkeletonKeyType = 'w' | 'h' | 'margin' | 'r' | 'skeletonW';
+export type SkeletonKeyType =
+	| 'w'
+	| 'h'
+	| 'margin'
+	| 'r'
+	| 'skeletonW'
+	| 'responsive';
 
 export type GridKeyType =
 	| 'gridGap'
@@ -15,7 +21,8 @@ export type GridKeyType =
 	| 'withOpacity'
 	| 'children'
 	| 'skeletons'
-	| 'styles';
+	| 'styles'
+	| 'responsive';
 
 export interface ISkeleton
 	extends Pick<IGrid, 'w' | 'h' | 'margin' | 'isRepeated'> {

@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useState, memo, useMemo } from 'react';
+import { ChangeEvent, FC, useState, memo, useMemo, useEffect } from 'react';
 import { Box, Heading, Input } from '@chakra-ui/react';
 import { useDebounce } from 'react-use';
 import cloneDeep from 'clone-deep';
@@ -8,6 +8,7 @@ import {
 	REPEAT_COUNT_RANGE,
 } from '@/constants/general-settings';
 import {
+	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
@@ -18,6 +19,7 @@ export const RepeatCount: FC = memo(() => {
 	const value = useRecoilValue(
 		selectHighlightedNodeGridPropState('repeatCount')
 	);
+	const device = useRecoilValue(selectDeviceState);
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const [grid, setGridState] = useRecoilState(gridState);
 	const [localValue, setLocalValue] = useState(value);
@@ -29,7 +31,15 @@ export const RepeatCount: FC = memo(() => {
 				GridKeyType,
 				any
 			>;
-			obj.repeatCount = localValue;
+			let ref;
+
+			if (device !== 'desktop') {
+				ref = obj.responsive[device!];
+			} else {
+				ref = obj;
+			}
+
+			ref.repeatCount = localValue;
 			setGridState(_grid);
 		},
 		300,
@@ -66,6 +76,10 @@ export const RepeatCount: FC = memo(() => {
 		}
 		setLocalValue(v);
 	};
+
+	useEffect(() => {
+		setLocalValue(value);
+	}, [device]);
 
 	return (
 		<Box p={4}>

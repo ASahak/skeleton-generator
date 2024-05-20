@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
 	Box,
 	Button,
@@ -22,9 +22,21 @@ export const Breakpoints = () => {
 	const { white_dark650 } = useThemeColors();
 	const [breakpoints, setBreakpoints] = useRecoilState(breakpointsState);
 	const [localValue, setLocalValue] = useState(breakpoints);
-	const _mobile = filterFromPx(localValue.mobile);
-	const _tablet = filterFromPx(localValue.tablet);
-	const _desktop = filterFromPx(localValue.desktop);
+
+	const _mobile = useMemo(
+		() => filterFromPx(localValue.mobile),
+		[localValue.mobile]
+	);
+
+	const _tablet = useMemo(
+		() => filterFromPx(localValue.tablet),
+		[localValue.tablet]
+	);
+
+	const _desktop = useMemo(
+		() => filterFromPx(localValue.desktop),
+		[localValue.desktop]
+	);
 
 	const onApply = () => {
 		setBreakpoints(localValue);

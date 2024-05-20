@@ -13,6 +13,7 @@ import cloneDeep from 'clone-deep';
 import { RiArrowDownSLine } from 'react-icons/ri';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
+	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
@@ -24,6 +25,7 @@ const OPTIONS = Object.values(DIRECTION)
 	.filter((v) => isNaN(Number(v)))
 	.map((e) => ({ label: e, value: e }));
 export const Direction: FC = memo(() => {
+	const device = useRecoilValue(selectDeviceState);
 	const value = useRecoilValue(selectHighlightedNodeGridPropState('direction'));
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const [grid, setGridState] = useRecoilState(gridState);
@@ -34,8 +36,15 @@ export const Direction: FC = memo(() => {
 			GridKeyType,
 			any
 		>;
+		let ref;
 
-		obj.direction = value;
+		if (device !== 'desktop') {
+			ref = obj.responsive[device!];
+		} else {
+			ref = obj;
+		}
+
+		ref.direction = value;
 		setGridState(_grid);
 	};
 

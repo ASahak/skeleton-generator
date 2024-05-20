@@ -1,9 +1,10 @@
-import { ChangeEvent, FC, memo, useState } from 'react';
+import { ChangeEvent, FC, memo, useEffect, useState } from 'react';
 import { Box, Heading, Input, Text } from '@chakra-ui/react';
 import { useDebounce } from 'react-use';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import cloneDeep from 'clone-deep';
 import {
+	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
@@ -15,6 +16,7 @@ export const SkeletonWidth: FC = memo(() => {
 	const skeletonW = useRecoilValue(
 		selectHighlightedNodeGridPropState('skeletonW')
 	);
+	const device = useRecoilValue(selectDeviceState);
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const [skeletons, setSkeletonsState] = useRecoilState(skeletonsState);
 	const [localValue, setLocalValue] = useState(skeletonW);
@@ -26,7 +28,15 @@ export const SkeletonWidth: FC = memo(() => {
 			const obj: Record<SkeletonKeyType, any> = _skeletons[
 				highlightedNode
 			] as Record<SkeletonKeyType, any>;
-			obj.skeletonW = localValue;
+			let ref;
+
+			if (device !== 'desktop') {
+				ref = obj.responsive[device!];
+			} else {
+				ref = obj;
+			}
+
+			ref.skeletonW = localValue;
 			setSkeletonsState(_skeletons);
 		},
 		300,
@@ -37,6 +47,10 @@ export const SkeletonWidth: FC = memo(() => {
 		const newValue = e.target.value ?? '';
 		setLocalValue(newValue);
 	};
+
+	useEffect(() => {
+		setLocalValue(skeletonW);
+	}, [device]);
 
 	return (
 		<Box p={4}>

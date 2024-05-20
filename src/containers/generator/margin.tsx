@@ -1,4 +1,4 @@
-import { ChangeEvent, useState, memo, useRef } from 'react';
+import { ChangeEvent, useState, memo, useRef, useEffect } from 'react';
 import {
 	Box,
 	Checkbox,
@@ -13,6 +13,7 @@ import { SetterOrUpdater, useRecoilState, useRecoilValue } from 'recoil';
 import { useDebounce } from 'react-use';
 import cloneDeep from 'clone-deep';
 import {
+	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
@@ -43,6 +44,7 @@ export const MarginComponent = memo(
 			| SetterOrUpdater<Record<string, IGrid>>
 			| SetterOrUpdater<Record<string, ISkeleton>>;
 	}) => {
+		const device = useRecoilValue(selectDeviceState);
 		const value = useRecoilValue(selectHighlightedNodeGridPropState('margin'));
 		const [localValue, setLocalValue] = useState(value);
 		const [sideBySideChecked, setSideBySideChecked] = useState(
@@ -65,13 +67,20 @@ export const MarginComponent = memo(
 			const obj: Record<GridKeyType | SkeletonKeyType, any> = _store[
 				highlightedNode
 			] as Record<GridKeyType | SkeletonKeyType, any>;
+			let ref;
+
+			if (device !== 'desktop') {
+				ref = obj.responsive[device!];
+			} else {
+				ref = obj;
+			}
 
 			if (e.target.checked) {
-				obj.margin = `[${obj.margin},${obj.margin},${obj.margin},${obj.margin}]`;
+				ref.margin = `[${ref.margin},${ref.margin},${ref.margin},${ref.margin}]`;
 			} else {
-				obj.margin = CONTAINER_INITIAL_VALUES.margin;
+				ref.margin = CONTAINER_INITIAL_VALUES.margin;
 			}
-			setLocalValue(obj.margin);
+			setLocalValue(ref.margin);
 			setStore(_store);
 			setSideBySideChecked(e.target.checked);
 		};
@@ -95,6 +104,14 @@ export const MarginComponent = memo(
 			const obj: Record<GridKeyType | SkeletonKeyType, any> = _store[
 				highlightedNode
 			] as Record<GridKeyType | SkeletonKeyType, any>;
+			let ref;
+
+			if (device !== 'desktop') {
+				ref = obj.responsive[device!];
+			} else {
+				ref = obj;
+			}
+
 			if (!targetValue) {
 				if (marginSide.current) {
 					const [top, right, bottom, left] = overrideSides(
@@ -102,13 +119,13 @@ export const MarginComponent = memo(
 						localValue,
 						CONTAINER_INITIAL_VALUES.margin
 					);
-					obj.margin = `[${top},${right},${bottom},${left}]`;
+					ref.margin = `[${top},${right},${bottom},${left}]`;
 				} else {
-					obj.margin = CONTAINER_INITIAL_VALUES.margin;
-					setLocalValue(obj.margin);
+					ref.margin = CONTAINER_INITIAL_VALUES.margin;
+					setLocalValue(ref.margin);
 				}
 			} else {
-				obj.margin = localValue;
+				ref.margin = localValue;
 			}
 			setStore(_store);
 		};
@@ -131,6 +148,10 @@ export const MarginComponent = memo(
 				setLocalValue(newValue);
 			}
 		};
+
+		useEffect(() => {
+			setLocalValue(value);
+		}, [device]);
 
 		return (
 			<Box p={4}>

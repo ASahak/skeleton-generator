@@ -1,4 +1,11 @@
-import { ChangeEvent, memo, useCallback, useMemo, useState } from 'react';
+import {
+	ChangeEvent,
+	memo,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import cloneDeep from 'clone-deep';
 import {
 	Box,
@@ -21,6 +28,7 @@ import {
 import { SetterOrUpdater, useRecoilState, useRecoilValue } from 'recoil';
 import { RxHeight, RxWidth } from 'react-icons/rx';
 import {
+	selectDeviceState,
 	selectGridState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
@@ -56,6 +64,7 @@ const SizeComponent = memo(
 			| SetterOrUpdater<Record<string, IGrid>>
 			| SetterOrUpdater<Record<string, ISkeleton>>;
 	}) => {
+		const device = useRecoilValue(selectDeviceState);
 		const gridState = useRecoilValue(selectGridState);
 		const { setModal, onClose } = useModal();
 		const w = useRecoilValue(selectHighlightedNodeGridPropState('w'));
@@ -72,17 +81,23 @@ const SizeComponent = memo(
 				const obj: Record<GridKeyType | SkeletonKeyType, any> = _store[
 					highlightedNode
 				] as Record<GridKeyType | SkeletonKeyType, any>;
+				let ref = obj;
+
+				if (device !== 'desktop') {
+					ref = obj.responsive[device!];
+				}
+
 				// width
 				if (width.unit === SIZE_UNITS.FN) {
-					obj.w = localValue.w;
+					ref.w = localValue.w;
 				} else {
-					obj.w = `${width.value}${width.unit}`;
+					ref.w = `${width.value}${width.unit}`;
 				}
 				// height
 				if (height.unit === SIZE_UNITS.FN) {
-					obj.h = localValue.h;
+					ref.h = localValue.h;
 				} else {
-					obj.h = `${height.value}${height.unit}`;
+					ref.h = `${height.value}${height.unit}`;
 				}
 				setStore(_store);
 			},
@@ -170,6 +185,10 @@ const SizeComponent = memo(
 				!isSkeletonHighlighted(highlightedNode)
 			);
 		};
+
+		useEffect(() => {
+			setLocalValue({ w, h });
+		}, [device]);
 
 		return (
 			<Box p={4}>

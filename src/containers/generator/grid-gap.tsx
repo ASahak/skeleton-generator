@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, memo, useState } from 'react';
+import { ChangeEvent, FC, memo, useEffect, useState } from 'react';
 import { Box, Heading, Input } from '@chakra-ui/react';
 import { useDebounce } from 'react-use';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -8,6 +8,7 @@ import {
 	TREE_ELEMENTS_SPACING,
 } from '@/constants/general-settings';
 import {
+	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
@@ -15,6 +16,7 @@ import { gridState } from '@/store/atoms/global';
 import { GridKeyType } from '@/common/types';
 
 export const GridGap: FC = memo(() => {
+	const device = useRecoilValue(selectDeviceState);
 	const value = useRecoilValue(selectHighlightedNodeGridPropState('gridGap'));
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const [grid, setGridState] = useRecoilState(gridState);
@@ -27,7 +29,15 @@ export const GridGap: FC = memo(() => {
 				GridKeyType,
 				any
 			>;
-			obj.gridGap = localValue;
+			let ref;
+
+			if (device !== 'desktop') {
+				ref = obj.responsive[device!];
+			} else {
+				ref = obj;
+			}
+
+			ref.gridGap = localValue;
 			setGridState(_grid);
 		},
 		300,
@@ -52,6 +62,10 @@ export const GridGap: FC = memo(() => {
 		}
 		setLocalValue(v.toString());
 	};
+
+	useEffect(() => {
+		setLocalValue(value);
+	}, [device]);
 
 	return (
 		<Box p={4}>

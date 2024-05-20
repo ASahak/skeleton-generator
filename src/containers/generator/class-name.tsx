@@ -1,9 +1,10 @@
-import { ChangeEvent, FC, memo, useState } from 'react';
+import { ChangeEvent, FC, memo, useEffect, useState } from 'react';
 import { Box, Heading, Input } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useDebounce } from 'react-use';
 import cloneDeep from 'clone-deep';
 import {
+	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
@@ -15,6 +16,7 @@ export const ClassName: FC = memo(() => {
 	const [localValue, setLocalValue] = useState(value);
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const [grid, setGridState] = useRecoilState(gridState);
+	const device = useRecoilValue(selectDeviceState);
 
 	useDebounce(
 		() => {
@@ -23,7 +25,15 @@ export const ClassName: FC = memo(() => {
 				GridKeyType,
 				any
 			>;
-			obj.className = localValue;
+			let ref;
+
+			if (device !== 'desktop') {
+				ref = obj.responsive[device!];
+			} else {
+				ref = obj;
+			}
+
+			ref.className = localValue;
 			setGridState(_grid);
 		},
 		300,
@@ -33,6 +43,10 @@ export const ClassName: FC = memo(() => {
 	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setLocalValue(e.target.value);
 	};
+
+	useEffect(() => {
+		setLocalValue(value);
+	}, [device]);
 
 	return (
 		<Box p={4}>

@@ -1,5 +1,6 @@
 /*TODO need to import from npm package*/
 import { DIRECTION, SIZE_UNITS } from '@/common/enums';
+import { Device } from '@/common/types';
 
 export const STYLE_PARSING_REGEXP = /(^\{|\}$)/g;
 
@@ -32,6 +33,11 @@ export const REPEAT_COUNT_RANGE = {
 	DEFAULT: DEFAULT_REPEAT_COUNT,
 };
 
+export const RESPONSIVE: Partial<Record<Device, any>> = {
+	mobile: {},
+	tablet: {},
+};
+
 export const CONTAINER_INITIAL_VALUES = {
 	direction: DIRECTION.ROW,
 	gridGap: DEFAULT_GAP,
@@ -44,6 +50,7 @@ export const CONTAINER_INITIAL_VALUES = {
 	justifyContent: DEFAULT_JUSTIFY_ALIGNMENT,
 	withOpacity: false,
 	styles: `{}`,
+	responsive: RESPONSIVE,
 };
 
 export const SKELETON_INITIAL_VALUES = {
@@ -52,6 +59,7 @@ export const SKELETON_INITIAL_VALUES = {
 	h: DEFAULT_HEIGHT,
 	r: '0px',
 	skeletonW: DEFAULT_SKELETON_GRADIENT_WIDTH,
+	responsive: RESPONSIVE,
 };
 
 export const SIZE_UNITS_INITIAL_VALUES = {

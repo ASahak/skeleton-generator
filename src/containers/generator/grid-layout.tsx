@@ -5,6 +5,7 @@ import parse from 'style-to-object';
 import { HighlightPulse } from './highlight-pulse';
 import {
 	selectColorThemeState,
+	selectDeviceState,
 	selectGridState,
 	selectRootStylesState,
 	selectSkeletonsState,
@@ -17,7 +18,7 @@ import {
 	ROOT_KEY,
 	STYLE_PARSING_REGEXP,
 } from '@/constants/general-settings';
-import { IGrid, ISkeleton, SizeFunction } from '@/common/types';
+import { GridKeyType, IGrid, ISkeleton, SizeFunction } from '@/common/types';
 import {
 	applicableValue,
 	convertCssToReactStyles,
@@ -44,6 +45,7 @@ interface IGridLayout {
 
 export const GridLayout = () => {
 	const { colorMode } = useColorMode();
+	const device = useRecoilValue(selectDeviceState);
 	const gridState = useRecoilValue(selectGridState);
 	const skeletonsState = useRecoilValue(selectSkeletonsState);
 	const rootStyles = useRecoilValue(selectRootStylesState);
@@ -55,7 +57,7 @@ export const GridLayout = () => {
 		selectColorThemeState(colorMode as COLOR_MODE)
 	);
 	const isDark = colorMode === 'dark';
-
+	console.log(gridState);
 	const renderSkeletons = (
 		skeletons: (ISkeleton & { key: string })[],
 		repeatCount: number,
@@ -301,7 +303,7 @@ export const GridLayout = () => {
 						{hasChildren
 							? collectedChildren.map((child, gridItemIndex) =>
 									renderGridLayout({
-										grid: child,
+										grid: getAppropriateData(child),
 										dataKey: child.key,
 										index: gridItemIndex,
 										length: collectedChildren.length,
@@ -320,8 +322,12 @@ export const GridLayout = () => {
 				</WithContextMenu>
 			);
 		},
-		[gridState, skeletonsState, highlightedNode, isDark, colorTheme]
+		[gridState, skeletonsState, highlightedNode, isDark, colorTheme, device]
 	);
+
+	const getAppropriateData = (grid: Partial<Record<GridKeyType, any>>) => {
+		return device !== 'desktop' && device ? grid.responsive[device] : grid;
+	};
 
 	useEffect(() => {
 		validStyles.current = {};
@@ -336,7 +342,7 @@ export const GridLayout = () => {
 				onDoubleClick={highlightNode as any}
 			>
 				{renderGridLayout({
-					grid: gridState[ROOT_KEY] as IGrid,
+					grid: getAppropriateData(gridState[ROOT_KEY] as IGrid),
 					dataKey: ROOT_KEY,
 					index: 0,
 					length: 1,

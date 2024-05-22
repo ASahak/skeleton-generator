@@ -20,7 +20,11 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { selectHighlightedNodeState } from '@/store/selectors/global';
 import { gridState, skeletonsState } from '@/store/atoms/global';
 import { GridKeyType } from '@/common/types';
-import { findAbsentIndex, generateDefaultValues } from '@/utils/helpers';
+import {
+	findAbsentIndex,
+	generateDefaultValues,
+	responsiveInstance,
+} from '@/utils/helpers';
 import { GridTree } from '@/components/header/grid-tree';
 import { SKELETON_INITIAL_VALUES } from '@/constants/general-settings';
 
@@ -81,7 +85,10 @@ export const HighlightedNode: FC = memo(() => {
 			const newRoot = highlightedNode + '_skeleton_';
 			const newKey = newRoot + findAbsentIndex(newRoot, obj.skeletons || []);
 			obj.skeletons = (obj.skeletons || []).concat(newKey);
-			_skeletons[newKey] = { ...SKELETON_INITIAL_VALUES };
+			_skeletons[newKey] = {
+				...SKELETON_INITIAL_VALUES,
+				responsive: responsiveInstance(SKELETON_INITIAL_VALUES),
+			};
 			setSkeletonsState(_skeletons);
 		}
 		setGridState(_grid);

@@ -24,8 +24,11 @@ export type GridKeyType =
 	| 'styles'
 	| 'responsive';
 
+export type Responsive = Partial<Record<Device, any>>;
+export type ResponsiveInstance = Record<'responsive', Responsive>;
+
 export interface ISkeleton
-	extends Pick<IGrid, 'w' | 'h' | 'margin' | 'isRepeated'> {
+	extends Pick<IGrid, 'w' | 'h' | 'margin' | 'isRepeated' | 'responsive'> {
 	r?: string | number;
 	skeletonW?: number | string;
 }
@@ -45,6 +48,7 @@ export interface IGrid {
 	children?: string[];
 	skeletons?: string[];
 	isRepeated?: boolean;
+	responsive?: Responsive;
 }
 
 export type Device = 'mobile' | 'tablet' | 'desktop';

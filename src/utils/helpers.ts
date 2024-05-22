@@ -12,20 +12,38 @@ import {
 	DEFAULT_WIDTH,
 	ROOT_KEY,
 } from '@/constants/general-settings';
-import { IGenerateCSSGridAreaArgs, IGrid, ISkeleton } from '@/common/types';
+import {
+	GridKeyType,
+	IGenerateCSSGridAreaArgs,
+	IGrid,
+	ISkeleton,
+	Responsive,
+	SkeletonKeyType,
+} from '@/common/types';
+
+export const responsiveInstance = (
+	instance:
+		| Partial<Record<GridKeyType, any>>
+		| Partial<Record<SkeletonKeyType, any>>
+): Responsive => {
+	return {
+		mobile: { ...instance },
+		tablet: { ...instance },
+	};
+};
 
 export const generateDefaultValues = () => {
 	return Object.keys(CONTAINER_INITIAL_VALUES)
 		.filter((e) => isNaN(Number(e)))
 		.reduce(
-			(acc, item) => {
-				acc[item as keyof typeof CONTAINER_INITIAL_VALUES] =
+			(acc: any, item: string) => {
+				acc[item] =
 					CONTAINER_INITIAL_VALUES[
 						item as keyof typeof CONTAINER_INITIAL_VALUES
 					];
 				return acc;
 			},
-			{} as Record<keyof typeof CONTAINER_INITIAL_VALUES, any>
+			{ responsive: responsiveInstance(CONTAINER_INITIAL_VALUES) }
 		);
 };
 

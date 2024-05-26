@@ -60,7 +60,7 @@ export const RepeatCount: FC = memo(() => {
 		if (!localValue) {
 			setLocalValue(DEFAULT_REPEAT_COUNT);
 		} else {
-			setLocalValue(parseInt(localValue));
+			setLocalValue(Number(localValue));
 		}
 	};
 
@@ -70,7 +70,7 @@ export const RepeatCount: FC = memo(() => {
 			return;
 		}
 
-		const v = parseInt(e.target.value);
+		const v = Number(e.target.value);
 		if (v < REPEAT_COUNT_RANGE.MIN || v > REPEAT_COUNT_RANGE.MAX) {
 			return;
 		}

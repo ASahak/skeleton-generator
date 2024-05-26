@@ -34,7 +34,8 @@ import {
 } from '@/utils/helpers';
 import { highlightedNodeState } from '@/store/atoms/global';
 import { WithContextMenu } from '@/containers/generator/with-context-menu';
-import { COLOR_MODE } from '@/common/enums';
+import { COLOR_MODE, DIRECTION } from '@/common/enums';
+import { useLeavePageConfirm } from '@/hooks';
 
 interface IGridLayout {
 	grid: IGrid;
@@ -57,11 +58,13 @@ export const GridLayout = () => {
 	const colorTheme = useRecoilValue(
 		selectColorThemeState(colorMode as COLOR_MODE)
 	);
+	useLeavePageConfirm(!!highlightedNode);
 	const isDark = colorMode === 'dark';
-	console.log(gridState, skeletonsState);
+
 	const renderSkeletons = (
 		skeletons: (ISkeleton & { key: string })[],
 		repeatCount: number,
+		containerDir: DIRECTION | undefined,
 		withOpacity?: boolean,
 		parentKey?: string | undefined
 	) => {
@@ -80,16 +83,22 @@ export const GridLayout = () => {
 					<Box
 						data-key={skeleton.key}
 						style={{
-							width: applicableValue(
-								(typeof skeleton.w === 'function'
-									? (skeleton.w as SizeFunction)()
-									: skeleton.w)!.toString()
-							),
-							height: applicableValue(
-								(typeof skeleton.h !== 'function'
-									? skeleton.h
-									: (skeleton.h as SizeFunction)())!.toString()
-							),
+							width:
+								parentKey && containerDir === DIRECTION.ROW
+									? DEFAULT_WIDTH
+									: applicableValue(
+											(typeof skeleton.w === 'function'
+												? (skeleton.w as SizeFunction)()
+												: skeleton.w)!.toString()
+										),
+							height:
+								parentKey && containerDir === DIRECTION.COLUMN
+									? DEFAULT_HEIGHT
+									: applicableValue(
+											(typeof skeleton.h !== 'function'
+												? skeleton.h
+												: (skeleton.h as SizeFunction)())!.toString()
+										),
 							borderRadius: skeleton.r || '0px',
 							margin: generateMargin(skeleton.margin || ''),
 							backgroundColor: colorTheme.main,
@@ -315,6 +324,7 @@ export const GridLayout = () => {
 								? renderSkeletons(
 										collectedSkeletons,
 										repeatCount,
+										grid.direction,
 										withOpacity,
 										_reservedPropsFromParent.parent
 									)

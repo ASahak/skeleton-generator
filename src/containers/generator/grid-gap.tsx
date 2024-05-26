@@ -56,7 +56,7 @@ export const GridGap: FC = memo(() => {
 			return;
 		}
 
-		const v = parseInt(e.target.value);
+		const v = Number(e.target.value);
 		if (v > TREE_ELEMENTS_SPACING.MAX || v < TREE_ELEMENTS_SPACING.MIN) {
 			return;
 		}

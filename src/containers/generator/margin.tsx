@@ -23,6 +23,7 @@ import { useThemeColors } from '@/hooks';
 import { MARGIN_SIDES } from '@/common/enums';
 import { CONTAINER_INITIAL_VALUES } from '@/constants/general-settings';
 import {
+	convertInitialZeroToValueItSelf,
 	convertToArray,
 	isSkeletonHighlighted,
 	overrideSides,
@@ -138,7 +139,7 @@ export const MarginComponent = memo(
 			e: ChangeEvent<HTMLInputElement>,
 			side?: MARGIN_SIDES
 		) => {
-			const newValue = e.target.value;
+			const newValue = convertInitialZeroToValueItSelf(e.target.value || '0');
 			if (side) {
 				marginSide.current = side;
 				const [t, r, b, l] = overrideSides(side, localValue, newValue);

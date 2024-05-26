@@ -40,6 +40,8 @@ import { GridKeyType, IGrid, ISkeleton, SkeletonKeyType } from '@/common/types';
 import { useThemeColors } from '@/hooks';
 import { DIRECTION, SIZE_UNITS } from '@/common/enums';
 import {
+	convertInitialZeroToValueItSelf,
+	getAdaptiveData,
 	getParent,
 	isSkeletonHighlighted,
 	valueWithPrefix,
@@ -106,8 +108,11 @@ const SizeComponent = memo(
 		);
 
 		const parent = useMemo(() => {
-			return gridState[getParent(highlightedNode)] as IGrid;
-		}, [gridState, highlightedNode]);
+			return getAdaptiveData(
+				gridState[getParent(highlightedNode)] as IGrid,
+				device
+			);
+		}, [gridState, highlightedNode, device]);
 
 		const createOpener = useCallback(
 			async (
@@ -164,7 +169,7 @@ const SizeComponent = memo(
 		};
 
 		const onChange = (e: ChangeEvent<HTMLInputElement>, size: 'h' | 'w') => {
-			const newValue = e.target.value ?? '';
+			const newValue = convertInitialZeroToValueItSelf(e.target.value || '0');
 			setLocalValue((prevState) => ({
 				...prevState,
 				[size]: `${newValue}${size === 'w' ? width.unit : height.unit}`,

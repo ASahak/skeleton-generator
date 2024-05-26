@@ -18,7 +18,7 @@ import {
 	ROOT_KEY,
 	STYLE_PARSING_REGEXP,
 } from '@/constants/general-settings';
-import { GridKeyType, IGrid, ISkeleton, SizeFunction } from '@/common/types';
+import { IGrid, ISkeleton, SizeFunction } from '@/common/types';
 import {
 	applicableValue,
 	convertCssToReactStyles,
@@ -26,6 +26,7 @@ import {
 	generateBorders,
 	generateCSSGridArea,
 	generateMargin,
+	getAdaptiveData,
 	getDirectParentWithDataKeyAttr,
 	itemsWithRepeat,
 	mutateWithRepeated,
@@ -57,7 +58,7 @@ export const GridLayout = () => {
 		selectColorThemeState(colorMode as COLOR_MODE)
 	);
 	const isDark = colorMode === 'dark';
-	console.log(gridState);
+	console.log(gridState, skeletonsState);
 	const renderSkeletons = (
 		skeletons: (ISkeleton & { key: string })[],
 		repeatCount: number,
@@ -213,7 +214,7 @@ export const GridLayout = () => {
 							isRepeated?: boolean;
 						}) => {
 							collectedChildren.push({
-								...(gridState[path] as IGrid),
+								...getAdaptiveData(gridState[path] as IGrid, device),
 								key,
 								isRepeated: Boolean(isRepeated),
 							});
@@ -234,7 +235,7 @@ export const GridLayout = () => {
 							isRepeated?: boolean;
 						}) => {
 							collectedSkeletons.push({
-								...(skeletonsState[path] as ISkeleton),
+								...getAdaptiveData(skeletonsState[path] as ISkeleton, device),
 								key,
 								isRepeated: Boolean(isRepeated),
 							});
@@ -303,7 +304,7 @@ export const GridLayout = () => {
 						{hasChildren
 							? collectedChildren.map((child, gridItemIndex) =>
 									renderGridLayout({
-										grid: getAppropriateData(child),
+										grid: child,
 										dataKey: child.key,
 										index: gridItemIndex,
 										length: collectedChildren.length,
@@ -325,10 +326,6 @@ export const GridLayout = () => {
 		[gridState, skeletonsState, highlightedNode, isDark, colorTheme, device]
 	);
 
-	const getAppropriateData = (grid: Partial<Record<GridKeyType, any>>) => {
-		return device !== 'desktop' && device ? grid.responsive[device] : grid;
-	};
-
 	useEffect(() => {
 		validStyles.current = {};
 	}, [highlightedNode]);
@@ -342,7 +339,7 @@ export const GridLayout = () => {
 				onDoubleClick={highlightNode as any}
 			>
 				{renderGridLayout({
-					grid: getAppropriateData(gridState[ROOT_KEY] as IGrid),
+					grid: getAdaptiveData(gridState[ROOT_KEY] as IGrid, device),
 					dataKey: ROOT_KEY,
 					index: 0,
 					length: 1,

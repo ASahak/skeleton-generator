@@ -13,6 +13,7 @@ import {
 	ROOT_KEY,
 } from '@/constants/general-settings';
 import {
+	Device,
 	GridKeyType,
 	IGenerateCSSGridAreaArgs,
 	IGrid,
@@ -30,6 +31,21 @@ export const responsiveInstance = (
 		mobile: { ...instance },
 		tablet: { ...instance },
 	};
+};
+
+export const getAdaptiveData = (
+	grid: Partial<Record<GridKeyType, any>>,
+	device: Device | null
+) => {
+	return device !== 'desktop' && device
+		? {
+				...grid.responsive[device],
+				...(Object.hasOwn(grid, 'children') && { children: grid.children }),
+				...(Object.hasOwn(grid, 'skeletons') && {
+					skeletons: grid.skeletons,
+				}),
+			}
+		: grid;
 };
 
 export const generateDefaultValues = () => {
@@ -453,3 +469,57 @@ export const getDirectParentWithDataKeyAttr = (node: HTMLElement) => {
 
 export const filterFromPx = (value: string): number =>
 	Number(value.split('px')[0]);
+
+export const convertInitialZeroToValueItSelf = (newValue: string) => {
+	if (newValue.length > 1 && /^0/.test(newValue)) {
+		return newValue.replace(/^0/, '');
+	}
+	return newValue;
+};
+
+const filterResponsiveValues = (
+	responsiveState: Responsive,
+	gridState: IGrid
+): Responsive => {
+	return Object.keys(responsiveState).reduce((acc: any, item: any) => {
+		Object.keys(responsiveState[item as Device]).forEach((key: string) => {
+			// mobile
+			if (responsiveState.mobile[key] !== gridState[key as GridKeyType]) {
+				if (!acc.mobile) {
+					acc.mobile = {};
+				}
+				acc.mobile[key] = responsiveState.mobile[key];
+			}
+			// tablet
+			if (responsiveState.tablet[key] !== gridState[key as GridKeyType]) {
+				if (!acc.tablet) {
+					acc.tablet = {};
+				}
+				acc.tablet[key] = responsiveState.tablet[key];
+			}
+		});
+
+		return acc;
+	}, {}) as Responsive;
+};
+
+export const getGridStructure = (
+	grid: IGrid | ISkeleton,
+	gridState: Record<string, IGrid>,
+	skeletonsState: Record<string, ISkeleton>
+): Record<string, any> => {
+	return {
+		...grid,
+		responsive: filterResponsiveValues(grid.responsive!, grid),
+		...(Object.hasOwn(grid, 'children') && {
+			children: (grid as IGrid).children!.map((child: string) =>
+				getGridStructure(gridState[child], gridState, skeletonsState)
+			),
+		}),
+		...(Object.hasOwn(grid, 'skeletons') && {
+			skeletons: (grid as IGrid).skeletons!.map((child: string) =>
+				getGridStructure(skeletonsState[child], gridState, skeletonsState)
+			),
+		}),
+	};
+};

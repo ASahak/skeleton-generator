@@ -25,7 +25,10 @@ import {
 } from '@/store/selectors/global';
 import { skeletonsState } from '@/store/atoms/global';
 import { SkeletonKeyType } from '@/common/types';
-import { valueWithPrefix } from '@/utils/helpers';
+import {
+	convertInitialZeroToValueItSelf,
+	valueWithPrefix,
+} from '@/utils/helpers';
 import { SIZE_UNITS } from '@/common/enums';
 import { useThemeColors } from '@/hooks';
 
@@ -67,7 +70,7 @@ export const Radius: FC = memo(() => {
 	};
 
 	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-		const newValue = e.target.value ?? '';
+		const newValue = convertInitialZeroToValueItSelf(e.target.value || '0');
 		setLocalValue(`${newValue}${unit}`);
 	};
 

@@ -5,29 +5,36 @@ import { useRecoilValue } from 'recoil';
 import { useDiffArray } from '@/hooks';
 import { IGrid } from '@/common/types';
 import {
+	selectDeviceState,
 	selectGridState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
-import { getParent } from '@/utils/helpers';
+import { getAdaptiveData, getParent } from '@/utils/helpers';
 
 export const HighlightPulse = memo(() => {
+	const device = useRecoilValue(selectDeviceState);
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const gridState = useRecoilValue(selectGridState);
 	const prevGridState = usePrevious<IGrid>(gridState);
 	const [rect, setRect] = useState<Record<string, unknown> | null>(null);
 	const key = useRef(null);
+	const parentGrid = gridState[getParent(highlightedNode)] as IGrid;
+	const grid = gridState[highlightedNode] as IGrid;
+	const prevParentGrid = prevGridState?.[
+		getParent(highlightedNode) as keyof IGrid
+	] as IGrid;
+	const prevGrid = prevGridState?.[highlightedNode as keyof IGrid] as IGrid;
 	const { added } = useDiffArray(
 		[
-			...((gridState[getParent(highlightedNode)] as IGrid)?.children || []),
-			...((gridState[highlightedNode] as IGrid)?.children || []),
+			...(parentGrid ? getAdaptiveData(parentGrid, device).children || [] : []),
+			...(grid ? getAdaptiveData(grid, device).children || [] : []),
 		],
 		prevGridState
 			? [
-					...((prevGridState[highlightedNode as keyof IGrid] as IGrid)
-						?.children || []),
-					...((
-						prevGridState[getParent(highlightedNode) as keyof IGrid] as IGrid
-					)?.children || []),
+					...(prevGrid ? getAdaptiveData(prevGrid, device).children || [] : []),
+					...(prevParentGrid
+						? getAdaptiveData(prevParentGrid, device).children || []
+						: []),
 				]
 			: []
 	);

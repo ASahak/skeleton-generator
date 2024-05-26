@@ -11,11 +11,19 @@ import {
 	Tabs,
 	Fade,
 } from '@chakra-ui/react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useRecoilValue } from 'recoil';
 import { ToastContext } from '@/contexts/toast';
 import { useThemeColors } from '@/hooks';
 import { colorThemeState } from '@/store/atoms/global';
-import { selectBreakpointsState } from '@/store/selectors/global';
+import {
+	selectBreakpointsState,
+	selectGridState,
+	selectRootStylesState,
+	selectSkeletonsState,
+} from '@/store/selectors/global';
+import { ROOT_KEY } from '@/constants/general-settings';
+import { getGridStructure } from '@/utils/helpers';
 
 const TABS = [
 	{ value: 'global-configs', label: 'Global configurations' },
@@ -24,6 +32,9 @@ const TABS = [
 
 export const GetCode = () => {
 	const { onToast } = useContext(ToastContext);
+	const gridState = useRecoilValue(selectGridState);
+	const skeletonsState = useRecoilValue(selectSkeletonsState);
+	const rootStyles = useRecoilValue(selectRootStylesState);
 	const [tabIndex, setTabIndex] = useState(0);
 	const { gray100_dark400, white_dark550 } = useThemeColors();
 	const colorThemes = useRecoilValue(colorThemeState);
@@ -49,20 +60,17 @@ export const GetCode = () => {
 
 	const generateGridStructure = useMemo(() => {
 		const value = JSON.stringify(
-			{
-				colorTheme: colorThemes,
-			},
+			{ ...getGridStructure(gridState[ROOT_KEY], gridState, skeletonsState) },
 			null,
 			'  '
 		);
 
-		return `<ReactSkeletonProvider 
-  value={${value}}
->
-  {children}
-</ReactSkeletonProvider>
+		return `<Skeleton 
+  styles={${rootStyles}}
+  grid={${value}}
+/>
 `;
-	}, [colorThemes]);
+	}, [gridState, skeletonsState, rootStyles]);
 
 	const onCopy = () => {
 		onToast({
@@ -154,9 +162,14 @@ export const GetCode = () => {
 				</TabPanels>
 			</Tabs>
 			<Flex justifyContent="flex-end" mt={8} gap={3}>
-				<Button variant="base" size="sm" onClick={onCopy}>
-					Copy
-				</Button>
+				<CopyToClipboard
+					text={tabIndex === 0 ? generateGlobalConfigs : generateGridStructure}
+					onCopy={onCopy}
+				>
+					<Button variant="base" size="sm">
+						Copy
+					</Button>
+				</CopyToClipboard>
 			</Flex>
 		</Box>
 	);

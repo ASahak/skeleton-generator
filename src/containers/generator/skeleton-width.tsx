@@ -11,6 +11,7 @@ import {
 import { skeletonsState } from '@/store/atoms/global';
 import { SkeletonKeyType } from '@/common/types';
 import { useThemeColors } from '@/hooks';
+import { convertInitialZeroToValueItSelf } from '@/utils/helpers';
 
 export const SkeletonWidth: FC = memo(() => {
 	const skeletonW = useRecoilValue(
@@ -44,7 +45,7 @@ export const SkeletonWidth: FC = memo(() => {
 	);
 
 	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-		const newValue = e.target.value ?? '';
+		const newValue = convertInitialZeroToValueItSelf(e.target.value || '0');
 		setLocalValue(newValue);
 	};
 

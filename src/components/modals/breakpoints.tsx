@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { ChangeEvent, useMemo, useState } from 'react';
 import {
 	Box,
 	Button,
@@ -8,10 +8,16 @@ import {
 	NumberInputField,
 	VStack,
 	Text,
+	Checkbox,
 } from '@chakra-ui/react';
 import { useRecoilState } from 'recoil';
 import { useThemeColors } from '@/hooks';
-import { breakpointsState } from '@/store/atoms/global';
+import {
+	adaptiveDeviceEnabledState,
+	autoDeviceCheckingIsActiveState,
+	breakpointsState,
+	deviceState,
+} from '@/store/atoms/global';
 import { breakpoints as breakpointsTheme } from '@/styles/theme';
 import { filterFromPx } from '@/utils/helpers';
 import { Device } from '@/common/types';
@@ -22,6 +28,13 @@ export const Breakpoints = () => {
 	const { white_dark650 } = useThemeColors();
 	const [breakpoints, setBreakpoints] = useRecoilState(breakpointsState);
 	const [localValue, setLocalValue] = useState(breakpoints);
+	const [adaptiveDeviceEnabled, setAdaptiveDeviceEnabled] = useRecoilState(
+		adaptiveDeviceEnabledState
+	);
+	const [, setDeviceState] = useRecoilState(deviceState);
+	const [, setIsAutoCheckingDevice] = useRecoilState(
+		autoDeviceCheckingIsActiveState
+	);
 
 	const _mobile = useMemo(
 		() => filterFromPx(localValue.mobile),
@@ -87,6 +100,15 @@ export const Breakpoints = () => {
 		}
 	};
 
+	const toggleAdaptiveDevice = (e: ChangeEvent<HTMLInputElement>) => {
+		setAdaptiveDeviceEnabled(e.target.checked);
+		if (!e.target.checked) {
+			setDeviceState('desktop');
+		} else {
+			setIsAutoCheckingDevice(true);
+		}
+	};
+
 	const mobileError = renderErrorMessage(
 		'mobile',
 		filterFromPx(breakpointsTheme.xs)
@@ -95,6 +117,16 @@ export const Breakpoints = () => {
 	return (
 		<VStack spacing={8}>
 			<Box w="full">
+				<Checkbox
+					mb={8}
+					size="lg"
+					isChecked={adaptiveDeviceEnabled}
+					onChange={toggleAdaptiveDevice}
+				>
+					<Text ml={2} fontSize="1.4rem">
+						Enable Adaptive devices mode
+					</Text>
+				</Checkbox>
 				<Heading variant="medium-title" mb={4}>
 					Mobile (max-width)
 				</Heading>
@@ -104,6 +136,7 @@ export const Breakpoints = () => {
 					clampValueOnBlur={false}
 					value={_mobile}
 					variant="base"
+					isDisabled={!adaptiveDeviceEnabled}
 				>
 					<NumberInputField
 						placeholder="Mobile max-width resolution"
@@ -121,6 +154,7 @@ export const Breakpoints = () => {
 					Tablet (max-width)
 				</Heading>
 				<NumberInput
+					isDisabled={!adaptiveDeviceEnabled}
 					min={_mobile + 1}
 					max={_desktop - 1}
 					clampValueOnBlur={false}
@@ -147,6 +181,7 @@ export const Breakpoints = () => {
 					Desktop (min-width)
 				</Heading>
 				<NumberInput
+					isDisabled={!adaptiveDeviceEnabled}
 					isReadOnly
 					min={_tablet + 1}
 					clampValueOnBlur={false}
@@ -169,7 +204,7 @@ export const Breakpoints = () => {
 					variant="base"
 					size="sm"
 					onClick={onApply}
-					isDisabled={!!mobileError || !!tabletError}
+					isDisabled={!!mobileError || !!tabletError || !adaptiveDeviceEnabled}
 				>
 					Apply changes
 				</Button>

@@ -14,7 +14,7 @@ import {
 	RiSunLine,
 	RiCodeSSlashFill,
 } from 'react-icons/ri';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useThemeColors } from '@/hooks';
 import {
 	gridState,
@@ -27,6 +27,7 @@ import { ROOT_KEY } from '@/constants/general-settings';
 import { MODALS_KEYS, useModal } from '@/providers/custom-modal';
 import { Devices } from './devices';
 import { DeviceResize } from '@/assets/chakra-icons';
+import { selectAdaptiveDeviceEnabledState } from '@/store/selectors/global';
 
 export const Header: FC = memo(() => {
 	const { setModal } = useModal();
@@ -35,6 +36,9 @@ export const Header: FC = memo(() => {
 	const [getGridState, setGridState] = useRecoilState(gridState);
 	const [, setOptionsPanelIsOpen] = useRecoilState(optionsPanelIsOpenState);
 	const [, setHighlightedNode] = useRecoilState(highlightedNodeState);
+	const adaptiveDeviceEnabled = useRecoilValue(
+		selectAdaptiveDeviceEnabledState
+	);
 	const ableToPreview = Object.keys(getGridState).length > 0;
 
 	const onCreateRootTemplate = () => {
@@ -104,7 +108,7 @@ export const Header: FC = memo(() => {
 						</>
 					) : null}
 				</Flex>
-				{ableToPreview ? <Devices /> : null}
+				{ableToPreview && adaptiveDeviceEnabled ? <Devices /> : null}
 				<Flex alignItems="center" gap={6} flex={1} justifyContent="end">
 					<Button
 						alignItems="center"

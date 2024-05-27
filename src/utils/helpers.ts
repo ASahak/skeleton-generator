@@ -506,19 +506,32 @@ const filterResponsiveValues = (
 export const getGridStructure = (
 	grid: IGrid | ISkeleton,
 	gridState: Record<string, IGrid>,
-	skeletonsState: Record<string, ISkeleton>
+	skeletonsState: Record<string, ISkeleton>,
+	adaptiveDeviceEnabled: boolean
 ): Record<string, any> => {
 	return {
 		...grid,
-		responsive: filterResponsiveValues(grid.responsive!, grid),
+		responsive: adaptiveDeviceEnabled
+			? filterResponsiveValues(grid.responsive!, grid)
+			: {},
 		...(Object.hasOwn(grid, 'children') && {
 			children: (grid as IGrid).children!.map((child: string) =>
-				getGridStructure(gridState[child], gridState, skeletonsState)
+				getGridStructure(
+					gridState[child],
+					gridState,
+					skeletonsState,
+					adaptiveDeviceEnabled
+				)
 			),
 		}),
 		...(Object.hasOwn(grid, 'skeletons') && {
 			skeletons: (grid as IGrid).skeletons!.map((child: string) =>
-				getGridStructure(skeletonsState[child], gridState, skeletonsState)
+				getGridStructure(
+					skeletonsState[child],
+					gridState,
+					skeletonsState,
+					adaptiveDeviceEnabled
+				)
 			),
 		}),
 	};

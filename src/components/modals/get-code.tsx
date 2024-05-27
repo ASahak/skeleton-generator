@@ -17,6 +17,7 @@ import { ToastContext } from '@/contexts/toast';
 import { useThemeColors } from '@/hooks';
 import { colorThemeState } from '@/store/atoms/global';
 import {
+	selectAdaptiveDeviceEnabledState,
 	selectBreakpointsState,
 	selectGridState,
 	selectRootStylesState,
@@ -39,6 +40,9 @@ export const GetCode = () => {
 	const { gray100_dark400, white_dark550 } = useThemeColors();
 	const colorThemes = useRecoilValue(colorThemeState);
 	const breakpoints = useRecoilValue(selectBreakpointsState);
+	const adaptiveDeviceEnabled = useRecoilValue(
+		selectAdaptiveDeviceEnabledState
+	);
 
 	const generateGlobalConfigs = useMemo(() => {
 		const value = JSON.stringify(
@@ -60,7 +64,14 @@ export const GetCode = () => {
 
 	const generateGridStructure = useMemo(() => {
 		const value = JSON.stringify(
-			{ ...getGridStructure(gridState[ROOT_KEY], gridState, skeletonsState) },
+			{
+				...getGridStructure(
+					gridState[ROOT_KEY],
+					gridState,
+					skeletonsState,
+					adaptiveDeviceEnabled
+				),
+			},
 			null,
 			'  '
 		);

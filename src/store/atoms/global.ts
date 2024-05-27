@@ -14,6 +14,11 @@ export const autoDeviceCheckingIsActiveState: RecoilState<boolean> = atom({
 	default: true,
 });
 
+export const adaptiveDeviceEnabledState: RecoilState<boolean> = atom({
+	key: 'adaptive-device-enabled',
+	default: false,
+});
+
 export const gridState: RecoilState<Record<string, IGrid>> = atom({
 	key: 'grid',
 	default: {},

@@ -10,7 +10,10 @@ import {
 import { breakpoints } from '@/styles/theme';
 import { filterFromPx } from '@/utils/helpers';
 import { Device } from '@/common/types';
-import { selectBreakpointsState } from '@/store/selectors/global';
+import {
+	selectAdaptiveDeviceEnabledState,
+	selectBreakpointsState,
+} from '@/store/selectors/global';
 
 const calcContainerWidth = (device: Device | null) => {
 	if (device === 'mobile') return `${filterFromPx(breakpoints.sm)}px`;
@@ -26,6 +29,9 @@ export const AdaptiveDeviceContainer = memo(
 		children: React.ReactNode;
 		initialSize: { width: number; height: number };
 	}>) => {
+		const adaptiveDeviceEnabled = useRecoilValue(
+			selectAdaptiveDeviceEnabledState
+		);
 		const breakpoints = useRecoilValue(selectBreakpointsState);
 		const query = useMemo(() => {
 			return {
@@ -58,9 +64,13 @@ export const AdaptiveDeviceContainer = memo(
 
 		useEffect(() => {
 			if (isAutoCheckingDevice) {
-				setDeviceState(mobile ? 'mobile' : tablet ? 'tablet' : 'desktop');
+				if (!adaptiveDeviceEnabled) {
+					setDeviceState('desktop');
+				} else {
+					setDeviceState(mobile ? 'mobile' : tablet ? 'tablet' : 'desktop');
+				}
 			}
-		}, [mobile, tablet, desktop, isAutoCheckingDevice]);
+		}, [mobile, tablet, desktop, isAutoCheckingDevice, adaptiveDeviceEnabled]);
 
 		useEffect(() => {
 			setContainerWidth(calcContainerWidth(device));

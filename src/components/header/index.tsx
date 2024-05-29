@@ -13,6 +13,7 @@ import {
 	RiPaintFill,
 	RiSunLine,
 	RiCodeSSlashFill,
+	RiCollageFill,
 } from 'react-icons/ri';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useThemeColors } from '@/hooks';
@@ -67,6 +68,13 @@ export const Header: FC = memo(() => {
 	const openBreakpointsModal = () => {
 		setModal({
 			key: MODALS_KEYS.BREAKPOINTS,
+			props: {},
+		});
+	};
+
+	const openSkeletonsTheme = () => {
+		setModal({
+			key: MODALS_KEYS.SKELETONS_VARIANTS,
 			props: {},
 		});
 	};
@@ -141,6 +149,15 @@ export const Header: FC = memo(() => {
 							</Button>
 						</>
 					) : null}
+					<Button
+						variant="unstyled"
+						alignItems="center"
+						display="flex"
+						p={0}
+						onClick={openSkeletonsTheme}
+					>
+						<Icon fontSize="4xl" as={RiCollageFill} />
+					</Button>
 					<Button
 						variant="unstyled"
 						alignItems="center"

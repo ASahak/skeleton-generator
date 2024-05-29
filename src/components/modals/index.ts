@@ -3,3 +3,4 @@ export { FunctionUnitEditor } from './function-unit-editor';
 export { ColorTheme } from './color-theme';
 export { GetCode } from './get-code';
 export { Breakpoints } from './breakpoints';
+export { SkeletonVariants } from './skeleton-variants';

@@ -119,6 +119,15 @@ export const Header: FC = memo(() => {
 				{ableToPreview && adaptiveDeviceEnabled ? <Devices /> : null}
 				<Flex alignItems="center" gap={6} flex={1} justifyContent="end">
 					<Button
+						variant="unstyled"
+						alignItems="center"
+						display="flex"
+						p={0}
+						onClick={openSkeletonsTheme}
+					>
+						<Icon fontSize="4xl" as={RiCollageFill} />
+					</Button>
+					<Button
 						alignItems="center"
 						display="flex"
 						p={0}
@@ -149,15 +158,6 @@ export const Header: FC = memo(() => {
 							</Button>
 						</>
 					) : null}
-					<Button
-						variant="unstyled"
-						alignItems="center"
-						display="flex"
-						p={0}
-						onClick={openSkeletonsTheme}
-					>
-						<Icon fontSize="4xl" as={RiCollageFill} />
-					</Button>
 					<Button
 						variant="unstyled"
 						alignItems="center"

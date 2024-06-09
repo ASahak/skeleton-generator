@@ -1,6 +1,7 @@
 import {
 	Box,
 	Button,
+	Flex,
 	Heading,
 	Icon,
 	Menu,
@@ -30,8 +31,12 @@ export const SkeletonVariants = () => {
 		console.log(onClose);
 	};
 
+	const onApply = () => {
+		onClose();
+	};
+
 	return (
-		<Box py={8}>
+		<Box pt={8}>
 			<Heading variant="medium-title" mb={4}>
 				Skeleton&apos;s animation variant
 			</Heading>
@@ -62,6 +67,11 @@ export const SkeletonVariants = () => {
 					))}
 				</MenuList>
 			</Menu>
+			<Flex justifyContent="flex-end" w="full" mt={8}>
+				<Button variant="base" size="sm" onClick={onApply}>
+					Save
+				</Button>
+			</Flex>
 		</Box>
 	);
 };

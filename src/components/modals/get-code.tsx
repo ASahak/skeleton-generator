@@ -4,6 +4,7 @@ import {
 	Button,
 	Flex,
 	Tab,
+	Text,
 	TabIndicator,
 	TabList,
 	TabPanel,
@@ -168,6 +169,10 @@ export const GetCode = () => {
 							>
 								{generateGridStructure}
 							</Box>
+							<Text color="gray.200" mt={2}>
+								Note: If the object is empty it means you haven&apos;t made any
+								and it will apply the default style for each of property
+							</Text>
 						</Fade>
 					</TabPanel>
 				</TabPanels>

@@ -27,12 +27,12 @@ export type GridKeyType =
 export type Responsive = Partial<Record<Device, any>>;
 export type ResponsiveInstance = Record<'responsive', Responsive>;
 
+export type SizeFunction = () => number | string;
 export interface ISkeleton
 	extends Pick<IGrid, 'w' | 'h' | 'margin' | 'isRepeated' | 'responsive'> {
 	r?: string | number;
 	skeletonW?: number | string;
 }
-export type SizeFunction = () => number | string;
 export interface IGrid {
 	direction?: DIRECTION;
 	gridGap?: number | string;

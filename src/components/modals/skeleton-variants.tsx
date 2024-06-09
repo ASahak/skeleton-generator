@@ -1,6 +1,7 @@
 import {
 	Box,
 	Button,
+	Heading,
 	Icon,
 	Menu,
 	MenuButton,
@@ -31,6 +32,9 @@ export const SkeletonVariants = () => {
 
 	return (
 		<Box py={8}>
+			<Heading variant="medium-title" mb={4}>
+				Skeleton&apos;s animation variant
+			</Heading>
 			<Menu variant="base" placement="bottom-start" matchWidth>
 				<MenuButton
 					as={Button}

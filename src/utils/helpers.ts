@@ -11,6 +11,7 @@ import {
 	DEFAULT_HEIGHT,
 	DEFAULT_WIDTH,
 	ROOT_KEY,
+	SKELETON_INITIAL_VALUES,
 } from '@/constants/general-settings';
 import {
 	Device,
@@ -503,6 +504,33 @@ const filterResponsiveValues = (
 	}, {}) as Responsive;
 };
 
+const filterNonChangedValues = (data: IGrid & ISkeleton) => {
+	return Object.keys(data).reduce(
+		(acc, item) => {
+			type Key = keyof (IGrid & ISkeleton);
+			const key = item as Key;
+
+			if (
+				(Object.prototype.hasOwnProperty.call(CONTAINER_INITIAL_VALUES, key) &&
+					data[key] !==
+						CONTAINER_INITIAL_VALUES[
+							key as keyof typeof CONTAINER_INITIAL_VALUES
+						]) ||
+				(Object.prototype.hasOwnProperty.call(SKELETON_INITIAL_VALUES, key) &&
+					data[key] !==
+						SKELETON_INITIAL_VALUES[
+							key as keyof typeof SKELETON_INITIAL_VALUES
+						])
+			) {
+				((acc as IGrid & ISkeleton)[key] as any) = data[key];
+			}
+
+			return acc;
+		},
+		{} satisfies Partial<IGrid & ISkeleton>
+	);
+};
+
 export const getGridStructure = (
 	grid: IGrid | ISkeleton,
 	gridState: Record<string, IGrid>,
@@ -510,10 +538,10 @@ export const getGridStructure = (
 	adaptiveDeviceEnabled: boolean
 ): Record<string, any> => {
 	return {
-		...grid,
-		responsive: adaptiveDeviceEnabled
-			? filterResponsiveValues(grid.responsive!, grid)
-			: {},
+		...filterNonChangedValues(grid),
+		...(adaptiveDeviceEnabled && {
+			responsive: filterResponsiveValues(grid.responsive!, grid),
+		}),
 		...(Object.hasOwn(grid, 'children') && {
 			children: (grid as IGrid).children!.map((child: string) =>
 				getGridStructure(

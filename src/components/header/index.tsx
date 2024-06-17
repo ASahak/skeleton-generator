@@ -10,11 +10,10 @@ import {
 import {
 	RiListSettingsLine,
 	RiMoonLine,
-	RiPaintFill,
 	RiSunLine,
 	RiCodeSSlashFill,
-	RiCollageFill,
 } from 'react-icons/ri';
+import { RxShadow } from 'react-icons/rx';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useThemeColors } from '@/hooks';
 import {
@@ -49,13 +48,6 @@ export const Header: FC = memo(() => {
 		setHighlightedNode(ROOT_KEY);
 	};
 
-	const onOpenColorThemeModal = () => {
-		setModal({
-			key: MODALS_KEYS.COLOR_THEME,
-			props: {},
-		});
-	};
-
 	const onOpenGetCodeModal = () => {
 		setModal({
 			key: MODALS_KEYS.GET_CODE,
@@ -72,9 +64,9 @@ export const Header: FC = memo(() => {
 		});
 	};
 
-	const openSkeletonsTheme = () => {
+	const onOpenSkeletonThemeModal = () => {
 		setModal({
-			key: MODALS_KEYS.SKELETONS_VARIANTS,
+			key: MODALS_KEYS.SKELETON_THEME,
 			props: {},
 		});
 	};
@@ -119,22 +111,13 @@ export const Header: FC = memo(() => {
 				{ableToPreview && adaptiveDeviceEnabled ? <Devices /> : null}
 				<Flex alignItems="center" gap={6} flex={1} justifyContent="end">
 					<Button
-						variant="unstyled"
-						alignItems="center"
-						display="flex"
-						p={0}
-						onClick={openSkeletonsTheme}
-					>
-						<Icon fontSize="4xl" as={RiCollageFill} />
-					</Button>
-					<Button
 						alignItems="center"
 						display="flex"
 						p={0}
 						variant="unstyled"
-						onClick={onOpenColorThemeModal}
+						onClick={onOpenSkeletonThemeModal}
 					>
-						<Icon as={RiPaintFill} fontSize="4xl" />
+						<Icon as={RxShadow} fontSize="4xl" />
 					</Button>
 					{ableToPreview ? (
 						<>

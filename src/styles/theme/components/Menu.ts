@@ -26,7 +26,6 @@ export default defineStyleConfig({
 				textAlign: 'left',
 				bgColor: 'transparent',
 				borderRadius: '.4rem',
-				background: 'transparent !important',
 				_disabled: {
 					cursor: 'not-allowed !important',
 				},

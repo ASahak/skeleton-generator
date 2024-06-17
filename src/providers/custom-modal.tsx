@@ -18,10 +18,9 @@ import {
 import {
 	ConfirmDelete,
 	FunctionUnitEditor,
-	ColorTheme,
 	GetCode,
 	Breakpoints,
-	SkeletonVariants,
+	SkeletonTheme,
 } from '@/components/modals';
 import { dispatchBus } from '@/hooks';
 import { ON_CLOSE_MODAL } from '@/constants/event-bus-types';
@@ -46,19 +45,17 @@ const CustomModalContext = createContext<contextType>({
 export enum MODALS_KEYS {
 	CONFIRM_DELETE = 'confirm-delete',
 	FUNCTION_UNIT_EDITOR = 'function-unit-editor',
-	COLOR_THEME = 'color-theme',
 	GET_CODE = 'get-code',
 	BREAKPOINTS = 'breakpoints',
-	SKELETONS_VARIANTS = 'skeletons-variants',
+	SKELETON_THEME = 'skeleton-theme',
 }
 
 const MODALS: Record<MODALS_KEYS, FC<any>> = {
 	[MODALS_KEYS.CONFIRM_DELETE]: ConfirmDelete,
 	[MODALS_KEYS.FUNCTION_UNIT_EDITOR]: FunctionUnitEditor,
-	[MODALS_KEYS.COLOR_THEME]: ColorTheme,
 	[MODALS_KEYS.GET_CODE]: GetCode,
 	[MODALS_KEYS.BREAKPOINTS]: Breakpoints,
-	[MODALS_KEYS.SKELETONS_VARIANTS]: SkeletonVariants,
+	[MODALS_KEYS.SKELETON_THEME]: SkeletonTheme,
 };
 export const CustomModal = ({ children }: { children: ReactNode }) => {
 	const [modal, setModal] = useState<{

@@ -59,7 +59,9 @@ export const GetCode = () => {
 			'  '
 		);
 
-		return `<ReactSkeletonProvider 
+		return `import { ReactSkeletonProvider } from 'react-skeleton-builder';
+
+<ReactSkeletonProvider 
   value={${value}}
 >
   {children}

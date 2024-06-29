@@ -12,6 +12,7 @@ import {
 	DEFAULT_WIDTH,
 	ROOT_KEY,
 	SKELETON_INITIAL_VALUES,
+	STYLE_PARSING_REGEXP,
 } from '@/constants/general-settings';
 import {
 	Device,
@@ -22,6 +23,7 @@ import {
 	Responsive,
 	SkeletonKeyType,
 } from '@/common/types';
+import parse from 'style-to-object';
 
 export const responsiveInstance = (
 	instance:
@@ -242,20 +244,6 @@ export const setOpacity = (
 	return (repeatCount || rowsLength) > 0 && withOpacity
 		? 1 - (1 / (repeatCount || rowsLength)) * viewIndex
 		: 1;
-};
-
-export const convertCssToReactStyles = (cssStyles: Record<string, any>) => {
-	const reactStyles: Record<string, any> = {};
-
-	for (const key in cssStyles) {
-		// Convert CSS property names to camelCase
-		const camelCaseKey: string = key.replace(/-([a-z])/g, (g) =>
-			g[1].toUpperCase()
-		);
-		reactStyles[camelCaseKey] = cssStyles[key];
-	}
-
-	return reactStyles;
 };
 
 export const generateCSSGridArea = ({
@@ -563,4 +551,23 @@ export const getGridStructure = (
 			),
 		}),
 	};
+};
+
+export const parseStyleObject = (cssString: string) => {
+	const styles: string = cssString.replace(STYLE_PARSING_REGEXP, '');
+
+	return parse(styles);
+};
+
+export const cssToReactStyle = (styles: Record<string, any>) => {
+	const styleObject: Record<string, any> = {};
+
+	Object.keys(styles).forEach((styleProp) => {
+		const camelCaseProperty = styleProp.replace(/-([a-z])/g, (match, letter) =>
+			letter.toUpperCase()
+		);
+		styleObject[camelCaseProperty] = styles[styleProp];
+	});
+
+	return styleObject;
 };

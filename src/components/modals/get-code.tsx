@@ -25,7 +25,11 @@ import {
 	selectSkeletonsState,
 } from '@/store/selectors/global';
 import { ROOT_KEY } from '@/constants/general-settings';
-import { getGridStructure } from '@/utils/helpers';
+import {
+	cssToReactStyle,
+	getGridStructure,
+	parseStyleObject,
+} from '@/utils/helpers';
 
 const TABS = [
 	{ value: 'global-configs', label: 'Global configurations' },
@@ -64,6 +68,12 @@ export const GetCode = () => {
 	}, [colorThemes, breakpoints]);
 
 	const generateGridStructure = useMemo(() => {
+		const styles = parseStyleObject(rootStyles);
+		let styleObj = {};
+		if (styles) {
+			styleObj = cssToReactStyle(styles);
+		}
+
 		const value = JSON.stringify(
 			{
 				...getGridStructure(
@@ -78,7 +88,7 @@ export const GetCode = () => {
 		);
 
 		return `<Skeleton 
-  styles={${rootStyles}}
+  styles={${JSON.stringify(styleObj, null, '  ')}}
   grid={${value}}
 />
 `;

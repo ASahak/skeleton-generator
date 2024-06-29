@@ -1,7 +1,6 @@
 import { CSSProperties, useCallback, useEffect, useRef } from 'react';
 import { Box, useColorMode } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import parse from 'style-to-object';
 import { HighlightPulse } from './highlight-pulse';
 import {
 	selectColorThemeState,
@@ -16,12 +15,11 @@ import {
 	DEFAULT_SKELETON_GRADIENT_WIDTH,
 	DEFAULT_WIDTH,
 	ROOT_KEY,
-	STYLE_PARSING_REGEXP,
 } from '@/constants/general-settings';
 import { IGrid, ISkeleton, SizeFunction } from '@/common/types';
 import {
 	applicableValue,
-	convertCssToReactStyles,
+	cssToReactStyle,
 	findTrap,
 	generateBorders,
 	generateCSSGridArea,
@@ -30,6 +28,7 @@ import {
 	getDirectParentWithDataKeyAttr,
 	itemsWithRepeat,
 	mutateWithRepeated,
+	parseStyleObject,
 	setOpacity,
 } from '@/utils/helpers';
 import { highlightedNodeState } from '@/store/atoms/global';
@@ -153,7 +152,7 @@ export const GridLayout = () => {
 				validStyles.current = {};
 				return validStyles.current;
 			}
-			const converted = parse(styles.replace(STYLE_PARSING_REGEXP, ''));
+			const converted = parseStyleObject(styles);
 			if (converted) {
 				// should remove all margins to avoid duplication because in the options already have that option
 				Object.keys(converted).forEach((e: string) => {
@@ -295,7 +294,7 @@ export const GridLayout = () => {
 								length,
 								reservedPropsFromParent?.withOpacity
 							),
-							...convertCssToReactStyles(style),
+							...cssToReactStyle(style),
 							...generateBorders({
 								keyLevel,
 								highlightedNode,

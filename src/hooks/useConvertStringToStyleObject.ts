@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import parse from 'style-to-object';
 import { useLiveStates } from '@/hooks/useLiveStates';
-import { STYLE_PARSING_REGEXP } from '@/constants/general-settings';
+import { cssToReactStyle, parseStyleObject } from '@/utils/helpers';
 
 export const useConvertStringToStyleObject = (
 	styleStr: string
@@ -13,8 +12,9 @@ export const useConvertStringToStyleObject = (
 
 	useEffect(() => {
 		try {
-			const converted = parse(styleStr.replace(STYLE_PARSING_REGEXP, ''));
-			if (converted) {
+			const styles = parseStyleObject(styleStr);
+			if (styles) {
+				const converted = cssToReactStyle(styles);
 				setConvertedObject(converted);
 			}
 		} catch {

@@ -154,9 +154,19 @@ export const GridLayout = () => {
 			}
 			const converted = parseStyleObject(styles);
 			if (converted) {
-				// should remove all margins to avoid duplication because in the options already have that option
+				// should remove all margins and the others style properties to avoid duplication
+				// because in the options already have that option
 				Object.keys(converted).forEach((e: string) => {
-					if (e.includes('margin')) {
+					if (
+						[
+							'margin',
+							'width',
+							'height',
+							'gap',
+							'align-items',
+							'justify-items',
+						].includes(e)
+					) {
 						delete converted[e];
 					}
 				});

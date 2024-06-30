@@ -87,8 +87,11 @@ export const Styles: FC = memo(() => {
 					boxShadow: '0px 0px 1px 1px var(--chakra-colors-brand-500)',
 				}}
 			/>
-			<Text color="gray.200" mt={2}>
+			<Text color="gray.200" mt={2} wordBreak="break-word" whiteSpace="wrap">
 				Note*: use plain css format only.
+				<br />
+				The margin, gap, height, width, align-items and justify-content will be
+				removed cause of in the options we have already them.
 			</Text>
 		</Box>
 	);

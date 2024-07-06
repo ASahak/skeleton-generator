@@ -8,7 +8,6 @@
 		"start": "next start",
 		"lint": "next lint",
 		"pre-commit": "lint-staged",
-		"pre-push": "npm run build",
 		"prepare": "husky",
 		"lint:fix": "eslint ./src --fix --quiet",
 		"prettier:fix": "prettier --write ./**/*.{js,jsx,ts,tsx,css,json} --config ./.prettierrc"

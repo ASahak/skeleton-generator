@@ -63,6 +63,11 @@ export const colorThemeState: RecoilState<
 	},
 });
 
+export const skeletonAnimationState: RecoilState<string> = atom({
+	key: 'skeleton-animation',
+	default: 'slide', // todo
+});
+
 export const breakpointsState: RecoilState<Record<Device, string>> = atom({
 	key: 'breakpoints',
 	default: {

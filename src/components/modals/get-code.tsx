@@ -22,6 +22,7 @@ import {
 	selectBreakpointsState,
 	selectGridState,
 	selectRootStylesState,
+	selectSkeletonAnimationState,
 	selectSkeletonsState,
 } from '@/store/selectors/global';
 import { ROOT_KEY } from '@/constants/general-settings';
@@ -40,6 +41,7 @@ export const GetCode = () => {
 	const { onToast } = useContext(ToastContext);
 	const gridState = useRecoilValue(selectGridState);
 	const skeletonsState = useRecoilValue(selectSkeletonsState);
+	const skeletonAnimation = useRecoilValue(selectSkeletonAnimationState);
 	const rootStyles = useRecoilValue(selectRootStylesState);
 	const [tabIndex, setTabIndex] = useState(0);
 	const { gray100_dark400, white_dark550 } = useThemeColors();
@@ -52,6 +54,7 @@ export const GetCode = () => {
 	const generateGlobalConfigs = useMemo(() => {
 		const value = JSON.stringify(
 			{
+				skeletonAnimation,
 				colorTheme: colorThemes,
 				breakpoints,
 			},
@@ -67,7 +70,7 @@ export const GetCode = () => {
   {children}
 </ReactSkeletonProvider>
 `;
-	}, [colorThemes, breakpoints]);
+	}, [colorThemes, breakpoints, skeletonAnimation]);
 
 	const generateGridStructure = useMemo(() => {
 		const styles = parseStyleObject(rootStyles);

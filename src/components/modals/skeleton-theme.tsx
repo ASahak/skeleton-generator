@@ -22,41 +22,44 @@ import { RxTriangleDown } from 'react-icons/rx';
 import { useModal } from '@/providers/custom-modal';
 import { useThemeColors } from '@/hooks';
 import { COLOR_MODE } from '@/common/enums';
-import { colorThemeState } from '@/store/atoms/global';
+import { colorThemeState, skeletonAnimationState } from '@/store/atoms/global';
+import { ISelect } from '@/common/types';
 
-const OPTIONS: { label: string; value: string }[] = [
+const OPTIONS: ISelect[] = [
 	{ label: 'Slide', value: 'slide' },
 	{ label: 'Fade', value: 'fade' },
 ];
-const THEMES = [
+const THEMES: ISelect[] = [
 	{ value: 'light', label: 'Light' },
 	{ value: 'dark', label: 'Dark' },
 ];
 export const SkeletonTheme = () => {
 	const { onClose } = useModal();
 	const { colorMode } = useColorMode();
-	const [selectedVariant, setSelectedVariant] = useState<{
-		label: string;
-		value: string;
-	}>(OPTIONS[0]);
-	const [selectedTheme, setSelectedTheme] = useState<{
-		label: string;
-		value: string;
-	}>(THEMES[colorMode === 'dark' ? 1 : 0]);
+	const [selectedTheme, setSelectedTheme] = useState<ISelect>(
+		THEMES[colorMode === 'dark' ? 1 : 0]
+	);
+	const [skeletonAnimation, setSkeletonAnimation] = useRecoilState(
+		skeletonAnimationState
+	);
+	const [selectedVariant, setSelectedVariant] = useState<ISelect>(
+		OPTIONS[OPTIONS.findIndex((e) => e.value === skeletonAnimation)]
+	);
 	const [colorThemes, setColorTheme] = useRecoilState(colorThemeState);
 	const [themeLocalValue, setThemeLocalValue] = useState(colorThemes);
 	const { white_dark650 } = useThemeColors();
 
-	const onSelectVariant = (opt: { label: string; value: string }) => {
+	const onSelectVariant = (opt: ISelect) => {
 		setSelectedVariant(opt);
 	};
 
-	const onSelectTheme = (opt: { label: string; value: string }) => {
+	const onSelectTheme = (opt: ISelect) => {
 		setSelectedTheme(opt);
 	};
 
 	const onApply = () => {
 		setColorTheme(themeLocalValue);
+		setSkeletonAnimation(selectedVariant.value);
 		onClose();
 	};
 

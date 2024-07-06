@@ -10,6 +10,7 @@ import {
 	highlightedNodeState,
 	optionsPanelIsOpenState,
 	rootStylesState,
+	skeletonAnimationState,
 	skeletonsState,
 } from '@/store/atoms/global';
 import {
@@ -145,4 +146,9 @@ export const selectBreakpointsState = selector({
 export const selectAdaptiveDeviceEnabledState = selector({
 	key: 'select-adaptive-device-enabled',
 	get: ({ get }) => get(adaptiveDeviceEnabledState),
+});
+
+export const selectSkeletonAnimationState = selector({
+	key: 'select-skeleton-animation',
+	get: ({ get }) => get(skeletonAnimationState),
 });

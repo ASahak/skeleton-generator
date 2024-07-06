@@ -62,3 +62,8 @@ export interface IGenerateCSSGridAreaArgs {
 	reservedProps: Record<string, any>;
 	keyLevel: string;
 }
+
+export type ISelect = {
+	value: string;
+	label: string;
+};

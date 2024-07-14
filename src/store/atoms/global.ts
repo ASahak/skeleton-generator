@@ -13,6 +13,11 @@ export const deviceState: RecoilState<Device | null> = atom<Device | null>({
 	default: null,
 });
 
+export const previewModeState: RecoilState<boolean> = atom<boolean>({
+	key: 'preview-mode',
+	default: false,
+});
+
 export const autoDeviceCheckingIsActiveState: RecoilState<boolean> = atom({
 	key: 'auto-device-checking',
 	default: true,

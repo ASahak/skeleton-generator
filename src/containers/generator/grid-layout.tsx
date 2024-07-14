@@ -17,6 +17,7 @@ import {
 } from 'react-skeleton-builder';
 import type { SizeFunction } from 'react-skeleton-builder';
 import { HighlightPulse } from './highlight-pulse';
+import { PreviewStructure } from './preview-structure';
 import {
 	selectColorThemeState,
 	selectDeviceState,
@@ -35,6 +36,7 @@ import {
 	mutateWithRepeated,
 } from '@/utils/helpers';
 import { highlightedNodeState } from '@/store/atoms/global';
+import { selectPreviewModeState } from '@/store/selectors/global';
 import { WithContextMenu } from '@/containers/generator/with-context-menu';
 import { useLeavePageConfirm } from '@/hooks';
 
@@ -51,6 +53,7 @@ export const GridLayout = () => {
 	const device = useRecoilValue(selectDeviceState);
 	const gridState = useRecoilValue(selectGridState);
 	const skeletonsState = useRecoilValue(selectSkeletonsState);
+	const previewMode = useRecoilValue(selectPreviewModeState);
 	const rootStyles = useRecoilValue(selectRootStylesState);
 	const convertedStyles = useConvertStringToStyleObject(rootStyles);
 	const [highlightedNode, setHighlightedNode] =
@@ -353,7 +356,9 @@ export const GridLayout = () => {
 
 	return (
 		<>
+			{previewMode ? <PreviewStructure /> : null}
 			<Box
+				display={previewMode ? 'none' : 'block'}
 				style={convertedStyles as CSSProperties}
 				p="1px"
 				overflow="hidden"

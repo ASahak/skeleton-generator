@@ -19,6 +19,7 @@ import {
 	gridState,
 	highlightedNodeState,
 	optionsPanelIsOpenState,
+	previewModeState,
 	rootStylesState,
 	skeletonAnimationState,
 	skeletonsState,
@@ -30,6 +31,13 @@ export const selectGridState = selector({
 	key: 'select-grid',
 	get: ({ get }) => {
 		return get(gridState);
+	},
+});
+
+export const selectPreviewModeState = selector({
+	key: 'select-preview-mode',
+	get: ({ get }) => {
+		return get(previewModeState);
 	},
 });
 

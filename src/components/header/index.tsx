@@ -12,6 +12,7 @@ import {
 	RiMoonLine,
 	RiSunLine,
 	RiCodeSSlashFill,
+	RiArrowLeftLine,
 } from 'react-icons/ri';
 import { RxShadow } from 'react-icons/rx';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -21,6 +22,7 @@ import {
 	gridState,
 	highlightedNodeState,
 	optionsPanelIsOpenState,
+	previewModeState,
 } from '@/store/atoms/global';
 import { HighlightedNode } from '@/components/header/highlighted-node';
 import { generateDefaultValues } from '@/utils/helpers';
@@ -36,6 +38,7 @@ export const Header: FC = memo(() => {
 	const [getGridState, setGridState] = useRecoilState(gridState);
 	const [, setOptionsPanelIsOpen] = useRecoilState(optionsPanelIsOpenState);
 	const [, setHighlightedNode] = useRecoilState(highlightedNodeState);
+	const [previewMode, setPreviewMode] = useRecoilState(previewModeState);
 	const adaptiveDeviceEnabled = useRecoilValue(
 		selectAdaptiveDeviceEnabledState
 	);
@@ -55,7 +58,10 @@ export const Header: FC = memo(() => {
 		});
 	};
 
-	const onPreview = () => {};
+	const onPreview = () => {
+		setPreviewMode(true);
+		setOptionsPanelIsOpen(false);
+	};
 
 	const openBreakpointsModal = () => {
 		setModal({
@@ -85,76 +91,88 @@ export const Header: FC = memo(() => {
 			position="relative"
 			gap={{ base: 8, md: 4 }}
 		>
-			<HStack justifyContent="space-between" w="full">
-				<Flex alignItems="center" gap={4} flex={1}>
-					<Button
-						variant="base"
-						onClick={ableToPreview ? onPreview : onCreateRootTemplate}
-					>
-						{ableToPreview ? 'Preview' : 'Create Root'}
-					</Button>
-					{ableToPreview ? (
-						<>
-							<Button
-								variant="menu-outline"
-								px={4}
-								gap={2}
-								fontSize="1.3rem"
-								onClick={onOpenGetCodeModal}
-							>
-								Get code <Icon fontSize="1.5rem" as={RiCodeSSlashFill} />
-							</Button>
-							<HighlightedNode />
-						</>
-					) : null}
-				</Flex>
-				{ableToPreview && adaptiveDeviceEnabled ? <Devices /> : null}
-				<Flex alignItems="center" gap={6} flex={1} justifyContent="end">
-					<Button
-						alignItems="center"
-						display="flex"
-						p={0}
-						variant="unstyled"
-						onClick={onOpenSkeletonThemeModal}
-					>
-						<Icon as={RxShadow} fontSize="4xl" />
-					</Button>
-					{ableToPreview ? (
-						<>
-							<Button
-								alignItems="center"
-								display="flex"
-								p={0}
-								variant="unstyled"
-								onClick={openBreakpointsModal}
-							>
-								<Icon as={DeviceResize} fontSize="4xl" />
-							</Button>
-							<Button
-								alignItems="center"
-								display="flex"
-								p={0}
-								variant="unstyled"
-								onClick={() => setOptionsPanelIsOpen(true)}
-							>
-								<Icon as={RiListSettingsLine} fontSize="4xl" />
-							</Button>
-						</>
-					) : null}
-					<Button
-						variant="unstyled"
-						alignItems="center"
-						display="flex"
-						p={0}
-						onClick={toggleColorMode}
-					>
-						<Icon
-							fontSize="3xl"
-							as={colorMode === 'dark' ? RiMoonLine : RiSunLine}
-						/>
-					</Button>
-				</Flex>
-			</HStack>
+			{previewMode ? (
+				<Button
+					variant="base"
+					px={5}
+					gap={2}
+					onClick={() => setPreviewMode(false)}
+				>
+					<Icon as={RiArrowLeftLine} fontSize="2xl" />
+					Back
+				</Button>
+			) : (
+				<HStack justifyContent="space-between" w="full">
+					<Flex alignItems="center" gap={4} flex={1}>
+						<Button
+							variant="base"
+							onClick={ableToPreview ? onPreview : onCreateRootTemplate}
+						>
+							{ableToPreview ? 'Preview' : 'Create Root'}
+						</Button>
+						{ableToPreview ? (
+							<>
+								<Button
+									variant="menu-outline"
+									px={4}
+									gap={2}
+									fontSize="1.3rem"
+									onClick={onOpenGetCodeModal}
+								>
+									Get code <Icon fontSize="1.5rem" as={RiCodeSSlashFill} />
+								</Button>
+								<HighlightedNode />
+							</>
+						) : null}
+					</Flex>
+					{ableToPreview && adaptiveDeviceEnabled ? <Devices /> : null}
+					<Flex alignItems="center" gap={6} flex={1} justifyContent="end">
+						<Button
+							alignItems="center"
+							display="flex"
+							p={0}
+							variant="unstyled"
+							onClick={onOpenSkeletonThemeModal}
+						>
+							<Icon as={RxShadow} fontSize="4xl" />
+						</Button>
+						{ableToPreview ? (
+							<>
+								<Button
+									alignItems="center"
+									display="flex"
+									p={0}
+									variant="unstyled"
+									onClick={openBreakpointsModal}
+								>
+									<Icon as={DeviceResize} fontSize="4xl" />
+								</Button>
+								<Button
+									alignItems="center"
+									display="flex"
+									p={0}
+									variant="unstyled"
+									onClick={() => setOptionsPanelIsOpen(true)}
+								>
+									<Icon as={RiListSettingsLine} fontSize="4xl" />
+								</Button>
+							</>
+						) : null}
+						<Button
+							variant="unstyled"
+							alignItems="center"
+							display="flex"
+							p={0}
+							onClick={toggleColorMode}
+						>
+							<Icon
+								fontSize="3xl"
+								as={colorMode === 'dark' ? RiMoonLine : RiSunLine}
+							/>
+						</Button>
+					</Flex>
+				</HStack>
+			)}
 		</Box>
 	);
 });

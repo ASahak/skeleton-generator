@@ -3,17 +3,15 @@ import { Box, Heading, Input } from '@chakra-ui/react';
 import { useDebounce } from 'react-use';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import cloneDeep from 'clone-deep';
-import {
-	DEFAULT_GAP,
-	TREE_ELEMENTS_SPACING,
-} from '@/constants/general-settings';
+import type { GridKeyType } from 'react-skeleton-builder';
+import { DEFAULT_GAP } from 'react-skeleton-builder';
+import { TREE_ELEMENTS_SPACING } from '@/constants/general-settings';
 import {
 	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
 import { gridState } from '@/store/atoms/global';
-import { GridKeyType } from '@/common/types';
 
 export const GridGap: FC = memo(() => {
 	const device = useRecoilValue(selectDeviceState);

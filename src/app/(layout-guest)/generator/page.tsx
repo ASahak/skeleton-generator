@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback, useState } from 'react';
 import { Box, VStack, Grid, GridItem } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { Header, Empty } from '@/components';
@@ -9,7 +10,6 @@ import { useThemeColors } from '@/hooks';
 import { selectGridState } from '@/store/selectors/global';
 import { optionsPanelIsOpenState } from '@/store/atoms/global';
 import { AdaptiveDeviceContainer } from '@/containers/adaptive-device-container';
-import { useCallback, useState } from 'react';
 
 export default function View() {
 	const { gray80_dark800 } = useThemeColors();

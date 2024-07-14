@@ -2,14 +2,14 @@ import React, { memo, useEffect, useMemo, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 import { useContainerQuery } from 'react-container-query';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import type { Device } from 'react-skeleton-builder';
+import { filterFromPx } from 'react-skeleton-builder';
 import { useThemeColors } from '@/hooks';
 import {
 	autoDeviceCheckingIsActiveState,
 	deviceState,
 } from '@/store/atoms/global';
 import { breakpoints } from '@/styles/theme';
-import { filterFromPx } from '@/utils/helpers';
-import { Device } from '@/common/types';
 import {
 	selectAdaptiveDeviceEnabledState,
 	selectBreakpointsState,

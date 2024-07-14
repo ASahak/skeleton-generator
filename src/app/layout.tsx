@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
-import theme from '@/styles/theme';
 import { ColorModeScript } from '@chakra-ui/react';
+import theme from '@/styles/theme';
 import { AppProviders } from '@/providers/app';
 
 const inter = Inter({ subsets: ['latin'] });

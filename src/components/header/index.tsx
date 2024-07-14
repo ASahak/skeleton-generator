@@ -15,6 +15,7 @@ import {
 } from 'react-icons/ri';
 import { RxShadow } from 'react-icons/rx';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import { ROOT_KEY } from 'react-skeleton-builder';
 import { useThemeColors } from '@/hooks';
 import {
 	gridState,
@@ -23,7 +24,6 @@ import {
 } from '@/store/atoms/global';
 import { HighlightedNode } from '@/components/header/highlighted-node';
 import { generateDefaultValues } from '@/utils/helpers';
-import { ROOT_KEY } from '@/constants/general-settings';
 import { MODALS_KEYS, useModal } from '@/providers/custom-modal';
 import { Devices } from './devices';
 import { DeviceResize } from '@/assets/chakra-icons';

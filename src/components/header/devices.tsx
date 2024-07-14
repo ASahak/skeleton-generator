@@ -6,11 +6,11 @@ import {
 	SlScreenSmartphone,
 	SlScreenTablet,
 } from 'react-icons/sl';
+import type { Device } from 'react-skeleton-builder';
 import {
 	autoDeviceCheckingIsActiveState,
 	deviceState,
 } from '@/store/atoms/global';
-import { Device } from '@/common/types';
 
 export const Devices = memo(() => {
 	const [device, setDeviceState] = useRecoilState(deviceState);

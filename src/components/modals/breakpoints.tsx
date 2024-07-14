@@ -11,6 +11,8 @@ import {
 	Checkbox,
 } from '@chakra-ui/react';
 import { useRecoilState } from 'recoil';
+import { filterFromPx } from 'react-skeleton-builder';
+import type { Device } from 'react-skeleton-builder';
 import { useThemeColors } from '@/hooks';
 import {
 	adaptiveDeviceEnabledState,
@@ -19,8 +21,6 @@ import {
 	deviceState,
 } from '@/store/atoms/global';
 import { breakpoints as breakpointsTheme } from '@/styles/theme';
-import { filterFromPx } from '@/utils/helpers';
-import { Device } from '@/common/types';
 import { useModal } from '@/providers/custom-modal';
 
 export const Breakpoints = () => {

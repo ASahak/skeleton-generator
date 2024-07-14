@@ -14,6 +14,11 @@ import {
 } from '@chakra-ui/react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useRecoilValue } from 'recoil';
+import {
+	ROOT_KEY,
+	parseStyleObject,
+	cssToReactStyle,
+} from 'react-skeleton-builder';
 import { ToastContext } from '@/contexts/toast';
 import { useThemeColors } from '@/hooks';
 import { colorThemeState } from '@/store/atoms/global';
@@ -25,12 +30,7 @@ import {
 	selectSkeletonAnimationState,
 	selectSkeletonsState,
 } from '@/store/selectors/global';
-import { ROOT_KEY } from '@/constants/general-settings';
-import {
-	cssToReactStyle,
-	getGridStructure,
-	parseStyleObject,
-} from '@/utils/helpers';
+import { getGridStructure } from '@/utils/helpers';
 
 const TABS = [
 	{ value: 'global-configs', label: 'Global configurations' },

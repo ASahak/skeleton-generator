@@ -3,15 +3,15 @@ import { Box, Heading, Text } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useDebounce } from 'react-use';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
+import type { GridKeyType } from 'react-skeleton-builder';
+import cloneDeep from 'clone-deep';
 import {
 	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
-import { GridKeyType } from '@/common/types';
 import { gridState } from '@/store/atoms/global';
 import { useThemeColors } from '@/hooks';
-import cloneDeep from 'clone-deep';
 
 export const Styles: FC = memo(() => {
 	const device = useRecoilValue(selectDeviceState);

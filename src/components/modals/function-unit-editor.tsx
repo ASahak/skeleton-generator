@@ -1,12 +1,12 @@
 import { useRef, useState } from 'react';
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
+import { useRecoilValue } from 'recoil';
+import { SIZE_UNITS } from 'react-skeleton-builder';
 import { useBus, useThemeColors } from '@/hooks';
 import { ON_CLOSE_MODAL } from '@/constants/event-bus-types';
-import { useRecoilValue } from 'recoil';
 import { selectHighlightedNodeGridPropState } from '@/store/selectors/global';
 import { valueWithPrefix } from '@/utils/helpers';
-import { SIZE_UNITS } from '@/common/enums';
 
 type IProps = {
 	title: string;

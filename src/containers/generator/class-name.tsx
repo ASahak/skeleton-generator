@@ -3,13 +3,13 @@ import { Box, Heading, Input } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useDebounce } from 'react-use';
 import cloneDeep from 'clone-deep';
+import type { GridKeyType } from 'react-skeleton-builder';
 import {
 	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
 import { gridState } from '@/store/atoms/global';
-import { GridKeyType } from '@/common/types';
 
 export const ClassName: FC = memo(() => {
 	const value = useRecoilValue(selectHighlightedNodeGridPropState('className'));

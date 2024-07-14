@@ -12,19 +12,22 @@ import {
 import { SetterOrUpdater, useRecoilState, useRecoilValue } from 'recoil';
 import { useDebounce } from 'react-use';
 import cloneDeep from 'clone-deep';
+import type { GridKeyType, SkeletonKeyType } from 'react-skeleton-builder';
+import {
+	MARGIN_SIDES,
+	CONTAINER_INITIAL_VALUES,
+	convertToArray,
+} from 'react-skeleton-builder';
 import {
 	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
 import { gridState, skeletonsState } from '@/store/atoms/global';
-import { GridKeyType, IGrid, ISkeleton, SkeletonKeyType } from '@/common/types';
+import { IGrid, ISkeleton } from '@/common/types';
 import { useThemeColors } from '@/hooks';
-import { MARGIN_SIDES } from '@/common/enums';
-import { CONTAINER_INITIAL_VALUES } from '@/constants/general-settings';
 import {
 	convertInitialZeroToValueItSelf,
-	convertToArray,
 	isSkeletonHighlighted,
 	overrideSides,
 } from '@/utils/helpers';

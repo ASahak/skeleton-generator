@@ -1,5 +1,15 @@
 import { selector, selectorFamily } from 'recoil';
 import dlv from 'dlv';
+import type {
+	Device,
+	GridKeyType,
+	SkeletonKeyType,
+} from 'react-skeleton-builder';
+import {
+	CONTAINER_INITIAL_VALUES,
+	SKELETON_INITIAL_VALUES,
+	COLOR_MODE,
+} from 'react-skeleton-builder';
 import {
 	adaptiveDeviceEnabledState,
 	autoDeviceCheckingIsActiveState,
@@ -13,18 +23,8 @@ import {
 	skeletonAnimationState,
 	skeletonsState,
 } from '@/store/atoms/global';
-import {
-	Device,
-	GridKeyType,
-	ISkeleton,
-	SkeletonKeyType,
-} from '@/common/types';
-import {
-	CONTAINER_INITIAL_VALUES,
-	SKELETON_INITIAL_VALUES,
-} from '@/constants/general-settings';
+import { ISkeleton } from '@/common/types';
 import { isSkeletonHighlighted } from '@/utils/helpers';
-import { COLOR_MODE } from '@/common/enums';
 
 export const selectGridState = selector({
 	key: 'select-grid',

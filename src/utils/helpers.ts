@@ -1,29 +1,18 @@
 import {
-	ALIGN_ITEMS,
-	DIRECTION,
+	convertToArray,
 	MARGIN_SIDES,
 	SIZE_UNITS,
-} from '@/common/enums';
-import {
-	CONTAINER_INITIAL_VALUES,
-	DEFAULT_GRID_CONTAINER_HEIGHT,
-	DEFAULT_GRID_CONTAINER_WIDTH,
-	DEFAULT_HEIGHT,
-	DEFAULT_WIDTH,
 	ROOT_KEY,
+	CONTAINER_INITIAL_VALUES,
 	SKELETON_INITIAL_VALUES,
-	STYLE_PARSING_REGEXP,
-} from '@/constants/general-settings';
-import {
-	Device,
+} from 'react-skeleton-builder';
+import type {
 	GridKeyType,
-	IGenerateCSSGridAreaArgs,
-	IGrid,
-	ISkeleton,
-	Responsive,
 	SkeletonKeyType,
-} from '@/common/types';
-import parse from 'style-to-object';
+	Responsive,
+	Device,
+} from 'react-skeleton-builder';
+import { IGrid, ISkeleton } from '@/common/types';
 
 export const responsiveInstance = (
 	instance:
@@ -65,9 +54,6 @@ export const generateDefaultValues = () => {
 			{ responsive: responsiveInstance(CONTAINER_INITIAL_VALUES) }
 		);
 };
-
-export const convertToArray = (str: string) =>
-	str.replace(/\[|\]/g, '')?.split(',') || [];
 
 export const overrideSides = (
 	side: MARGIN_SIDES,
@@ -130,84 +116,6 @@ export const valueWithPrefix = (v: any): { value: string; unit: string } => {
 	}
 };
 
-const isNumber = (n: string | number): boolean =>
-	!isNaN(parseFloat(String(n))) && isFinite(Number(n));
-
-export const generateMargin = (marginProp: IGrid['margin']) => {
-	const marginDetect = () => {
-		let [t, r, b, l] = convertToArray(marginProp as string);
-		if (t && !r && !b && !l) {
-			r = t;
-			b = t;
-			l = t;
-		} else {
-			if (!t) {
-				t = b || '0';
-			}
-			if (!r) {
-				r = l || '0';
-			}
-			if (!b) {
-				b = t || '0';
-			}
-			if (!l) {
-				l = r || '0';
-			}
-		}
-		return [t, r, b, l].reduce((acc, item: string) => {
-			acc += isNumber(item) ? item + 'px ' : item + ' ';
-			return acc;
-		}, '');
-	};
-
-	return marginDetect();
-};
-
-export const generateGridArea = (
-	row: (ISkeleton | IGrid)[],
-	cb: (index: number, prop: 'w', value: string | number) => void
-) => {
-	return row.reduce((acc: string, item, index) => {
-		const isFunction = typeof item.w === 'function';
-		if (isFunction) {
-			const w = (item.w as any)();
-			acc += (Array.isArray(item) ? DEFAULT_GRID_CONTAINER_WIDTH : w) + ' ';
-			cb(index, 'w', w);
-		} else {
-			acc += Array.isArray(item)
-				? DEFAULT_GRID_CONTAINER_WIDTH
-				: (item.w === DEFAULT_WIDTH ? '1fr' : item.w) + ' ';
-		}
-		return acc;
-	}, '1fr / ');
-};
-
-export const generateGridAreaAsColDirection = (
-	items: (ISkeleton | IGrid)[],
-	alignItems: ALIGN_ITEMS,
-	cb: (index: number, prop: 'h', value: string | number) => void
-) => {
-	return (
-		items.reduce((acc, item, index) => {
-			const isFunction = typeof item.h === 'function';
-			if (isFunction) {
-				const h = (item.h as any)();
-				acc +=
-					(alignItems === 'center' ? DEFAULT_GRID_CONTAINER_HEIGHT : h) + ' ';
-				cb(index, 'h', h);
-			} else {
-				acc +=
-					(alignItems === 'center'
-						? DEFAULT_GRID_CONTAINER_HEIGHT
-						: !item.h || item.h === DEFAULT_HEIGHT
-							? DEFAULT_GRID_CONTAINER_HEIGHT
-							: item.h) + ' ';
-			}
-			return acc;
-		}, '') + ' / 1fr'
-	);
-};
-
 export const mutateWithRepeated = (
 	repeatCount: number,
 	key: string,
@@ -224,65 +132,6 @@ export const mutateWithRepeated = (
 					: { key }),
 			}
 		: { path: key, key };
-};
-
-export const itemsWithRepeat = (
-	skeletons: (ISkeleton | IGrid | string)[],
-	repeatCount: number
-) => {
-	return repeatCount > 0 && skeletons[0]
-		? [].constructor(repeatCount).fill(skeletons[0])
-		: skeletons;
-};
-
-export const setOpacity = (
-	viewIndex: number,
-	repeatCount: number,
-	rowsLength: number,
-	withOpacity?: boolean
-) => {
-	return (repeatCount || rowsLength) > 0 && withOpacity
-		? 1 - (1 / (repeatCount || rowsLength)) * viewIndex
-		: 1;
-};
-
-export const generateCSSGridArea = ({
-	grid,
-	hasChildren,
-	skeletons,
-	children,
-	repeatCount,
-	reservedProps,
-	keyLevel,
-}: IGenerateCSSGridAreaArgs) => {
-	return grid.direction === DIRECTION.ROW
-		? generateGridArea(
-				(hasChildren
-					? children
-					: itemsWithRepeat(skeletons as ISkeleton[], repeatCount)
-				).map(({ w = DEFAULT_GRID_CONTAINER_WIDTH }) => ({ w })),
-				(index, prop, val) => {
-					if (!reservedProps[`${keyLevel}_${index + 1}` as any]) {
-						reservedProps[`${keyLevel}_${index + 1}`] = {};
-					}
-					reservedProps[`${keyLevel}_${index + 1}`][prop] = val;
-				}
-			)
-		: generateGridAreaAsColDirection(
-				(hasChildren
-					? children
-					: itemsWithRepeat(skeletons as ISkeleton[], repeatCount)) as (
-					| ISkeleton
-					| IGrid
-				)[],
-				grid.alignItems as ALIGN_ITEMS,
-				(index, prop, val) => {
-					if (!reservedProps[`${keyLevel}_${index + 1}`]) {
-						reservedProps[`${keyLevel}_${index + 1}`] = {};
-					}
-					reservedProps[`${keyLevel}_${index + 1}`][prop] = val;
-				}
-			);
 };
 
 export const findAbsentIndex = (base: string, arr: string[]): number => {
@@ -429,13 +278,6 @@ export const applicableValue = (v: string): string => {
 	return v;
 };
 
-export const isClickedOnSkeleton = (
-	key: string,
-	skeletons: Record<string, ISkeleton>
-) => {
-	return Object.hasOwn(skeletons, key);
-};
-
 export const filterFromSkeleton = (e: string) => e !== 'skeleton';
 
 export const isSkeletonHighlighted = (highlightedNode: string) =>
@@ -455,9 +297,6 @@ export const getDirectParentWithDataKeyAttr = (node: HTMLElement) => {
 
 	return parent;
 };
-
-export const filterFromPx = (value: string): number =>
-	Number(value.split('px')[0]);
 
 export const convertInitialZeroToValueItSelf = (newValue: string) => {
 	if (newValue.length > 1 && /^0/.test(newValue)) {
@@ -551,23 +390,4 @@ export const getGridStructure = (
 			),
 		}),
 	};
-};
-
-export const parseStyleObject = (cssString: string) => {
-	const styles: string = cssString.replace(STYLE_PARSING_REGEXP, '');
-
-	return parse(styles);
-};
-
-export const cssToReactStyle = (styles: Record<string, any>) => {
-	const styleObject: Record<string, any> = {};
-
-	Object.keys(styles).forEach((styleProp) => {
-		const camelCaseProperty = styleProp.replace(/-([a-z])/g, (match, letter) =>
-			letter.toUpperCase()
-		);
-		styleObject[camelCaseProperty] = styles[styleProp];
-	});
-
-	return styleObject;
 };

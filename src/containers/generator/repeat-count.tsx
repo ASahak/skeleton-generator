@@ -3,17 +3,15 @@ import { Box, Heading, Input } from '@chakra-ui/react';
 import { useDebounce } from 'react-use';
 import cloneDeep from 'clone-deep';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import {
-	DEFAULT_REPEAT_COUNT,
-	REPEAT_COUNT_RANGE,
-} from '@/constants/general-settings';
+import { DEFAULT_REPEAT_COUNT } from 'react-skeleton-builder';
+import type { GridKeyType } from 'react-skeleton-builder';
+import { REPEAT_COUNT_RANGE } from '@/constants/general-settings';
 import {
 	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
 import { gridState } from '@/store/atoms/global';
-import { GridKeyType } from '@/common/types';
 
 export const RepeatCount: FC = memo(() => {
 	const value = useRecoilValue(

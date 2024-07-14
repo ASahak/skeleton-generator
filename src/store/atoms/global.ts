@@ -1,8 +1,12 @@
 import { atom, RecoilState } from 'recoil';
-import { Device, IGrid, ISkeleton } from '@/common/types';
-import { COLOR_MODE } from '@/common/enums';
+import {
+	COLOR_MODE,
+	filterFromPx,
+	DEFAULT_COLOR_THEMES,
+} from 'react-skeleton-builder';
+import type { Device } from 'react-skeleton-builder';
+import type { IGrid, ISkeleton } from '@/common/types';
 import { breakpoints } from '@/styles/theme';
-import { filterFromPx } from '@/utils/helpers';
 
 export const deviceState: RecoilState<Device | null> = atom<Device | null>({
 	key: 'device',
@@ -51,16 +55,7 @@ export const colorThemeState: RecoilState<
 	Record<COLOR_MODE, Record<'main' | 'gradient', string>>
 > = atom({
 	key: 'color-theme',
-	default: {
-		dark: {
-			main: '#282c34',
-			gradient: '#2c303a',
-		},
-		light: {
-			main: '#f1f1f1',
-			gradient: '#ececec',
-		},
-	},
+	default: DEFAULT_COLOR_THEMES,
 });
 
 export const skeletonAnimationState: RecoilState<string> = atom({

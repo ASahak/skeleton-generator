@@ -19,14 +19,14 @@ import { RxTriangleDown } from 'react-icons/rx';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { selectHighlightedNodeState } from '@/store/selectors/global';
 import { gridState, skeletonsState } from '@/store/atoms/global';
-import { GridKeyType } from '@/common/types';
+import type { GridKeyType } from 'react-skeleton-builder';
+import { SKELETON_INITIAL_VALUES } from 'react-skeleton-builder';
 import {
 	findAbsentIndex,
 	generateDefaultValues,
 	responsiveInstance,
 } from '@/utils/helpers';
 import { GridTree } from '@/components/header/grid-tree';
-import { SKELETON_INITIAL_VALUES } from '@/constants/general-settings';
 
 const OPTIONS = [
 	{

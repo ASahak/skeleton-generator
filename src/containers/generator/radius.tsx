@@ -18,18 +18,18 @@ import { useDebounce } from 'react-use';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { RiArrowDownSLine } from 'react-icons/ri';
 import cloneDeep from 'clone-deep';
+import type { SkeletonKeyType } from 'react-skeleton-builder';
+import { SIZE_UNITS } from 'react-skeleton-builder';
 import {
 	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
 import { skeletonsState } from '@/store/atoms/global';
-import { SkeletonKeyType } from '@/common/types';
 import {
 	convertInitialZeroToValueItSelf,
 	valueWithPrefix,
 } from '@/utils/helpers';
-import { SIZE_UNITS } from '@/common/enums';
 import { useThemeColors } from '@/hooks';
 
 const UNITS_OPTIONS = [SIZE_UNITS.PX, SIZE_UNITS.REM, SIZE_UNITS.PERCENT].map(

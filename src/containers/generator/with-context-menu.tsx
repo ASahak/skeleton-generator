@@ -7,22 +7,22 @@ import {
 	useDisclosure,
 	Portal,
 } from '@chakra-ui/react';
+import { useRecoilState } from 'recoil';
+import type { GridKeyType, SkeletonKeyType } from 'react-skeleton-builder';
+import { DEFAULT_REPEAT_COUNT, ROOT_KEY } from 'react-skeleton-builder';
 import cloneDeep from 'clone-deep';
 import { RiDeleteBin6Line, RiFileCopyLine } from 'react-icons/ri';
 import { MODALS_KEYS, useModal } from '@/providers/custom-modal';
-import { useRecoilState } from 'recoil';
 import {
 	gridState,
 	highlightedNodeState,
 	skeletonsState,
 } from '@/store/atoms/global';
-import { GridKeyType, SkeletonKeyType } from '@/common/types';
 import {
 	findAbsentIndex,
 	getParent,
 	isSkeletonHighlighted,
 } from '@/utils/helpers';
-import { DEFAULT_REPEAT_COUNT, ROOT_KEY } from '@/constants/general-settings';
 
 enum ACTIONS {
 	COPY = 'copy',

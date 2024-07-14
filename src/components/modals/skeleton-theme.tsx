@@ -18,10 +18,16 @@ import {
 	useColorMode,
 	VStack,
 } from '@chakra-ui/react';
+import {
+	COLOR_MODE,
+	DIRECTION,
+	ReactSkeletonProvider,
+	Skeleton,
+	SKELETON_ANIMATION_VARIANTS,
+} from 'react-skeleton-builder';
 import { RxTriangleDown } from 'react-icons/rx';
 import { useModal } from '@/providers/custom-modal';
 import { useThemeColors } from '@/hooks';
-import { COLOR_MODE } from '@/common/enums';
 import { colorThemeState, skeletonAnimationState } from '@/store/atoms/global';
 import { ISelect } from '@/common/types';
 
@@ -208,6 +214,59 @@ export const SkeletonTheme = () => {
 						value={themeLocalValue[selectedTheme.value as COLOR_MODE].gradient}
 					/>
 				</InputGroup>
+			</Box>
+			<Box mt={4}>
+				<Heading variant="medium-title" mb={4}>
+					Example
+				</Heading>
+				<ReactSkeletonProvider
+					value={{
+						isDark: colorMode === 'dark',
+						skeletonAnimation:
+							selectedVariant.value as SKELETON_ANIMATION_VARIANTS,
+						colorTheme: {
+							dark: themeLocalValue.dark,
+							light: themeLocalValue.light,
+						},
+					}}
+				>
+					<Box
+						{...(colorMode === 'dark' && {
+							background: '#686a70',
+							padding: '10px',
+							borderRadius: '4px',
+						})}
+					>
+						<Skeleton
+							styles={{
+								width: '100%',
+								height: '60px',
+							}}
+							grid={{
+								children: [
+									{
+										w: '60px',
+										skeletons: [
+											{
+												h: '60px',
+												r: '50%',
+											},
+										],
+									},
+									{
+										direction: 'column' as DIRECTION,
+										gridGap: '.5',
+										skeletons: [
+											{ r: '.4rem', w: '80%' },
+											{ r: '.4rem', w: '60%' },
+											{ r: '.4rem', w: '30%' },
+										],
+									},
+								],
+							}}
+						/>
+					</Box>
+				</ReactSkeletonProvider>
 			</Box>
 			<Flex justifyContent="flex-end" w="full" mt={8}>
 				<Button variant="base" size="sm" onClick={onApply}>

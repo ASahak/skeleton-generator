@@ -3,13 +3,13 @@ import { Box, Heading, Input, Text } from '@chakra-ui/react';
 import { useDebounce } from 'react-use';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import cloneDeep from 'clone-deep';
+import type { SkeletonKeyType } from 'react-skeleton-builder';
 import {
 	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
 import { skeletonsState } from '@/store/atoms/global';
-import { SkeletonKeyType } from '@/common/types';
 import { useThemeColors } from '@/hooks';
 import { convertInitialZeroToValueItSelf } from '@/utils/helpers';
 

@@ -2,13 +2,13 @@ import { ChangeEvent, FC, memo } from 'react';
 import { Box, Checkbox } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import cloneDeep from 'clone-deep';
+import type { GridKeyType } from 'react-skeleton-builder';
 import {
 	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
 import { gridState } from '@/store/atoms/global';
-import { GridKeyType } from '@/common/types';
 
 export const WithOpacity: FC = memo(() => {
 	const device = useRecoilValue(selectDeviceState);

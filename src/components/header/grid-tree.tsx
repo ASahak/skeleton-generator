@@ -3,10 +3,10 @@ import { Box, Icon } from '@chakra-ui/react';
 import Tree from 'rc-tree';
 import { Key, TreeNodeProps } from 'rc-tree/es/interface';
 import { RiArrowDownSLine, RiArrowRightSLine } from 'react-icons/ri';
+import { ROOT_KEY } from 'react-skeleton-builder';
 import { useRecoilState } from 'recoil';
+import type { IGrid } from '@/common/types';
 import { gridState, highlightedNodeState } from '@/store/atoms/global';
-import { ROOT_KEY } from '@/constants/general-settings';
-import { IGrid } from '@/common/types';
 import 'rc-tree/assets/index.css';
 
 const ITEM_HEIGHT = 26;

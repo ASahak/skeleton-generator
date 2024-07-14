@@ -13,6 +13,8 @@ import {
 } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import cloneDeep from 'clone-deep';
+import type { GridKeyType } from 'react-skeleton-builder';
+import { ALIGN_ITEMS, JUSTIFY_CONTENT } from 'react-skeleton-builder';
 import {
 	selectDeviceState,
 	selectHighlightedNodeGridPropState,
@@ -20,9 +22,7 @@ import {
 } from '@/store/selectors/global';
 import { gridState } from '@/store/atoms/global';
 import { RiArrowDownSLine } from 'react-icons/ri';
-import { GridKeyType } from '@/common/types';
 import { useThemeColors } from '@/hooks';
-import { ALIGN_ITEMS, JUSTIFY_CONTENT } from '@/common/enums';
 
 const ALIGN_ITEMS_OPTIONS: Array<{
 	label: ALIGN_ITEMS;

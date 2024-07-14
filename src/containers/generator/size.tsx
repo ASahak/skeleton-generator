@@ -27,6 +27,15 @@ import {
 } from '@chakra-ui/react';
 import { SetterOrUpdater, useRecoilState, useRecoilValue } from 'recoil';
 import { RxHeight, RxWidth } from 'react-icons/rx';
+import type { GridKeyType, SkeletonKeyType } from 'react-skeleton-builder';
+import { RiArrowDownSLine } from 'react-icons/ri';
+import { useDebounce } from 'react-use';
+import {
+	DIRECTION,
+	SIZE_UNITS,
+	ROOT_KEY,
+	SIZE_UNITS_INITIAL_VALUES,
+} from 'react-skeleton-builder';
 import {
 	selectDeviceState,
 	selectGridState,
@@ -34,11 +43,8 @@ import {
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
 import { gridState, skeletonsState } from '@/store/atoms/global';
-import { RiArrowDownSLine } from 'react-icons/ri';
-import { useDebounce } from 'react-use';
-import { GridKeyType, IGrid, ISkeleton, SkeletonKeyType } from '@/common/types';
+import { IGrid, ISkeleton } from '@/common/types';
 import { useThemeColors } from '@/hooks';
-import { DIRECTION, SIZE_UNITS } from '@/common/enums';
 import {
 	convertInitialZeroToValueItSelf,
 	getAdaptiveData,
@@ -47,10 +53,6 @@ import {
 	valueWithPrefix,
 } from '@/utils/helpers';
 import { MODALS_KEYS, useModal } from '@/providers/custom-modal';
-import {
-	ROOT_KEY,
-	SIZE_UNITS_INITIAL_VALUES,
-} from '@/constants/general-settings';
 
 const UNITS_OPTIONS: {
 	label: SIZE_UNITS;

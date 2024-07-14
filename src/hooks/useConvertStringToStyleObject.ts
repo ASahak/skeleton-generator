@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
+import { cssToReactStyle, parseStyleObject } from 'react-skeleton-builder';
 import { useLiveStates } from '@/hooks/useLiveStates';
-import { cssToReactStyle, parseStyleObject } from '@/utils/helpers';
 
 export const useConvertStringToStyleObject = (
 	styleStr: string

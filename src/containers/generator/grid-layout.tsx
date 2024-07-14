@@ -1,6 +1,21 @@
 import { CSSProperties, useCallback, useEffect, useRef } from 'react';
 import { Box, useColorMode } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import {
+	DEFAULT_HEIGHT,
+	DEFAULT_SKELETON_GRADIENT_WIDTH,
+	DEFAULT_WIDTH,
+	ROOT_KEY,
+	COLOR_MODE,
+	DIRECTION,
+	cssToReactStyle,
+	generateCSSGridArea,
+	generateMargin,
+	itemsWithRepeat,
+	parseStyleObject,
+	setOpacity,
+} from 'react-skeleton-builder';
+import type { SizeFunction } from 'react-skeleton-builder';
 import { HighlightPulse } from './highlight-pulse';
 import {
 	selectColorThemeState,
@@ -10,30 +25,17 @@ import {
 	selectSkeletonsState,
 } from '@/store/selectors/global';
 import { useConvertStringToStyleObject } from '@/hooks';
-import {
-	DEFAULT_HEIGHT,
-	DEFAULT_SKELETON_GRADIENT_WIDTH,
-	DEFAULT_WIDTH,
-	ROOT_KEY,
-} from '@/constants/general-settings';
-import { IGrid, ISkeleton, SizeFunction } from '@/common/types';
+import { IGrid, ISkeleton } from '@/common/types';
 import {
 	applicableValue,
-	cssToReactStyle,
 	findTrap,
 	generateBorders,
-	generateCSSGridArea,
-	generateMargin,
 	getAdaptiveData,
 	getDirectParentWithDataKeyAttr,
-	itemsWithRepeat,
 	mutateWithRepeated,
-	parseStyleObject,
-	setOpacity,
 } from '@/utils/helpers';
 import { highlightedNodeState } from '@/store/atoms/global';
 import { WithContextMenu } from '@/containers/generator/with-context-menu';
-import { COLOR_MODE, DIRECTION } from '@/common/enums';
 import { useLeavePageConfirm } from '@/hooks';
 
 interface IGridLayout {

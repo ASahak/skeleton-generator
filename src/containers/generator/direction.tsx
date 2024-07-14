@@ -12,14 +12,14 @@ import {
 import cloneDeep from 'clone-deep';
 import { RiArrowDownSLine } from 'react-icons/ri';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import type { GridKeyType } from 'react-skeleton-builder';
+import { DIRECTION } from 'react-skeleton-builder';
 import {
 	selectDeviceState,
 	selectHighlightedNodeGridPropState,
 	selectHighlightedNodeState,
 } from '@/store/selectors/global';
 import { gridState } from '@/store/atoms/global';
-import { GridKeyType } from '@/common/types';
-import { DIRECTION } from '@/common/enums';
 
 const OPTIONS = Object.values(DIRECTION)
 	.filter((v) => isNaN(Number(v)))

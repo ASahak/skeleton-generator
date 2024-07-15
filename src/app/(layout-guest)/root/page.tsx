@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import NavLink from 'next/link';
 import { RiArrowRightLine, RiGithubFill, RiNpmjsFill } from 'react-icons/ri';
-import RoutePaths from '@/constants/route-paths';
+import RoutePaths, { GITHUB_LINK, NPM_LINK } from '@/constants/route-paths';
 import { useThemeColors } from '@/hooks';
 
 export default function View() {
@@ -42,17 +42,21 @@ export default function View() {
 							Get Started <Icon fontSize="2rem" as={RiArrowRightLine} ml={2} />
 						</Button>
 					</NavLink>
-					<Button
-						variant="default"
-						size="lg"
-						bgColor="gray.100"
-						color="gray.800"
-					>
-						<Icon as={RiGithubFill} mr={2} fontSize="2rem" /> GitHub
-					</Button>
-					<Button variant="default" size="lg" bgColor="red.600" color="white">
-						<Icon as={RiNpmjsFill} mr={2} fontSize="2rem" /> npm
-					</Button>
+					<NavLink href={GITHUB_LINK} target="_blank">
+						<Button
+							variant="default"
+							size="lg"
+							bgColor="gray.100"
+							color="gray.800"
+						>
+							<Icon as={RiGithubFill} mr={2} fontSize="2rem" /> GitHub
+						</Button>
+					</NavLink>
+					<NavLink href={NPM_LINK} target="_blank">
+						<Button variant="default" size="lg" bgColor="red.600" color="white">
+							<Icon as={RiNpmjsFill} mr={2} fontSize="2rem" /> npm
+						</Button>
+					</NavLink>
 				</ButtonGroup>
 			</Box>
 		</Flex>

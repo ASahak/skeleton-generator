@@ -10,6 +10,7 @@ import {
 import { useColorMode } from '@chakra-ui/react';
 import {
 	selectAdaptiveDeviceEnabledState,
+	selectBreakpointsState,
 	selectGridState,
 	selectRootStylesState,
 	selectSkeletonAnimationState,
@@ -28,6 +29,7 @@ export const PreviewStructure: FC = memo(() => {
 	const adaptiveDeviceEnabled = useRecoilValue(
 		selectAdaptiveDeviceEnabledState
 	);
+	const breakpoints = useRecoilValue(selectBreakpointsState);
 
 	return (
 		<ReactSkeletonProvider
@@ -38,6 +40,7 @@ export const PreviewStructure: FC = memo(() => {
 					dark: colorThemes.dark,
 					light: colorThemes.light,
 				},
+				breakpoints,
 			}}
 		>
 			<Skeleton

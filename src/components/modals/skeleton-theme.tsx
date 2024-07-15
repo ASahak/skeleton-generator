@@ -53,7 +53,7 @@ export const SkeletonTheme = () => {
 	);
 	const [colorThemes, setColorTheme] = useRecoilState(colorThemeState);
 	const [themeLocalValue, setThemeLocalValue] = useState(colorThemes);
-	const { white_dark650 } = useThemeColors();
+	const { white_dark650, gray100_dark400 } = useThemeColors();
 
 	const onSelectVariant = (opt: ISelect) => {
 		setSelectedVariant(opt);
@@ -65,7 +65,7 @@ export const SkeletonTheme = () => {
 
 	const onApply = () => {
 		setColorTheme(themeLocalValue);
-		setSkeletonAnimation(selectedVariant.value);
+		setSkeletonAnimation(selectedVariant.value as SKELETON_ANIMATION_VARIANTS);
 		onClose();
 	};
 
@@ -221,7 +221,7 @@ export const SkeletonTheme = () => {
 				</Heading>
 				<ReactSkeletonProvider
 					value={{
-						isDark: colorMode === 'dark',
+						isDark: selectedTheme.value === 'dark',
 						skeletonAnimation:
 							selectedVariant.value as SKELETON_ANIMATION_VARIANTS,
 						colorTheme: {
@@ -231,11 +231,16 @@ export const SkeletonTheme = () => {
 					}}
 				>
 					<Box
-						{...(colorMode === 'dark' && {
-							background: '#686a70',
+						{...{
+							background:
+								colorMode === 'dark' && selectedTheme.value === 'dark'
+									? '#686a70'
+									: 'transparent',
 							padding: '10px',
 							borderRadius: '4px',
-						})}
+							border: '1px solid',
+							borderColor: gray100_dark400,
+						}}
 					>
 						<Skeleton
 							styles={{

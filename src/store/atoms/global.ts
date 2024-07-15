@@ -1,12 +1,12 @@
 import { atom, RecoilState } from 'recoil';
 import {
 	COLOR_MODE,
-	filterFromPx,
 	DEFAULT_COLOR_THEMES,
+	SKELETON_ANIMATION_VARIANTS,
+	DEFAULT_BREAKPOINTS,
 } from 'react-skeleton-builder';
 import type { Device } from 'react-skeleton-builder';
 import type { IGrid, ISkeleton } from '@/common/types';
-import { breakpoints } from '@/styles/theme';
 
 export const deviceState: RecoilState<Device | null> = atom<Device | null>({
 	key: 'device',
@@ -63,16 +63,13 @@ export const colorThemeState: RecoilState<
 	default: DEFAULT_COLOR_THEMES,
 });
 
-export const skeletonAnimationState: RecoilState<string> = atom({
-	key: 'skeleton-animation',
-	default: 'slide', // todo
-});
+export const skeletonAnimationState: RecoilState<SKELETON_ANIMATION_VARIANTS> =
+	atom({
+		key: 'skeleton-animation',
+		default: SKELETON_ANIMATION_VARIANTS.SLIDE as SKELETON_ANIMATION_VARIANTS,
+	});
 
 export const breakpointsState: RecoilState<Record<Device, string>> = atom({
 	key: 'breakpoints',
-	default: {
-		mobile: `${filterFromPx(breakpoints.sm) - 1}px`, // max-width
-		tablet: `${filterFromPx(breakpoints.lg) - 1}px`, // max-width
-		desktop: breakpoints.lg, // min-width
-	},
+	default: DEFAULT_BREAKPOINTS,
 });

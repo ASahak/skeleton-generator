@@ -92,15 +92,25 @@ export const Header: FC = memo(() => {
 			gap={{ base: 8, md: 4 }}
 		>
 			{previewMode ? (
-				<Button
-					variant="base"
-					px={5}
-					gap={2}
-					onClick={() => setPreviewMode(false)}
-				>
-					<Icon as={RiArrowLeftLine} fontSize="2xl" />
-					Back
-				</Button>
+				<HStack justifyContent="space-between" w="full">
+					<Flex alignItems="center" flex={1}>
+						<Button
+							variant="base"
+							px={5}
+							gap={2}
+							onClick={() => setPreviewMode(false)}
+						>
+							<Icon as={RiArrowLeftLine} fontSize="2xl" />
+							Back
+						</Button>
+					</Flex>
+					<Flex alignItems="center" flex={1}>
+						{ableToPreview && adaptiveDeviceEnabled ? <Devices /> : null}
+					</Flex>
+					<Flex alignItems="center" flex={1}>
+						<Box />
+					</Flex>
+				</HStack>
 			) : (
 				<HStack justifyContent="space-between" w="full">
 					<Flex alignItems="center" gap={4} flex={1}>

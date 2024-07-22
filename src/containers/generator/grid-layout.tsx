@@ -104,7 +104,7 @@ export const GridLayout = () => {
 												: (skeleton.h as SizeFunction)())!.toString()
 										),
 							borderRadius: skeleton.r || '0px',
-							margin: generateMargin(skeleton.margin || ''),
+							margin: generateMargin(skeleton.margin || '', 'rem'),
 							backgroundColor: colorTheme.main,
 							opacity: setOpacity(
 								index,
@@ -287,7 +287,7 @@ export const GridLayout = () => {
 						data-key={keyLevel}
 						style={{
 							gap: gridGap,
-							margin: generateMargin(grid.margin || ''),
+							margin: generateMargin(grid.margin || '', 'rem'),
 							grid: gridStyle,
 							height: reservedPropsFromParent?.parent
 								? DEFAULT_HEIGHT

@@ -12,6 +12,7 @@ import {
 	Tabs,
 	Fade,
 } from '@chakra-ui/react';
+import stringify from 'json-stringify-pretty-compact';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useRecoilValue } from 'recoil';
 import {
@@ -30,7 +31,7 @@ import {
 	selectSkeletonAnimationState,
 	selectSkeletonsState,
 } from '@/store/selectors/global';
-import { getGridStructure } from '@/utils/helpers';
+import { filterQuotes, getGridStructure } from '@/utils/helpers';
 
 const TABS = [
 	{ value: 'global-configs', label: 'Global configurations' },
@@ -52,20 +53,16 @@ export const GetCode = () => {
 	);
 
 	const generateGlobalConfigs = useMemo(() => {
-		const value = JSON.stringify(
-			{
-				skeletonAnimation,
-				colorTheme: colorThemes,
-				breakpoints,
-			},
-			null,
-			'  '
-		);
+		const value = stringify({
+			skeletonAnimation,
+			colorTheme: colorThemes,
+			breakpoints,
+		});
 
 		return `import { ReactSkeletonProvider } from 'react-skeleton-builder';
 
 <ReactSkeletonProvider 
-  value={${value}}
+  value={${filterQuotes(value)}}
 >
   {children}
 </ReactSkeletonProvider>
@@ -79,22 +76,18 @@ export const GetCode = () => {
 			styleObj = cssToReactStyle(styles);
 		}
 
-		const value = JSON.stringify(
-			{
-				...getGridStructure(
-					gridState[ROOT_KEY],
-					gridState,
-					skeletonsState,
-					adaptiveDeviceEnabled
-				),
-			},
-			null,
-			'  '
-		);
+		const value = stringify({
+			...getGridStructure(
+				gridState[ROOT_KEY],
+				gridState,
+				skeletonsState,
+				adaptiveDeviceEnabled
+			),
+		});
 
 		return `<Skeleton 
-  styles={${JSON.stringify(styleObj, null, '  ')}}
-  grid={${value}}
+  styles={${filterQuotes(stringify(styleObj))}}
+  grid={${filterQuotes(value)}}
 />
 `;
 	}, [gridState, skeletonsState, rootStyles]);

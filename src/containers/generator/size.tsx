@@ -92,13 +92,13 @@ const SizeComponent = memo(
 				}
 
 				// width
-				if (width.unit === SIZE_UNITS.FN) {
+				if (width.unit === SIZE_UNITS.FN || width.unit === SIZE_UNITS.AUTO) {
 					ref.w = localValue.w;
 				} else {
 					ref.w = `${width.value}${width.unit}`;
 				}
 				// height
-				if (height.unit === SIZE_UNITS.FN) {
+				if (height.unit === SIZE_UNITS.FN || height.unit === SIZE_UNITS.AUTO) {
 					ref.h = localValue.h;
 				} else {
 					ref.h = `${height.value}${height.unit}`;
@@ -165,7 +165,10 @@ const SizeComponent = memo(
 			} else {
 				setLocalValue((prevState) => ({
 					...prevState,
-					[size]: `${SIZE_UNITS_INITIAL_VALUES[v]}${v}`,
+					[size]:
+						v === SIZE_UNITS.AUTO
+							? SIZE_UNITS_INITIAL_VALUES[SIZE_UNITS.AUTO]
+							: `${SIZE_UNITS_INITIAL_VALUES[v]}${v}`,
 				}));
 			}
 		};

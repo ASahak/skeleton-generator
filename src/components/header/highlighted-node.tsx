@@ -17,7 +17,10 @@ import cloneDeep from 'clone-deep';
 import { RiLayout2Fill, RiRectangleLine } from 'react-icons/ri';
 import { RxTriangleDown } from 'react-icons/rx';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { selectHighlightedNodeState } from '@/store/selectors/global';
+import {
+	selectAdaptiveDeviceEnabledState,
+	selectHighlightedNodeState,
+} from '@/store/selectors/global';
 import { gridState, skeletonsState } from '@/store/atoms/global';
 import type { GridKeyType } from 'react-skeleton-builder';
 import { SKELETON_INITIAL_VALUES } from 'react-skeleton-builder';
@@ -40,6 +43,9 @@ export const HighlightedNode: FC = memo(() => {
 	const highlightedNode = useRecoilValue(selectHighlightedNodeState);
 	const [grid, setGridState] = useRecoilState(gridState);
 	const [skeletons, setSkeletonsState] = useRecoilState(skeletonsState);
+	const adaptiveDeviceEnabled = useRecoilValue(
+		selectAdaptiveDeviceEnabledState
+	);
 
 	const isContainer =
 		!Object.hasOwn(skeletons, highlightedNode) &&
@@ -78,7 +84,7 @@ export const HighlightedNode: FC = memo(() => {
 		if (value === 'create-container') {
 			const newRoot = highlightedNode + '_';
 			const newKey = newRoot + findAbsentIndex(newRoot, obj.children || []);
-			_grid[newKey] = { ...generateDefaultValues() };
+			_grid[newKey] = { ...generateDefaultValues(adaptiveDeviceEnabled) };
 			obj.children = (obj.children || []).concat(newKey);
 		} else {
 			const _skeletons = cloneDeep(skeletons);
@@ -87,7 +93,9 @@ export const HighlightedNode: FC = memo(() => {
 			obj.skeletons = (obj.skeletons || []).concat(newKey);
 			_skeletons[newKey] = {
 				...SKELETON_INITIAL_VALUES,
-				responsive: responsiveInstance(SKELETON_INITIAL_VALUES),
+				...(adaptiveDeviceEnabled && {
+					responsive: responsiveInstance(SKELETON_INITIAL_VALUES),
+				}),
 			};
 			setSkeletonsState(_skeletons);
 		}

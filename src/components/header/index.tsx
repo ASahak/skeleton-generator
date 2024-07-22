@@ -47,7 +47,7 @@ export const Header: FC = memo(() => {
 
 	const onCreateRootTemplate = () => {
 		setGridState({
-			[ROOT_KEY]: { ...generateDefaultValues() },
+			[ROOT_KEY]: { ...generateDefaultValues(adaptiveDeviceEnabled) },
 		});
 		setHighlightedNode(ROOT_KEY);
 	};
@@ -87,6 +87,7 @@ export const Header: FC = memo(() => {
 
 	return (
 		<Box
+			zIndex={99}
 			as="header"
 			w="full"
 			h="7.8rem"

@@ -12,16 +12,21 @@ import {
 } from '@chakra-ui/react';
 import { useRecoilState } from 'recoil';
 import { filterFromPx } from 'react-skeleton-builder';
-import type { Device } from 'react-skeleton-builder';
+import type { Device, ISkeleton } from 'react-skeleton-builder';
+import cloneDeep from 'clone-deep';
 import { useThemeColors } from '@/hooks';
 import {
 	adaptiveDeviceEnabledState,
 	autoDeviceCheckingIsActiveState,
 	breakpointsState,
 	deviceState,
+	gridState,
+	skeletonsState,
 } from '@/store/atoms/global';
 import { breakpoints as breakpointsTheme } from '@/styles/theme';
 import { useModal } from '@/providers/custom-modal';
+import { responsiveInstance } from '@/utils/helpers';
+import { IGrid } from '@/common/types';
 
 export const Breakpoints = () => {
 	const { onClose } = useModal();
@@ -31,6 +36,8 @@ export const Breakpoints = () => {
 	const [adaptiveDeviceEnabled, setAdaptiveDeviceEnabled] = useRecoilState(
 		adaptiveDeviceEnabledState
 	);
+	const [skeletons, setSkeletonsState] = useRecoilState(skeletonsState);
+	const [grid, setGridState] = useRecoilState(gridState);
 	const [, setDeviceState] = useRecoilState(deviceState);
 	const [, setIsAutoCheckingDevice] = useRecoilState(
 		autoDeviceCheckingIsActiveState
@@ -100,8 +107,49 @@ export const Breakpoints = () => {
 		}
 	};
 
+	const toggleAdaptiveModeInGridState = (enabled: boolean) => {
+		const _grid = cloneDeep(grid);
+		const _skeletons = cloneDeep(skeletons);
+		setGridState(
+			Object.keys(_grid).reduce(
+				(acc, item) => {
+					if (Object.hasOwn(_grid[item], 'responsive')) {
+						delete _grid[item].responsive;
+					}
+					acc[item] = {
+						..._grid[item],
+						...(enabled && { responsive: responsiveInstance(_grid[item]) }),
+					};
+
+					return acc;
+				},
+				{} as Record<string, IGrid>
+			)
+		);
+		setSkeletonsState(
+			Object.keys(_skeletons).reduce(
+				(acc, item) => {
+					if (Object.hasOwn(_skeletons[item], 'responsive')) {
+						delete _skeletons[item].responsive;
+					}
+					acc[item] = {
+						..._skeletons[item],
+						...(enabled && {
+							responsive: responsiveInstance(_skeletons[item]),
+						}),
+					};
+
+					return acc;
+				},
+				{} as Record<string, ISkeleton>
+			)
+		);
+	};
+
 	const toggleAdaptiveDevice = (e: ChangeEvent<HTMLInputElement>) => {
-		setAdaptiveDeviceEnabled(e.target.checked);
+		const enabled = e.target.checked;
+		setAdaptiveDeviceEnabled(enabled);
+		toggleAdaptiveModeInGridState(enabled);
 		if (!e.target.checked) {
 			setDeviceState('desktop');
 		} else {

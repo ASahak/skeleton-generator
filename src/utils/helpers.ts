@@ -40,7 +40,7 @@ export const getAdaptiveData = (
 		: grid;
 };
 
-export const generateDefaultValues = () => {
+export const generateDefaultValues = (adaptiveDeviceEnabled?: boolean) => {
 	return Object.keys(CONTAINER_INITIAL_VALUES)
 		.filter((e) => isNaN(Number(e)))
 		.reduce(
@@ -51,7 +51,11 @@ export const generateDefaultValues = () => {
 					];
 				return acc;
 			},
-			{ responsive: responsiveInstance(CONTAINER_INITIAL_VALUES) }
+			{
+				...(adaptiveDeviceEnabled && {
+					responsive: responsiveInstance(CONTAINER_INITIAL_VALUES),
+				}),
+			}
 		);
 };
 
@@ -391,4 +395,8 @@ export const getGridStructure = (
 			),
 		}),
 	};
+};
+
+export const filterQuotes = (str: string) => {
+	return str.replace(/"([^"]+)":/g, '$1:');
 };

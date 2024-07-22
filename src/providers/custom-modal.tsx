@@ -21,6 +21,7 @@ import {
 	GetCode,
 	Breakpoints,
 	SkeletonTheme,
+	Import,
 } from '@/components/modals';
 import { dispatchBus } from '@/hooks';
 import { ON_CLOSE_MODAL } from '@/constants/event-bus-types';
@@ -48,9 +49,11 @@ export enum MODALS_KEYS {
 	GET_CODE = 'get-code',
 	BREAKPOINTS = 'breakpoints',
 	SKELETON_THEME = 'skeleton-theme',
+	IMPORT = 'import',
 }
 
 const MODALS: Record<MODALS_KEYS, FC<any>> = {
+	[MODALS_KEYS.IMPORT]: Import,
 	[MODALS_KEYS.CONFIRM_DELETE]: ConfirmDelete,
 	[MODALS_KEYS.FUNCTION_UNIT_EDITOR]: FunctionUnitEditor,
 	[MODALS_KEYS.GET_CODE]: GetCode,

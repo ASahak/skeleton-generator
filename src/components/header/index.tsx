@@ -13,6 +13,7 @@ import {
 	RiSunLine,
 	RiCodeSSlashFill,
 	RiArrowLeftLine,
+	RiDownloadLine,
 } from 'react-icons/ri';
 import { RxShadow } from 'react-icons/rx';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -49,6 +50,13 @@ export const Header: FC = memo(() => {
 			[ROOT_KEY]: { ...generateDefaultValues() },
 		});
 		setHighlightedNode(ROOT_KEY);
+	};
+
+	const onImport = () => {
+		setModal({
+			key: MODALS_KEYS.IMPORT,
+			props: {},
+		});
 	};
 
 	const onOpenGetCodeModal = () => {
@@ -133,7 +141,17 @@ export const Header: FC = memo(() => {
 								</Button>
 								<HighlightedNode />
 							</>
-						) : null}
+						) : (
+							<Button
+								variant="menu-outline"
+								px={4}
+								gap={2}
+								fontSize="1.3rem"
+								onClick={onImport}
+							>
+								Import <Icon fontSize="1.5rem" as={RiDownloadLine} />
+							</Button>
+						)}
 					</Flex>
 					{ableToPreview && adaptiveDeviceEnabled ? <Devices /> : null}
 					<Flex alignItems="center" gap={6} flex={1} justifyContent="end">

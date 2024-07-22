@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Box, Button, Flex, Text, Heading } from '@chakra-ui/react';
-import StyleEditor from 'react-style-editor';
+// import StyleEditor from 'react-style-editor';
 import { useRecoilState } from 'recoil';
 import { useThemeColors } from '@/hooks';
 import { rootStylesState } from '@/store/atoms/global';
@@ -53,17 +53,16 @@ export const Import = () => {
 			<Heading variant="medium-title" mb={4}>
 				Root element&apos;s styles
 			</Heading>
-			<StyleEditor
-				defaultValue={`
-                    div {color:red;}
-                    /* Hello, World! */
-                    @media screen {
-                        article {
-                            display: flex;
-                        }
-                    }
-                `}
-			/>
+			{/*<StyleEditor*/}
+			{/*	defaultValue={`*/}
+			{/*              div {color:red;}*/}
+			{/*              @media screen {*/}
+			{/*                  article {*/}
+			{/*                      display: flex;*/}
+			{/*                  }*/}
+			{/*              }*/}
+			{/*          `}*/}
+			{/*/>*/}
 
 			<Box
 				as={ContentEditable}

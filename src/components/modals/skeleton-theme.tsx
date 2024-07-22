@@ -179,8 +179,7 @@ export const SkeletonTheme = () => {
 						variant="base"
 						type="text"
 						opacity="1 !important"
-						readOnly
-						isDisabled
+						onChange={(e) => onChangeThemeColors(e.target.value, 'main')}
 						value={themeLocalValue[selectedTheme.value as COLOR_MODE].main}
 					/>
 				</InputGroup>
@@ -209,8 +208,7 @@ export const SkeletonTheme = () => {
 						variant="base"
 						type="text"
 						opacity="1 !important"
-						readOnly
-						isDisabled
+						onChange={(e) => onChangeThemeColors(e.target.value, 'gradient')}
 						value={themeLocalValue[selectedTheme.value as COLOR_MODE].gradient}
 					/>
 				</InputGroup>

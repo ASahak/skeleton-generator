@@ -171,6 +171,7 @@ export const generateBorders = ({
 	keyLevel === highlightedNode && notRepeated(keyLevel, parent)
 		? {
 				boxShadow: '0px 0px 1px 1px var(--chakra-colors-brand-500)',
+				zIndex: 2,
 			}
 		: parent === highlightedNode
 			? {

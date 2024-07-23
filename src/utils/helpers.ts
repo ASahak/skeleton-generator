@@ -315,7 +315,11 @@ const filterResponsiveValues = (
 	gridState: IGrid
 ): Responsive => {
 	return Object.keys(responsiveState).reduce((acc: any, item: any) => {
-		Object.keys(responsiveState[item as Device]).forEach((key: string) => {
+		for (const key of Object.keys(responsiveState[item as Device])) {
+			if (key === 'children' || key === 'skeletons') {
+				continue;
+			}
+
 			// mobile
 			if (responsiveState.mobile[key] !== gridState[key as GridKeyType]) {
 				if (!acc.mobile) {
@@ -330,7 +334,7 @@ const filterResponsiveValues = (
 				}
 				acc.tablet[key] = responsiveState.tablet[key];
 			}
-		});
+		}
 
 		return acc;
 	}, {}) as Responsive;
@@ -369,11 +373,21 @@ export const getGridStructure = (
 	skeletonsState: Record<string, ISkeleton>,
 	adaptiveDeviceEnabled: boolean
 ): Record<string, any> => {
+	const responsiveState = () => {
+		if (adaptiveDeviceEnabled) {
+			const state = filterResponsiveValues(grid.responsive!, grid);
+			if (Object.keys(state).length) {
+				return {
+					responsive: state,
+				};
+			}
+		}
+		return {};
+	};
+
 	return {
 		...filterNonChangedValues(grid),
-		...(adaptiveDeviceEnabled && {
-			responsive: filterResponsiveValues(grid.responsive!, grid),
-		}),
+		...responsiveState(),
 		...(Object.hasOwn(grid, 'children') && {
 			children: (grid as IGrid).children!.map((child: string) =>
 				getGridStructure(

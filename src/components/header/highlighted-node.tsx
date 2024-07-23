@@ -117,11 +117,13 @@ export const HighlightedNode: FC = memo(() => {
 					</Button>
 				</PopoverTrigger>
 				<Portal>
-					<PopoverContent minW="20rem">
-						<PopoverBody p={0}>
-							<GridTree />
-						</PopoverBody>
-					</PopoverContent>
+					<Box zIndex="popover" w="full" h="full" position="relative">
+						<PopoverContent minW="20rem" zIndex={999}>
+							<PopoverBody p={0}>
+								<GridTree />
+							</PopoverBody>
+						</PopoverContent>
+					</Box>
 				</Portal>
 			</Popover>
 			{isContainer ? (

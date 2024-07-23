@@ -10,6 +10,7 @@ export default {
 			},
 		},
 		body: {
+			overflow: 'hidden',
 			background: mode('gray.80', 'darcula.800')(props),
 		},
 		'body, *': {

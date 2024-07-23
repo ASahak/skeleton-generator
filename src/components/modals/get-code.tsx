@@ -70,6 +70,7 @@ export const GetCode = () => {
 	}, [colorThemes, breakpoints, skeletonAnimation]);
 
 	const generateGridStructure = useMemo(() => {
+		console.log(gridState, skeletonsState);
 		const styles = parseStyleObject(rootStyles);
 		let styleObj = {};
 		if (styles) {

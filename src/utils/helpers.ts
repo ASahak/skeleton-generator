@@ -415,19 +415,22 @@ export const mergeWithExistingProps = (
 	props: Record<string, any>,
 	generateDefaultValues: Record<string, any>
 ): IGrid | ISkeleton => {
-	return Object.keys(generateDefaultValues).reduce((acc, key) => {
-		acc[key] = Object.hasOwn(props, key)
-			? props[key]
-			: generateDefaultValues[key];
+	return Object.keys(generateDefaultValues).reduce(
+		(acc: Record<string, any>, key) => {
+			acc[key] = Object.hasOwn(props, key)
+				? props[key]
+				: generateDefaultValues[key];
 
-		return acc;
-	}, {});
+			return acc;
+		},
+		{}
+	) as IGrid | ISkeleton;
 };
 
 export const generateGridStructureFromImport = (
 	current: Record<string, any>,
-	gridState: IGrid,
-	skeletonsState: ISkeleton,
+	gridState: Record<string, IGrid>,
+	skeletonsState: Record<string, ISkeleton>,
 	levelNode: string,
 	adaptiveDeviceEnabled: boolean
 ): Record<string, any> => {
@@ -449,9 +452,10 @@ export const generateGridStructureFromImport = (
 	>;
 
 	if (Object.hasOwn(current, 'children')) {
-		(current.children || []).forEach((c) => {
+		(current.children || []).forEach((c: Record<string, any>) => {
 			const newRoot = levelNode + '_';
-			const newKey = newRoot + findAbsentIndex(newRoot, obj.children || []);
+			const newKey: string =
+				newRoot + findAbsentIndex(newRoot, obj.children || []);
 			obj.children = (obj.children || []).concat(newKey);
 			gridState[newKey] = mergeWithExistingProps(c, {
 				...generateDefaultValues(adaptiveDeviceEnabled),
@@ -466,7 +470,7 @@ export const generateGridStructureFromImport = (
 			);
 		});
 	} else if (Object.hasOwn(current, 'skeletons')) {
-		(current.skeletons || []).forEach((c) => {
+		(current.skeletons || []).forEach((c: Record<string, any>) => {
 			const newRoot = levelNode + '_skeleton_';
 			const newKey = newRoot + findAbsentIndex(newRoot, obj.skeletons || []);
 			skeletonsState[newKey] = mergeWithExistingProps(c, {

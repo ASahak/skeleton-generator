@@ -57,8 +57,8 @@ export const Import = () => {
 					[ROOT_KEY]: mergeWithExistingProps(gridStateData, {
 						...generateDefaultValues(adaptiveDeviceEnabled),
 					}),
-				} as IGrid,
-				{} as ISkeleton,
+				} as Record<string, IGrid>,
+				{} as Record<string, ISkeleton>,
 				ROOT_KEY,
 				adaptiveDeviceEnabled
 			);

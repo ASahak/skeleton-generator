@@ -1,34 +1,77 @@
 import { useRef, useState } from 'react';
 import { Box, Button, Flex, Text, Heading } from '@chakra-ui/react';
 // import StyleEditor from 'react-style-editor';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useThemeColors } from '@/hooks';
-import { rootStylesState } from '@/store/atoms/global';
+import {
+	gridState,
+	highlightedNodeState,
+	rootStylesState,
+	skeletonsState,
+} from '@/store/atoms/global';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import { useModal } from '@/providers/custom-modal';
+import { ROOT_KEY } from 'react-skeleton-builder';
+import {
+	generateDefaultValues,
+	generateGridStructureFromImport,
+	mergeWithExistingProps,
+} from '@/utils/helpers';
+import {
+	selectAdaptiveDeviceEnabledState,
+	selectRootStylesState,
+} from '@/store/selectors/global';
+import { IGrid, ISkeleton } from '@/common/types';
 
 export const Import = () => {
 	const { onClose } = useModal();
 	const [, setRootStyles] = useRecoilState(rootStylesState);
+	const [, setGridState] = useRecoilState(gridState);
+	const [, setSkeletonsState] = useRecoilState(skeletonsState);
+	const rootStyles = useRecoilValue(selectRootStylesState);
+	const adaptiveDeviceEnabled = useRecoilValue(
+		selectAdaptiveDeviceEnabledState
+	);
 	const { gray100_dark400, white_dark550 } = useThemeColors();
+	const [, setHighlightedNode] = useRecoilState(highlightedNodeState);
 
-	const [localValueRootStyles, setLocalValueRootStyles] = useState(
-		`{
-	
-}`
-	);
-	const [localValueGrid, setLocalValueGrid] = useState(
-		`{
-	
-}`
-	);
+	const [localValueRootStyles, setLocalValueRootStyles] = useState(rootStyles);
+	const [localValueGrid, setLocalValueGrid] = useState('');
+	// {
+	// 	children: [
+	// 		{h: "100px", skeletons: [{r: "10px"}]},
+	// 		{responsive: {tablet: {direction: "column"}}, skeletons: [{}, {}]}
+	// 	]
+	// }
 	const filteredValueRootStyles = useRef(localValueRootStyles);
 	const filteredValueGrid = useRef(localValueGrid);
 
 	const onApply = () => {
-		console.log(filteredValueRootStyles.current);
-		setRootStyles(filteredValueRootStyles.current);
-		onClose();
+		try {
+			const gridStateData = JSON.parse(
+				filteredValueGrid.current.replace(/(\w+):/g, '"$1":')
+			);
+			const { gridState, skeletonsState } = generateGridStructureFromImport(
+				gridStateData,
+				{
+					[ROOT_KEY]: mergeWithExistingProps(gridStateData, {
+						...generateDefaultValues(adaptiveDeviceEnabled),
+					}),
+				} as IGrid,
+				{} as ISkeleton,
+				ROOT_KEY,
+				adaptiveDeviceEnabled
+			);
+
+			setGridState(gridState);
+			setSkeletonsState(skeletonsState);
+			setHighlightedNode(ROOT_KEY);
+			setRootStyles(filteredValueRootStyles.current);
+		} catch (err) {
+			console.error(err);
+		} finally {
+			onClose();
+		}
 	};
 
 	const onChangeRootStyle = (e: ContentEditableEvent) => {

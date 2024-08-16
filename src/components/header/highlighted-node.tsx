@@ -30,6 +30,7 @@ import {
 	responsiveInstance,
 } from '@/utils/helpers';
 import { GridTree } from '@/components/header/grid-tree';
+import { ISkeleton } from '@/common/types';
 
 const OPTIONS = [
 	{
@@ -96,7 +97,7 @@ export const HighlightedNode: FC = memo(() => {
 				...(adaptiveDeviceEnabled && {
 					responsive: responsiveInstance(SKELETON_INITIAL_VALUES),
 				}),
-			};
+			} as ISkeleton;
 			setSkeletonsState(_skeletons);
 		}
 		setGridState(_grid);

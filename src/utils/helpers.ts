@@ -411,6 +411,101 @@ export const getGridStructure = (
 	};
 };
 
+export const mergeWithExistingProps = (
+	props: Record<string, any>,
+	generateDefaultValues: Record<string, any>
+): IGrid | ISkeleton => {
+	return Object.keys(generateDefaultValues).reduce((acc, key) => {
+		acc[key] = Object.hasOwn(props, key)
+			? props[key]
+			: generateDefaultValues[key];
+
+		return acc;
+	}, {});
+};
+
+export const generateGridStructureFromImport = (
+	current: Record<string, any>,
+	gridState: IGrid,
+	skeletonsState: ISkeleton,
+	levelNode: string,
+	adaptiveDeviceEnabled: boolean
+): Record<string, any> => {
+	// const responsiveState = () => {
+	// 	if (adaptiveDeviceEnabled) {
+	// 		const state = filterResponsiveValues(grid.responsive!, grid);
+	// 		if (Object.keys(state).length) {
+	// 			return {
+	// 				responsive: state,
+	// 			};
+	// 		}
+	// 	}
+	// 	return {};
+	// };
+
+	const obj: Record<GridKeyType, any> = gridState[levelNode] as Record<
+		GridKeyType,
+		any
+	>;
+
+	if (Object.hasOwn(current, 'children')) {
+		(current.children || []).forEach((c) => {
+			const newRoot = levelNode + '_';
+			const newKey = newRoot + findAbsentIndex(newRoot, obj.children || []);
+			obj.children = (obj.children || []).concat(newKey);
+			gridState[newKey] = mergeWithExistingProps(c, {
+				...generateDefaultValues(adaptiveDeviceEnabled),
+			}) as IGrid;
+
+			generateGridStructureFromImport(
+				c,
+				gridState,
+				skeletonsState,
+				newKey,
+				adaptiveDeviceEnabled
+			);
+		});
+	} else if (Object.hasOwn(current, 'skeletons')) {
+		(current.skeletons || []).forEach((c) => {
+			const newRoot = levelNode + '_skeleton_';
+			const newKey = newRoot + findAbsentIndex(newRoot, obj.skeletons || []);
+			skeletonsState[newKey] = mergeWithExistingProps(c, {
+				...SKELETON_INITIAL_VALUES,
+			}) as ISkeleton;
+			obj.skeletons = (obj.skeletons || []).concat(newKey);
+		});
+	}
+
+	return {
+		gridState,
+		skeletonsState,
+	};
+
+	// return {
+	// 	// ...responsiveState(),
+	// 	...(Object.hasOwn(grid, 'children') && {
+	// 		children: (grid as IGrid).children!.map((child: string) =>
+	// 			getGridStructure(
+	// 				gridState[child],
+	// 				gridState,
+	// 				skeletonsState,
+	// 				adaptiveDeviceEnabled
+	// 			)
+	// 		),
+	// 	}),
+	// 	...(Object.hasOwn(grid, 'skeletons') && {
+	// 		skeletons: (grid as IGrid).skeletons!.map((child: string) =>
+	// 			getGridStructure(
+	// 				skeletonsState[child],
+	// 				gridState,
+	// 				skeletonsState,
+	// 				adaptiveDeviceEnabled
+	// 			)
+	// 		),
+	// 	}),
+	// };
+};
+
 export const filterQuotes = (str: string) => {
 	return str.replace(/"([^"]+)":/g, '$1:');
 };

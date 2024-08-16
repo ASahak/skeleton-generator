@@ -230,6 +230,7 @@ export const WithContextMenu = memo(
 					})}
 					<Portal>
 						<MenuList
+							zIndex="popover"
 							ref={menuList as any}
 							style={{ top: offset[1], left: offset[0] }}
 							position="absolute"

@@ -123,7 +123,7 @@ export const GridTree: FC = memo(() => {
 	};
 
 	const onSelectNode = (node: Key[]) => {
-		setHighlightedNode(node[0] as string);
+		setHighlightedNode((node[0] || ROOT_KEY) as string);
 	};
 
 	const renderSwitcherIcon = (obj: TreeNodeProps) => {
